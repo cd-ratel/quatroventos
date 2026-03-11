@@ -84,8 +84,8 @@ export default function HomePage() {
   const heroSlides = useMemo<HeroSlide[]>(() => {
     const categoryMap = [
       ['wedding', 'venue'],
-      ['corporate', 'venue'],
       ['children', 'venue'],
+      ['corporate', 'venue'],
     ];
 
     return homeContent.events.map((event, index) => {
@@ -109,7 +109,7 @@ export default function HomePage() {
   const showcaseCards = useMemo(() => {
     return homeContent.events.map((event, index) => {
       const preferredCategory =
-        index === 0 ? ['wedding', 'venue'] : index === 1 ? ['corporate', 'venue'] : ['children', 'venue'];
+        index === 0 ? ['wedding', 'venue'] : index === 1 ? ['children', 'venue'] : ['corporate', 'venue'];
       const visual = findMediaForCategories(media, preferredCategory, index);
 
       return {

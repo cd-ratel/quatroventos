@@ -6,6 +6,7 @@ const DEFAULT_WHATSAPP = '5500000000000';
 const DEFAULT_EMAIL = 'contato@quatroventos.com.br';
 const DEFAULT_INSTAGRAM = 'https://instagram.com/quatroventos';
 const DEFAULT_FACEBOOK = 'https://facebook.com/quatroventos';
+const DEFAULT_WHATSAPP_URL = `https://wa.me/${DEFAULT_WHATSAPP}`;
 
 const categoryLabelMap: Record<string, string> = {
   all: 'Todos',
@@ -42,7 +43,8 @@ export function isPlaceholderSocialLink(href: string) {
   return (
     !normalized ||
     normalized === DEFAULT_INSTAGRAM ||
-    normalized === DEFAULT_FACEBOOK
+    normalized === DEFAULT_FACEBOOK ||
+    normalized === DEFAULT_WHATSAPP_URL
   );
 }
 
