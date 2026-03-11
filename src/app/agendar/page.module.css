@@ -1,13 +1,20 @@
+/* ═══════════════════════════════════
+   AGENDAR PAGE — Premium Booking
+   ═══════════════════════════════════ */
+
 .bookingPage {
   padding-top: calc(var(--nav-height) + var(--space-3xl));
   padding-bottom: var(--space-4xl);
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--color-midnight), var(--color-navy) 30%, var(--color-navy));
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(78, 198, 193, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(212, 168, 83, 0.04) 0%, transparent 50%),
+    linear-gradient(180deg, var(--color-midnight), var(--color-navy) 30%, var(--color-navy));
 }
 
 .bookingGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.1fr;
   gap: var(--space-3xl);
   align-items: start;
 }
@@ -17,22 +24,23 @@
 }
 
 .bookingTitle {
-  font-size: 2.5rem;
+  font-size: 2.6rem;
   margin-bottom: var(--space-lg);
   color: var(--color-ivory);
+  letter-spacing: -0.02em;
 }
 
 .bookingSubtitle {
   font-size: 1.05rem;
-  color: rgba(250, 248, 245, 0.6);
-  line-height: 1.8;
+  color: rgba(250, 248, 245, 0.5);
+  line-height: 1.9;
   margin-bottom: var(--space-2xl);
 }
 
 .infoCards {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 .infoCard {
@@ -42,16 +50,20 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  transition: all var(--transition-base);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-inner-glow);
 }
 
 .infoCard:hover {
-  border-color: rgba(201, 169, 110, 0.2);
+  border-color: rgba(212, 168, 83, 0.2);
+  background: var(--glass-bg-light);
+  transform: translateX(4px);
 }
 
 .infoCardIcon {
   font-size: 1.5rem;
   flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(212, 168, 83, 0.15));
 }
 
 .infoCardTitle {
@@ -62,20 +74,21 @@
 }
 
 .infoCardDesc {
-  font-size: 0.85rem;
-  color: rgba(250, 248, 245, 0.5);
+  font-size: 0.82rem;
+  color: rgba(250, 248, 245, 0.45);
 }
 
 /* Form Card */
 .formCard {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   padding: var(--space-2xl);
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-inner-glow);
 }
 
 .formCard::before {
@@ -84,8 +97,10 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   background: var(--color-gold-shimmer);
+  background-size: 300% auto;
+  animation: border-flow 6s linear infinite;
 }
 
 .formTitle {
@@ -95,8 +110,8 @@
 }
 
 .formSubtitle {
-  font-size: 0.9rem;
-  color: rgba(250, 248, 245, 0.5);
+  font-size: 0.88rem;
+  color: rgba(250, 248, 245, 0.4);
   margin-bottom: var(--space-2xl);
 }
 
@@ -118,10 +133,22 @@
 }
 
 .successIcon {
-  font-size: 4rem;
+  font-size: 3.5rem;
   margin-bottom: var(--space-xl);
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.1);
+  border: 2px solid rgba(52, 211, 153, 0.3);
+  color: var(--color-success);
+  margin-left: auto;
+  margin-right: auto;
   animation: scaleIn 0.5s ease;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .successTitle {
@@ -131,14 +158,31 @@
 }
 
 .successMsg {
-  color: rgba(250, 248, 245, 0.6);
+  color: rgba(250, 248, 245, 0.5);
   margin-bottom: var(--space-2xl);
 }
 
 .fieldError {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--color-error);
   margin-top: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.fieldError::before {
+  content: '!';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(248, 113, 113, 0.15);
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {

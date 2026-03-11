@@ -1,6 +1,6 @@
 .footer {
   background: var(--color-midnight);
-  border-top: 1px solid rgba(201, 169, 110, 0.1);
+  border-top: 1px solid rgba(212, 168, 83, 0.08);
   padding: var(--space-4xl) 0 0;
   position: relative;
   overflow: hidden;
@@ -12,9 +12,9 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(201, 169, 110, 0.05), transparent 70%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(212, 168, 83, 0.04), transparent 70%);
   pointer-events: none;
 }
 
@@ -35,9 +35,10 @@
 
 .footerLogo {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--color-ivory);
+  letter-spacing: -0.01em;
 }
 
 .footerLogoAccent {
@@ -45,9 +46,9 @@
 }
 
 .footerDesc {
-  font-size: 0.9rem;
-  color: rgba(250, 248, 245, 0.5);
-  line-height: 1.8;
+  font-size: 0.88rem;
+  color: rgba(250, 248, 245, 0.4);
+  line-height: 1.9;
 }
 
 .footerSocial {
@@ -57,34 +58,62 @@
 }
 
 .socialLink {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(250, 248, 245, 0.6);
-  font-size: 1rem;
+  color: rgba(250, 248, 245, 0.5);
+  font-size: 0.9rem;
   transition: all var(--transition-base);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.socialLink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
 .socialLink:hover {
   border-color: var(--color-gold);
   color: var(--color-gold);
-  background: var(--color-gold-glow);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(212, 168, 83, 0.15);
+}
+
+.socialLink:hover::before {
+  opacity: 1;
 }
 
 .footerColumn h4 {
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-gold);
   margin-bottom: var(--space-xl);
+  position: relative;
+  padding-bottom: var(--space-md);
+}
+
+.footerColumn h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 25px;
+  height: 2px;
+  background: var(--color-gold);
+  border-radius: var(--radius-full);
 }
 
 .footerLinks {
@@ -95,28 +124,35 @@
 }
 
 .footerLink {
-  color: rgba(250, 248, 245, 0.5);
-  font-size: 0.9rem;
+  color: rgba(250, 248, 245, 0.4);
+  font-size: 0.88rem;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  display: inline-block;
 }
 
 .footerLink:hover {
   color: var(--color-gold-light);
+  transform: translateX(4px);
 }
 
 .contactItem {
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
-  color: rgba(250, 248, 245, 0.5);
-  font-size: 0.9rem;
+  color: rgba(250, 248, 245, 0.4);
+  font-size: 0.88rem;
   margin-bottom: var(--space-md);
+  transition: color var(--transition-fast);
+}
+
+.contactItem:hover {
+  color: rgba(250, 248, 245, 0.7);
 }
 
 .contactIcon {
   color: var(--color-gold);
-  font-size: 1rem;
+  font-size: 0.9rem;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -125,20 +161,20 @@
   max-width: var(--max-width);
   margin: var(--space-3xl) auto 0;
   padding: var(--space-xl) var(--space-xl);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .copyright {
-  font-size: 0.8rem;
-  color: rgba(250, 248, 245, 0.3);
+  font-size: 0.78rem;
+  color: rgba(250, 248, 245, 0.25);
 }
 
 .footerCredits {
-  font-size: 0.8rem;
-  color: rgba(250, 248, 245, 0.3);
+  font-size: 0.78rem;
+  color: rgba(250, 248, 245, 0.25);
 }
 
 @media (max-width: 768px) {

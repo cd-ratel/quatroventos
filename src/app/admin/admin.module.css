@@ -1,20 +1,20 @@
 /* ═══════════════════════════════════════════════════════════
-   QUATRO VENTOS — Admin Panel Design System
-   Premium dark admin with gold accents
+   QUATRO VENTOS — Admin Panel Design System v2.0
+   Premium dark admin with refined gold accents
    ═══════════════════════════════════════════════════════════ */
 
 /* ── Admin Layout ── */
 .adminLayout {
   display: flex;
   min-height: 100vh;
-  background: #080d18;
+  background: #060b16;
 }
 
 /* ── Sidebar ── */
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #0c1425 0%, #070c16 100%);
-  border-right: 1px solid rgba(201, 169, 110, 0.08);
+  background: linear-gradient(180deg, #0a1120 0%, #060b16 100%);
+  border-right: 1px solid rgba(212, 168, 83, 0.06);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -22,19 +22,19 @@
   left: 0;
   height: 100vh;
   z-index: 100;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebarHeader {
   padding: 1.75rem 1.5rem;
-  border-bottom: 1px solid rgba(201, 169, 110, 0.08);
+  border-bottom: 1px solid rgba(212, 168, 83, 0.06);
 }
 
 .sidebarLogo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #faf8f5;
+  color: var(--color-ivory);
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
@@ -42,23 +42,25 @@
 }
 
 .sidebarLogoAccent {
-  background: linear-gradient(135deg, #c9a96e, #f0d89c);
+  background: var(--color-gold-shimmer);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .sidebarBadge {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.55rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #0a1628;
-  background: linear-gradient(135deg, #c9a96e, #dcc18e);
+  color: var(--color-navy);
+  background: var(--color-gold-shimmer);
+  background-size: 200% auto;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-  -webkit-text-fill-color: #0a1628;
+  -webkit-text-fill-color: var(--color-navy);
 }
 
 /* ── Sidebar Navigation ── */
@@ -67,7 +69,7 @@
   padding: 1rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
   overflow-y: auto;
 }
 
@@ -75,24 +77,24 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  color: rgba(250, 248, 245, 0.55);
-  font-size: 0.9rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
+  color: rgba(250, 248, 245, 0.5);
+  font-size: 0.88rem;
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .sidebarLink:hover {
-  color: rgba(250, 248, 245, 0.9);
-  background: rgba(201, 169, 110, 0.06);
+  color: rgba(250, 248, 245, 0.85);
+  background: rgba(212, 168, 83, 0.05);
 }
 
 .sidebarLink.active {
-  color: #c9a96e;
-  background: rgba(201, 169, 110, 0.1);
+  color: var(--color-gold);
+  background: rgba(212, 168, 83, 0.08);
   font-weight: 600;
 }
 
@@ -103,31 +105,31 @@
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 60%;
-  background: linear-gradient(135deg, #c9a96e, #dcc18e);
+  height: 55%;
+  background: var(--color-gold-shimmer);
   border-radius: 0 4px 4px 0;
 }
 
 .sidebarIcon {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   width: 1.5rem;
   text-align: center;
   flex-shrink: 0;
 }
 
 .sidebarSection {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(250, 248, 245, 0.25);
-  padding: 1.25rem 1rem 0.5rem;
+  color: rgba(250, 248, 245, 0.2);
+  padding: 1.5rem 1rem 0.5rem;
 }
 
 /* ── Sidebar Footer ── */
 .sidebarFooter {
   padding: 1rem 0.75rem;
-  border-top: 1px solid rgba(201, 169, 110, 0.08);
+  border-top: 1px solid rgba(212, 168, 83, 0.06);
 }
 
 .logoutBtn {
@@ -135,21 +137,21 @@
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
   border: none;
-  background: rgba(248, 113, 113, 0.06);
-  color: rgba(248, 113, 113, 0.7);
-  font-size: 0.9rem;
+  background: rgba(248, 113, 113, 0.05);
+  color: rgba(248, 113, 113, 0.6);
+  font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: 'Inter', sans-serif;
+  transition: all 0.25s ease;
+  font-family: var(--font-body);
 }
 
 .logoutBtn:hover {
-  background: rgba(248, 113, 113, 0.12);
-  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--color-error);
 }
 
 /* ── Main Content ── */
@@ -158,7 +160,7 @@
   margin-left: 260px;
   padding: 2rem 2.5rem;
   min-height: 100vh;
-  background: #080d18;
+  background: #060b16;
 }
 
 /* ── Top Header Bar ── */
@@ -168,20 +170,20 @@
   justify-content: space-between;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .topHeaderLeft h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #faf8f5;
-  margin-bottom: 0.25rem;
+  color: var(--color-ivory);
+  margin-bottom: 0.2rem;
 }
 
 .topHeaderLeft p {
-  font-size: 0.85rem;
-  color: rgba(250, 248, 245, 0.4);
+  font-size: 0.82rem;
+  color: rgba(250, 248, 245, 0.35);
 }
 
 .topHeaderRight {
@@ -191,22 +193,23 @@
 }
 
 .headerDate {
-  font-size: 0.85rem;
-  color: rgba(250, 248, 245, 0.4);
+  font-size: 0.82rem;
+  color: rgba(250, 248, 245, 0.35);
   font-weight: 500;
 }
 
 .avatarBadge {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #c9a96e, #a88a4e);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: var(--color-gold-shimmer);
+  background-size: 200% auto;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #0a1628;
+  color: var(--color-navy);
 }
 
 /* ── Sidebar Toggle (Mobile) ── */
@@ -218,18 +221,19 @@
   z-index: 200;
   width: 44px;
   height: 44px;
-  background: rgba(12, 20, 37, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(201, 169, 110, 0.15);
-  border-radius: 10px;
-  color: #c9a96e;
-  font-size: 1.2rem;
+  background: rgba(10, 17, 32, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 168, 83, 0.12);
+  border-radius: var(--radius-md);
+  color: var(--color-gold);
+  font-size: 1.15rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .sidebarToggle:hover {
-  background: rgba(201, 169, 110, 0.1);
+  background: rgba(212, 168, 83, 0.08);
+  border-color: rgba(212, 168, 83, 0.25);
 }
 
 /* ── Mobile ── */
@@ -240,7 +244,7 @@
 
   .sidebar.open {
     transform: translateX(0);
-    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.6);
   }
 
   .sidebarToggle {

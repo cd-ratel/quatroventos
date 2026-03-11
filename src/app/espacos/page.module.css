@@ -1,9 +1,15 @@
+/* ═══════════════════════════════════
+   ESPAÇOS PAGE — Immersive Spaces
+   ═══════════════════════════════════ */
+
 .pageHero {
   padding: calc(var(--nav-height) + var(--space-4xl)) 0 var(--space-4xl);
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--color-midnight) 0%, var(--color-navy) 100%);
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(212, 168, 83, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, var(--color-midnight) 0%, var(--color-navy) 100%);
 }
 
 .pageHero::after {
@@ -14,6 +20,7 @@
   right: 0;
   height: 200px;
   background: linear-gradient(to bottom, transparent, var(--color-navy));
+  pointer-events: none;
 }
 
 .pageHeroDots {
@@ -25,7 +32,7 @@
   height: 200px;
   background-image: radial-gradient(var(--color-gold) 1px, transparent 1px);
   background-size: 20px 20px;
-  opacity: 0.04;
+  opacity: 0.03;
 }
 
 .spacesGrid {
@@ -64,16 +71,28 @@
   align-items: center;
   justify-content: center;
   font-size: 5rem;
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.05), rgba(201, 169, 110, 0.02));
+  background:
+    radial-gradient(circle at 30% 40%, rgba(212, 168, 83, 0.06) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(212, 168, 83, 0.03), rgba(212, 168, 83, 0.01));
+  transition: transform var(--transition-luxury);
+}
+
+.spaceImageWrapper:hover .spaceImagePlaceholder {
+  transform: scale(1.05);
 }
 
 .spaceImageWrapper::after {
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(201, 169, 110, 0.15);
+  border: 1px solid rgba(212, 168, 83, 0.1);
   border-radius: var(--radius-xl);
   pointer-events: none;
+  transition: border-color var(--transition-base);
+}
+
+.spaceImageWrapper:hover::after {
+  border-color: rgba(212, 168, 83, 0.25);
 }
 
 .spaceContent {
@@ -84,21 +103,22 @@
 
 .spaceTag {
   font-family: var(--font-accent);
-  font-size: 0.85rem;
-  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--color-gold);
 }
 
 .spaceName {
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: var(--color-ivory);
+  letter-spacing: -0.02em;
 }
 
 .spaceDesc {
   font-size: 1rem;
-  color: rgba(250, 248, 245, 0.6);
-  line-height: 1.8;
+  color: rgba(250, 248, 245, 0.55);
+  line-height: 1.9;
 }
 
 .spaceDetails {
@@ -115,24 +135,28 @@
 
 .spaceDetailValue {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
   background: var(--color-gold-shimmer);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .spaceDetailLabel {
-  font-size: 0.8rem;
-  color: rgba(250, 248, 245, 0.4);
-  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: rgba(250, 248, 245, 0.35);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .amenities {
   padding: var(--space-5xl) 0;
-  background: linear-gradient(180deg, var(--color-navy), var(--color-navy-light), var(--color-navy));
+  background:
+    radial-gradient(ellipse 40% 30% at 80% 20%, rgba(78, 198, 193, 0.03), transparent),
+    linear-gradient(180deg, var(--color-navy), var(--color-surface), var(--color-navy));
 }
 
 .amenitiesGrid {
@@ -145,27 +169,35 @@
   text-align: center;
   padding: var(--space-2xl) var(--space-lg);
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  transition: all var(--transition-base);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-inner-glow);
 }
 
 .amenityCard:hover {
-  border-color: rgba(201, 169, 110, 0.2);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-glow);
+  border-color: rgba(212, 168, 83, 0.2);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-glow), var(--shadow-inner-glow);
+  background: var(--glass-bg-light);
 }
 
 .amenityIcon {
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin-bottom: var(--space-md);
   display: block;
+  transition: transform var(--transition-base);
+}
+
+.amenityCard:hover .amenityIcon {
+  transform: scale(1.12);
 }
 
 .amenityName {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--color-ivory);
 }
 

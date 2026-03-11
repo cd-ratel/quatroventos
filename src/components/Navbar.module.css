@@ -5,15 +5,15 @@
   right: 0;
   height: var(--nav-height);
   z-index: 1000;
-  transition: all var(--transition-base);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav.scrolled {
-  background: rgba(10, 22, 40, 0.92);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(201, 169, 110, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  background: rgba(8, 14, 30, 0.88);
+  backdrop-filter: blur(30px) saturate(1.3);
+  -webkit-backdrop-filter: blur(30px) saturate(1.3);
+  border-bottom: 1px solid rgba(212, 168, 83, 0.08);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.2);
 }
 
 .navInner {
@@ -35,33 +35,39 @@
 }
 
 .logoIcon {
-  width: 42px;
-  height: 42px;
-  border: 2px solid var(--color-gold);
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--color-gold);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-gold);
   position: relative;
   overflow: hidden;
+  transition: all var(--transition-base);
 }
 
 .logoIcon::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), transparent 60%);
+}
+
+.logo:hover .logoIcon {
+  box-shadow: 0 0 20px rgba(212, 168, 83, 0.2);
+  border-color: var(--color-gold-light);
 }
 
 .logoText {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .logoAccent {
@@ -76,10 +82,11 @@
 }
 
 .navLink {
-  color: rgba(250, 248, 245, 0.75);
-  font-size: 0.9rem;
+  color: rgba(250, 248, 245, 0.7);
+  font-size: 0.85rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   text-decoration: none;
   position: relative;
   padding: var(--space-xs) 0;
@@ -89,12 +96,15 @@
 .navLink::after {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 0;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
-  height: 1.5px;
+  height: 2px;
   background: var(--color-gold-shimmer);
+  background-size: 200% auto;
   transition: width var(--transition-base);
+  border-radius: var(--radius-full);
 }
 
 .navLink:hover {
@@ -115,15 +125,15 @@
 
 .navCta {
   composes: btn btn-primary btn-sm from global;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
 }
 
 /* Hamburger */
 .hamburger {
   display: none;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   background: none;
   border: none;
   cursor: pointer;
@@ -132,8 +142,8 @@
 }
 
 .hamburgerLine {
-  width: 24px;
-  height: 2px;
+  width: 22px;
+  height: 1.5px;
   background: var(--color-ivory);
   transition: all var(--transition-base);
   border-radius: 2px;
@@ -156,8 +166,9 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(10, 22, 40, 0.98);
-  backdrop-filter: blur(30px);
+  background: rgba(4, 9, 18, 0.97);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
   z-index: 999;
   flex-direction: column;
   align-items: center;
@@ -173,16 +184,33 @@
 .mobileLink {
   color: var(--color-ivory);
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 500;
   text-decoration: none;
-  opacity: 0.8;
+  opacity: 0.7;
   transition: all var(--transition-base);
+  position: relative;
 }
 
 .mobileLink:hover {
   color: var(--color-gold);
   opacity: 1;
+}
+
+.mobileLink::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--color-gold);
+  transition: width var(--transition-base);
+}
+
+.mobileLink:hover::after {
+  width: 60%;
 }
 
 @media (max-width: 768px) {

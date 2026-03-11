@@ -1,7 +1,13 @@
+/* ═══════════════════════════════════
+   CONTATO PAGE — Elegant Contact
+   ═══════════════════════════════════ */
+
 .contactHero {
   padding: calc(var(--nav-height) + var(--space-4xl)) 0 var(--space-4xl);
   text-align: center;
-  background: linear-gradient(180deg, var(--color-midnight), var(--color-navy));
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 80%, rgba(212, 168, 83, 0.05) 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-midnight), var(--color-navy));
 }
 
 .contactGrid {
@@ -14,7 +20,7 @@
 .contactInfo {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 .contactCard {
@@ -22,61 +28,104 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  transition: all var(--transition-base);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-inner-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.contactCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-gold-shimmer);
+  background-size: 200% auto;
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
 .contactCard:hover {
-  border-color: rgba(201, 169, 110, 0.2);
-  transform: translateY(-2px);
+  border-color: rgba(212, 168, 83, 0.2);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow), var(--shadow-inner-glow);
+  background: var(--glass-bg-light);
+}
+
+.contactCard:hover::before {
+  opacity: 1;
 }
 
 .cardIcon {
   font-size: 1.5rem;
   margin-bottom: var(--space-md);
   display: block;
+  filter: drop-shadow(0 0 8px rgba(212, 168, 83, 0.15));
 }
 
 .cardTitle {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--color-ivory);
   margin-bottom: var(--space-sm);
 }
 
 .cardText {
-  font-size: 0.85rem;
-  color: rgba(250, 248, 245, 0.5);
-  line-height: 1.7;
+  font-size: 0.82rem;
+  color: rgba(250, 248, 245, 0.45);
+  line-height: 1.8;
 }
 
 .whatsappBtn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  margin-top: var(--space-sm);
-  padding: var(--space-xs) var(--space-md);
-  background: rgba(37, 211, 102, 0.1);
-  border: 1px solid rgba(37, 211, 102, 0.3);
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.25);
   border-radius: var(--radius-full);
   color: #25d366;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
 }
 
 .whatsappBtn:hover {
-  background: rgba(37, 211, 102, 0.2);
+  background: rgba(37, 211, 102, 0.15);
   color: #25d366;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.15);
 }
 
 .formWrapper {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   padding: var(--space-2xl);
+  box-shadow: var(--shadow-inner-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.formWrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-gold-shimmer);
+  background-size: 300% auto;
+  animation: border-flow 6s linear infinite;
 }
 
 .formTitle {
@@ -97,9 +146,19 @@
 }
 
 .successIcon {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.1);
+  border: 2px solid rgba(52, 211, 153, 0.3);
+  color: var(--color-success);
+  margin: 0 auto var(--space-lg);
+  animation: scaleIn 0.5s ease;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .mapSection {
@@ -110,19 +169,22 @@
 .mapPlaceholder {
   width: 100%;
   height: 100%;
-  background: var(--color-navy-light);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(212, 168, 83, 0.04), transparent 50%),
+    var(--color-surface);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-md);
-  color: rgba(250, 248, 245, 0.3);
+  color: rgba(250, 248, 245, 0.25);
   font-size: 1rem;
   text-align: center;
 }
 
 .mapPlaceholder span {
   font-size: 3rem;
+  opacity: 0.5;
 }
 
 @media (max-width: 768px) {
