@@ -7,6 +7,7 @@ import styles from './Footer.module.css';
 
 function splitVenueTitle(value: string) {
   const parts = value.trim().split(/\s+/);
+
   if (parts.length <= 1) {
     return { lead: value, accent: '' };
   }
@@ -17,94 +18,122 @@ function splitVenueTitle(value: string) {
   };
 }
 
+function normalizePhone(phone: string) {
+  return phone.replace(/\D/g, '');
+}
+
 export default function Footer() {
-  const year = new Date().getFullYear();
   const settings = useSiteSettings();
   const { lead, accent } = splitVenueTitle(settings.venueTitle);
+  const year = new Date().getFullYear();
+  const whatsappHref = `https://wa.me/${normalizePhone(settings.whatsapp || settings.phone)}`;
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.footerGrid}>
-        <div className={styles.footerBrand}>
-          <div className={styles.footerLogo}>
-            {lead}
-            {accent ? (
-              <>
-                {' '}
-                <span className={styles.footerLogoAccent}>{accent}</span>
-              </>
-            ) : null}
+      <section className={styles.ctaBand}>
+        <div className={styles.ctaInner}>
+          <div>
+            <p className={styles.ctaEyebrow}>{settings.homeContent.ctaLabel}</p>
+            <h2 className={styles.ctaTitle}>{settings.homeContent.ctaTitle}</h2>
+            <p className={styles.ctaText}>{settings.homeContent.ctaSubtitle}</p>
           </div>
-          <p className={styles.footerDesc}>{settings.footerContent.description}</p>
-          <div className={styles.footerSocial}>
+          <div className={styles.ctaActions}>
+            <Link href="/agendar" className={styles.primaryButton}>
+              {settings.homeContent.ctaPrimaryLabel}
+            </Link>
+            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryButton}>
+              Falar no WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div className={styles.mainFooter}>
+        <div className={styles.brandColumn}>
+          <div className={styles.brandLogo}>
+            <span className={styles.brandMark}>QV</span>
+            <div>
+              <div className={styles.brandName}>
+                {lead}
+                {accent ? (
+                  <>
+                    {' '}
+                    <span>{accent}</span>
+                  </>
+                ) : null}
+              </div>
+              <p className={styles.brandSubtitle}>{settings.venueSubtitle}</p>
+            </div>
+          </div>
+          <p className={styles.brandDescription}>{settings.footerContent.description}</p>
+          <div className={styles.contactStack}>
+            <div className={styles.contactItem}>
+              <span>{resolveContentIcon('END')}</span>
+              <span>{settings.address}</span>
+            </div>
+            <div className={styles.contactItem}>
+              <span>{resolveContentIcon('TEL')}</span>
+              <span>{settings.phone}</span>
+            </div>
+            <div className={styles.contactItem}>
+              <span>{resolveContentIcon('MAIL')}</span>
+              <span>{settings.email}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.footerColumn}>
+          <h4>{settings.footerContent.navigationTitle}</h4>
+          <div className={styles.footerLinks}>
+            {settings.footerContent.navigationLinks.map((link) => (
+              <Link key={`${link.href}-${link.label}-footer-nav`} href={link.href}>
+                {link.label}
+              </Link>
+            ))}
+            <Link href="/agendar">{settings.footerContent.navigationCtaLabel}</Link>
+          </div>
+        </div>
+
+        <div className={styles.footerColumn}>
+          <h4>{settings.footerContent.eventsTitle}</h4>
+          <div className={styles.footerLinks}>
+            {settings.footerContent.eventLinks.map((link) => (
+              <Link key={`${link.href}-${link.label}-footer-event`} href={link.href}>
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.footerColumn}>
+          <h4>{settings.footerContent.contactTitle}</h4>
+          <div className={styles.scheduleCard}>
+            <strong>Atendimento consultivo</strong>
+            <p>Respondemos visitas, dúvidas e orçamento com prioridade pelo WhatsApp.</p>
+            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.scheduleButton}>
+              Abrir conversa
+            </a>
+          </div>
+          <div className={styles.socialRow}>
             {settings.footerContent.socialLinks.map((link) => (
               <a
-                key={`${link.href}-${link.label}`}
+                key={`${link.href}-${link.label}-footer-social`}
                 href={link.href}
-                className={styles.socialLink}
-                aria-label={link.ariaLabel}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={link.ariaLabel}
+                className={styles.socialLink}
               >
                 {link.label}
               </a>
             ))}
           </div>
         </div>
-
-        <div className={styles.footerColumn}>
-          <h4>{settings.footerContent.navigationTitle}</h4>
-          <ul className={styles.footerLinks}>
-            {settings.footerContent.navigationLinks.map((link) => (
-              <li key={`${link.href}-${link.label}-footer-nav`}>
-                <Link href={link.href} className={styles.footerLink}>
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link href="/agendar" className={styles.footerLink}>
-                {settings.footerContent.navigationCtaLabel}
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className={styles.footerColumn}>
-          <h4>{settings.footerContent.eventsTitle}</h4>
-          <ul className={styles.footerLinks}>
-            {settings.footerContent.eventLinks.map((link) => (
-              <li key={`${link.href}-${link.label}-footer-event`}>
-                <Link href={link.href} className={styles.footerLink}>
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={styles.footerColumn}>
-          <h4>{settings.footerContent.contactTitle}</h4>
-          <div className={styles.contactItem}>
-            <span className={styles.contactIcon}>{resolveContentIcon('END')}</span>
-            <span>{settings.address}</span>
-          </div>
-          <div className={styles.contactItem}>
-            <span className={styles.contactIcon}>{resolveContentIcon('TEL')}</span>
-            <span>{settings.phone}</span>
-          </div>
-          <div className={styles.contactItem}>
-            <span className={styles.contactIcon}>{resolveContentIcon('MAIL')}</span>
-            <span>{settings.email}</span>
-          </div>
-        </div>
       </div>
 
-      <div className={styles.footerBottom}>
-        <p className={styles.copyright}>
-          Copyright {year} {settings.venueTitle}. Todos os direitos reservados.
-        </p>
-        <p className={styles.footerCredits}>{settings.footerContent.creditsText}</p>
+      <div className={styles.bottomBar}>
+        <p>© {year} {settings.venueTitle}. Todos os direitos reservados.</p>
+        <p>{settings.footerContent.creditsText}</p>
       </div>
     </footer>
   );

@@ -1,188 +1,148 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { usePublicMedia, type PublicMediaItem } from '@/hooks/usePublicMedia';
 import { resolveContentIcon } from '@/lib/content-icons';
 import styles from './page.module.css';
 
-interface MediaItem {
-  id: string;
-  filename: string;
-  originalName: string;
-  category: string;
-  caption: string | null;
-  mimeType: string;
-  icon?: string;
-  url?: string;
+function placeholderToMedia(
+  item: {
+    id: string;
+    title: string;
+    category: string;
+    caption: string;
+    icon: string;
+  }
+): PublicMediaItem {
+  return {
+    id: item.id,
+    filename: '',
+    originalName: item.title,
+    category: item.category,
+    caption: item.caption,
+    mimeType: 'image/jpeg',
+    icon: item.icon,
+  };
+}
+
+function getMediaUrl(item: PublicMediaItem) {
+  return item.url || `/media/${item.id}`;
 }
 
 export default function GaleriaPage() {
   const { galleryContent } = useSiteSettings();
-  const placeholderMedia = useMemo<MediaItem[]>(
-    () =>
-      galleryContent.placeholderMedia.map((item) => ({
-        id: item.id,
-        filename: '',
-        originalName: item.title,
-        category: item.category,
-        caption: item.caption,
-        mimeType: 'image/jpeg',
-        icon: item.icon,
-      })),
+  const [filter, setFilter] = useState('all');
+  const [lightboxId, setLightboxId] = useState<string | null>(null);
+  const fallbackMedia = useMemo(
+    () => galleryContent.placeholderMedia.map(placeholderToMedia),
     [galleryContent.placeholderMedia]
   );
-  const [filter, setFilter] = useState('all');
-  const [media, setMedia] = useState<MediaItem[]>(placeholderMedia);
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const { media } = usePublicMedia(fallbackMedia);
 
-  useEffect(() => {
-    setMedia((current) => (current.some((item) => item.filename) ? current : placeholderMedia));
-  }, [placeholderMedia]);
+  const filteredMedia = filter === 'all'
+    ? media
+    : media.filter((item) => item.category === filter);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    fetch('/api/media')
-      .then((res) => res.json())
-      .then((data: MediaItem[]) => {
-        if (cancelled) {
-          return;
-        }
-
-        if (Array.isArray(data) && data.length > 0) {
-          setMedia(data);
-          return;
-        }
-
-        setMedia(placeholderMedia);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setMedia(placeholderMedia);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [placeholderMedia]);
-
-  const filtered =
-    filter === 'all' ? media : media.filter((item) => item.category === filter);
+  const currentItem = filteredMedia.find((item) => item.id === lightboxId) || media.find((item) => item.id === lightboxId) || null;
 
   return (
     <>
-      <section className={styles.hero}>
+      <section className="pageHero">
         <div className="container">
           <span className="section-label">{galleryContent.heroLabel}</span>
           <h1 className="section-title">{galleryContent.heroTitle}</h1>
           <p className="section-subtitle">{galleryContent.heroSubtitle}</p>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className={styles.filters}>
+          <div className={styles.filterBar}>
             {galleryContent.categories.map((category) => (
               <button
-                key={`${category.value}-${category.label}`}
-                className={`${styles.filterBtn} ${filter === category.value ? styles.active : ''}`}
+                key={category.value}
+                type="button"
+                className={`${styles.filterChip} ${filter === category.value ? styles.filterChipActive : ''}`}
                 onClick={() => setFilter(category.value)}
               >
                 {category.label}
               </button>
             ))}
           </div>
+        </div>
+      </section>
 
-          {filtered.length > 0 ? (
+      <section className={styles.gallerySection}>
+        <div className="container">
+          {filteredMedia.length > 0 ? (
             <div className={styles.galleryGrid}>
-              {filtered.map((item) => (
-                <div
-                  key={item.id}
-                  className={styles.galleryItem}
-                  onClick={() => setLightbox(item.id)}
+              {filteredMedia.map((item, index) => (
+                <button
+                  type="button"
+                  key={`${item.id}-${index}`}
+                  className={`${styles.galleryCard} ${index % 5 === 0 ? styles.galleryCardWide : ''}`}
+                  onClick={() => setLightboxId(item.id)}
                 >
                   {item.filename ? (
                     item.mimeType.startsWith('image/') ? (
-                      <img
-                        src={item.url || `/media/${item.id}`}
-                        alt={item.caption || item.originalName}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
-                        loading="lazy"
+                      <div
+                        className={styles.galleryImage}
+                        style={{ backgroundImage: `url(${getMediaUrl(item)})` }}
                       />
                     ) : (
-                      <div className={styles.galleryPlaceholder}>🎬</div>
+                      <div className={styles.galleryFallback}>Vídeo</div>
                     )
                   ) : (
-                    <div className={styles.galleryPlaceholder}>
-                      {resolveContentIcon(item.icon || 'IMG')}
+                    <div className={styles.galleryFallback}>
+                      {resolveContentIcon(item.icon || 'EV')}
                     </div>
                   )}
                   <div className={styles.galleryCaption}>
+                    <strong>{item.caption || item.originalName}</strong>
                     <span>{item.category}</span>
-                    <p>{item.caption || item.originalName}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           ) : (
-            <div className={styles.emptyState}>
-              <span className={styles.emptyIcon}>🖼</span>
+            <div className={`${styles.emptyState} surfaceCard`}>
+              <span className={styles.emptyIcon}>{resolveContentIcon('EV')}</span>
+              <h2>Nenhum item nesta seleção</h2>
               <p>{galleryContent.emptyMessage}</p>
             </div>
           )}
         </div>
       </section>
 
-      {lightbox && (
-        <div className={styles.lightbox} onClick={() => setLightbox(null)}>
-          <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>
-            X
+      {currentItem ? (
+        <div className={styles.lightbox} onClick={() => setLightboxId(null)}>
+          <button
+            type="button"
+            className={styles.lightboxClose}
+            onClick={() => setLightboxId(null)}
+            aria-label="Fechar galeria"
+          >
+            ×
           </button>
-          {(() => {
-            const item = media.find((mediaItem) => mediaItem.id === lightbox);
-            if (!item) {
-              return null;
-            }
-
-            if (item.filename) {
-              if (item.mimeType.startsWith('video/')) {
-                return (
-                  <video
-                    src={item.url || `/media/${item.id}`}
-                    controls
-                    className={styles.lightboxImage}
-                    style={{ objectFit: 'contain' }}
-                  />
-                );
-              }
-
-              return (
+          <div className={styles.lightboxPanel} onClick={(event) => event.stopPropagation()}>
+            {currentItem.filename ? (
+              currentItem.mimeType.startsWith('video/') ? (
+                <video src={getMediaUrl(currentItem)} controls className={styles.lightboxMedia} />
+              ) : (
                 <img
-                  src={item.url || `/media/${item.id}`}
-                  alt={item.caption || ''}
-                  className={styles.lightboxImage}
-                  style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain' }}
+                  src={getMediaUrl(currentItem)}
+                  alt={currentItem.caption || currentItem.originalName}
+                  className={styles.lightboxMedia}
                 />
-              );
-            }
-
-            return (
-              <div
-                style={{
-                  fontSize: '5rem',
-                  background: 'var(--color-bg-warm)',
-                  padding: '4rem 6rem',
-                  borderRadius: 'var(--radius-xl)',
-                  border: '1px solid #eee',
-                }}
-              >
-                {resolveContentIcon(item.icon || 'IMG')}
+              )
+            ) : (
+              <div className={styles.lightboxFallback}>
+                {resolveContentIcon(currentItem.icon || 'EV')}
               </div>
-            );
-          })()}
+            )}
+            <div className={styles.lightboxMeta}>
+              <strong>{currentItem.caption || currentItem.originalName}</strong>
+              <span>{currentItem.category}</span>
+            </div>
+          </div>
         </div>
-      )}
+      ) : null}
     </>
   );
 }

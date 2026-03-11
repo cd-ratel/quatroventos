@@ -20,7 +20,7 @@ export default function ConditionalLayout({
   return (
     <SiteSettingsProvider>
       <Navbar />
-      <main>{children}</main>
+      <main className="publicMain">{children}</main>
       <Footer />
     </SiteSettingsProvider>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
@@ -8,6 +8,7 @@ import styles from './Navbar.module.css';
 
 function splitVenueTitle(value: string) {
   const parts = value.trim().split(/\s+/);
+
   if (parts.length <= 1) {
     return { lead: value, accent: '' };
   }
@@ -18,16 +19,31 @@ function splitVenueTitle(value: string) {
   };
 }
 
+function normalizePhone(phone: string) {
+  return phone.replace(/\D/g, '');
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname();
   const settings = useSiteSettings();
   const { lead, accent } = splitVenueTitle(settings.venueTitle);
-  const links = settings.footerContent.navigationLinks;
+  const navLinks = settings.footerContent.navigationLinks;
+  const isHome = pathname === '/';
+  const phoneHref = useMemo(
+    () => `tel:${normalizePhone(settings.phone)}`,
+    [settings.phone]
+  );
+  const whatsappHref = useMemo(() => {
+    const base = normalizePhone(settings.whatsapp || settings.phone);
+    return `https://wa.me/${base}`;
+  }, [settings.phone, settings.whatsapp]);
+  const isTransparent = isHome && !scrolled && !mobileOpen;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -45,70 +61,125 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
-        <div className={styles.navInner}>
-          <Link href="/" className={styles.logo}>
-            <span className={styles.logoIcon}>QV</span>
-            <span className={styles.logoText}>
+      <div className={`${styles.topBar} ${isTransparent ? styles.topBarTransparent : ''}`}>
+        <div className={styles.topInner}>
+          <div className={styles.topMeta}>
+            <span>{settings.address}</span>
+            <a href={phoneHref}>{settings.phone}</a>
+          </div>
+          <div className={styles.topActions}>
+            {settings.footerContent.socialLinks.map((link) => (
+              <a
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.ariaLabel}
+                className={styles.topSocial}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <header
+        className={`${styles.header} ${isTransparent ? styles.headerTransparent : styles.headerSolid}`}
+      >
+        <div className={styles.headerInner}>
+          <Link href="/" className={styles.brand} aria-label={settings.venueTitle}>
+            <span className={styles.brandMark}>QV</span>
+            <span className={styles.brandText}>
               {lead}
               {accent ? (
                 <>
                   {' '}
-                  <span className={styles.logoAccent}>{accent}</span>
+                  <span className={styles.brandAccent}>{accent}</span>
                 </>
               ) : null}
             </span>
           </Link>
 
-          <ul className={styles.desktopLinks}>
-            {links.map((link) => (
-              <li key={`${link.href}-${link.label}`}>
-                <Link
-                  href={link.href}
-                  className={`${styles.navLink} ${pathname === link.href ? styles.active : ''}`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link href="/agendar" className={styles.navCta}>
-                {settings.footerContent.navigationCtaLabel}
+          <nav className={styles.desktopNav} aria-label="Navegação principal">
+            {navLinks.map((link) => (
+              <Link
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}
+              >
+                {link.label}
               </Link>
-            </li>
-          </ul>
+            ))}
+          </nav>
+
+          <div className={styles.desktopActions}>
+            <a href={whatsappHref} className={styles.whatsLink} target="_blank" rel="noopener noreferrer">
+              WhatsApp
+            </a>
+            <Link href="/agendar" className={styles.headerCta}>
+              {settings.footerContent.navigationCtaLabel}
+            </Link>
+          </div>
 
           <button
-            className={`${styles.hamburger} ${mobileOpen ? styles.open : ''}`}
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menu"
+            type="button"
+            className={`${styles.mobileToggle} ${mobileOpen ? styles.mobileToggleOpen : ''}`}
+            onClick={() => setMobileOpen((current) => !current)}
+            aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={mobileOpen}
           >
-            <span className={styles.hamburgerLine} />
-            <span className={styles.hamburgerLine} />
-            <span className={styles.hamburgerLine} />
+            <span />
+            <span />
+            <span />
           </button>
         </div>
-      </nav>
+      </header>
 
-      <div className={`${styles.mobileMenu} ${mobileOpen ? styles.open : ''}`}>
-        {links.map((link) => (
-          <Link
-            key={`${link.href}-${link.label}-mobile`}
-            href={link.href}
-            className={styles.mobileLink}
+      <div
+        className={`${styles.mobileOverlay} ${mobileOpen ? styles.mobileOverlayOpen : ''}`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      <aside className={`${styles.mobilePanel} ${mobileOpen ? styles.mobilePanelOpen : ''}`}>
+        <div className={styles.mobilePanelHeader}>
+          <span className={styles.mobilePanelTitle}>Quatro Ventos</span>
+          <button
+            type="button"
+            className={styles.mobileClose}
             onClick={() => setMobileOpen(false)}
+            aria-label="Fechar menu"
           >
-            {link.label}
+            ×
+          </button>
+        </div>
+
+        <div className={styles.mobilePanelMeta}>
+          <span>{settings.address}</span>
+          <a href={phoneHref}>{settings.phone}</a>
+        </div>
+
+        <nav className={styles.mobileNav} aria-label="Navegação mobile">
+          {navLinks.map((link) => (
+            <Link
+              key={`${link.href}-${link.label}-mobile`}
+              href={link.href}
+              className={`${styles.mobileNavLink} ${pathname === link.href ? styles.mobileNavLinkActive : ''}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className={styles.mobileFooter}>
+          <Link href="/agendar" className={styles.mobilePrimary}>
+            {settings.footerContent.navigationCtaLabel}
           </Link>
-        ))}
-        <Link
-          href="/agendar"
-          className="btn btn-primary btn-lg"
-          onClick={() => setMobileOpen(false)}
-        >
-          {settings.footerContent.navigationCtaLabel}
-        </Link>
-      </div>
+          <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.mobileSecondary}>
+            Falar no WhatsApp
+          </a>
+        </div>
+      </aside>
     </>
   );
 }

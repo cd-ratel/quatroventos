@@ -1,161 +1,201 @@
-/* Espaços — Maggiore-Style Layout */
-
-/* Hero */
-.hero {
-  padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl);
-  text-align: center;
-  background: var(--color-bg-alt);
+.heroMetrics {
+  margin-top: 1.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
 }
 
-/* Space Rows (alternating like Maggiore) */
+.spacesSection {
+  padding: 5.2rem 0;
+}
+
 .spaceRow {
-  padding: var(--space-3xl) 0;
-}
-
-.spaceRow:nth-child(even) {
-  background: var(--color-bg-alt);
-}
-
-.spaceRowInner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4xl);
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 2.2rem;
   align-items: center;
+  margin-bottom: 2.4rem;
 }
 
-.spaceRowAlt .spaceRowInner {
-  direction: rtl;
+.spaceRow:last-child {
+  margin-bottom: 0;
 }
 
-.spaceRowAlt .spaceRowInner > * {
-  direction: ltr;
+.spaceRowReverse {
+  grid-template-columns: 1.05fr 0.95fr;
 }
 
-.spaceImageWrapper {
-  border-radius: var(--radius-md);
+.spaceRowReverse .spaceVisual {
+  order: 2;
+}
+
+.spaceVisual {
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  min-height: 29rem;
 }
 
-.spaceImagePlaceholder {
-  aspect-ratio: 4/3;
-  background: var(--color-bg-warm);
+.spaceImage,
+.spaceFallback {
+  min-height: 29rem;
+  background-size: cover;
+  background-position: center;
+}
+
+.spaceFallback {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  color: var(--color-accent-pale);
+  background:
+    linear-gradient(135deg, rgba(181, 128, 82, 0.16), rgba(255, 248, 241, 0.84)),
+    linear-gradient(180deg, #fffdf9 0%, #f7ede3 100%);
+  color: var(--color-bronze-dark);
+  font-size: 4rem;
 }
 
 .spaceContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
+  display: grid;
+  gap: 1rem;
 }
 
-.spaceTag {
-  font-family: var(--font-accent);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-accent);
+.spaceContent h2 {
+  margin: 0;
+  font-size: clamp(2.3rem, 4vw, 3.8rem);
 }
 
-.spaceName {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  font-weight: 700;
-  color: var(--color-accent);
-}
-
-.spaceDesc {
-  font-size: 1rem;
-  color: var(--color-text);
+.spaceContent p {
+  margin: 0;
+  color: var(--color-text-soft);
   line-height: 1.9;
 }
 
-.spaceMeta {
+.spaceStats {
   display: flex;
-  gap: var(--space-xl);
-  margin-top: var(--space-sm);
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
 }
 
-.spaceMetaItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-size: 0.88rem;
-  color: var(--color-text);
+.spaceStat {
+  min-width: 10rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.2rem;
+  background: rgba(181, 128, 82, 0.08);
+  border: 1px solid rgba(181, 128, 82, 0.16);
 }
 
-.spaceMetaIcon {
-  font-size: 1rem;
+.spaceStat strong {
+  display: block;
+  color: var(--color-charcoal);
+  font-size: 1.35rem;
 }
 
-/* Amenities */
-.amenities {
-  padding: var(--space-5xl) 0;
-  background: var(--color-bg-alt);
+.spaceStat span {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.amenitiesSection {
+  padding: 0 0 5.2rem;
+}
+
+.amenitiesHeader {
+  max-width: 38rem;
+  margin-bottom: 1.8rem;
+}
+
+.amenitiesHeader h2 {
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 3.5rem);
 }
 
 .amenitiesGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
-  margin-top: var(--space-3xl);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .amenityCard {
-  text-align: center;
-  padding: var(--space-2xl) var(--space-lg);
-  background: var(--color-bg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-base);
-  border: 1px solid transparent;
-}
-
-.amenityCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-accent-pale);
+  padding: 1.35rem;
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
 }
 
 .amenityIcon {
-  font-size: 1.8rem;
-  margin-bottom: var(--space-md);
-  display: block;
-  color: var(--color-accent);
+  width: 2.85rem;
+  height: 2.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(181, 128, 82, 0.12);
+  font-size: 1.35rem;
 }
 
-.amenityName {
-  font-size: 0.88rem;
-  color: var(--color-text);
-  font-weight: 500;
+.amenityCard strong {
+  color: var(--color-charcoal);
+  font-size: 1rem;
 }
 
-/* CTA */
-.spaceCta {
-  padding: var(--space-4xl) 0;
-  text-align: center;
+.bottomBand {
+  padding: 0 0 6rem;
 }
 
-.spaceCtaTitle {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  font-weight: 700;
-  color: var(--color-accent);
-  margin-bottom: var(--space-lg);
+.bottomBandInner {
+  padding: 2rem;
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at top left, rgba(181, 128, 82, 0.16), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 241, 0.95) 100%);
+  border: 1px solid rgba(40, 28, 20, 0.08);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.bottomBandInner h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+}
+
+.bottomBandInner p {
+  max-width: 38rem;
+  margin: 0.9rem 0 0;
+  color: var(--color-text-soft);
 }
 
 @media (max-width: 1024px) {
-  .amenitiesGrid { grid-template-columns: repeat(2, 1fr); }
+  .spaceRow,
+  .spaceRowReverse {
+    grid-template-columns: 1fr;
+  }
+
+  .spaceRowReverse .spaceVisual {
+    order: 0;
+  }
+
+  .amenitiesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bottomBandInner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 768px) {
-  .spaceRowInner { grid-template-columns: 1fr; gap: var(--space-xl); }
-  .spaceRowAlt .spaceRowInner { direction: ltr; }
-  .spaceMeta { flex-direction: column; gap: var(--space-md); }
-  .amenitiesGrid { grid-template-columns: 1fr 1fr; }
+  .spaceVisual,
+  .spaceImage,
+  .spaceFallback {
+    min-height: 21rem;
+  }
+
+  .amenitiesGrid {
+    grid-template-columns: 1fr;
+  }
 }

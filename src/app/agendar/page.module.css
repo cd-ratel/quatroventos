@@ -1,54 +1,119 @@
-/* Agendar — Elegant Warm */
-.hero { padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl); background: var(--color-bg-alt); }
+.bookingSection {
+  padding: 5rem 0 6rem;
+}
 
-.bookingGrid { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--space-3xl); align-items: flex-start; }
-.bookingInfo { display: flex; flex-direction: column; gap: var(--space-lg); }
+.bookingGrid {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 1.3rem;
+  align-items: start;
+}
+
+.bookingInfo {
+  display: grid;
+  gap: 1rem;
+}
+
+.infoCard,
+.featureCard,
+.formPanel {
+  padding: 1.7rem;
+}
 
 .infoCard {
-  display: flex; align-items: flex-start; gap: var(--space-lg); padding: var(--space-xl);
-  background: var(--color-bg); border-radius: var(--radius-md); border: 1px solid #eee;
-  transition: all 0.3s var(--ease-out); box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: 1rem;
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at top left, rgba(181, 128, 82, 0.16), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 241, 0.95) 100%);
+  border: 1px solid rgba(40, 28, 20, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
-.infoCard:hover { transform: translateX(6px); border-color: var(--color-accent-pale); box-shadow: var(--shadow-md); }
-
-.infoCardIcon {
-  font-size: 1.3rem; flex-shrink: 0; width: 46px; height: 46px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--color-accent-glow); border-radius: var(--radius-md);
-  color: var(--color-accent);
+.infoCard h2,
+.formPanel h2,
+.successState h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.1rem);
 }
 
-.infoCardTitle { font-size: 0.95rem; font-weight: 600; color: var(--color-heading); margin-bottom: var(--space-xs); }
-.infoCardDesc { font-size: 0.85rem; color: var(--color-text-light); line-height: 1.6; }
-
-.formCard {
-  background: var(--color-bg); border: 1px solid #eee; border-radius: var(--radius-lg);
-  overflow: hidden; box-shadow: var(--shadow-md);
+.infoCard p,
+.featureCard p,
+.successState p,
+.formSubtitle {
+  margin: 0;
+  color: var(--color-text-soft);
+  line-height: 1.8;
 }
 
-.formCardHeader { padding: var(--space-xl) var(--space-2xl); border-bottom: 1px solid #eee; background: var(--color-bg-alt); }
-.formCardTitle { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; }
-.formCardSubtitle { font-size: 0.85rem; color: var(--color-text-muted); margin-top: var(--space-xs); }
-.formCardBody { padding: var(--space-2xl); }
-.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
-
-.fieldError { display: flex; align-items: center; gap: var(--space-xs); font-size: 0.75rem; color: var(--color-error); margin-top: var(--space-xs); }
-.fieldErrorIcon {
-  width: 14px; height: 14px; background: rgba(217,83,79,0.1); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; font-size: 0.6rem; flex-shrink: 0;
+.infoCards {
+  display: grid;
+  gap: 1rem;
 }
 
-.successState { text-align: center; padding: var(--space-4xl) var(--space-2xl); }
+.featureCard {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.featureIcon {
+  width: 2.9rem;
+  height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(181, 128, 82, 0.12);
+  font-size: 1.35rem;
+}
+
+.featureCard strong {
+  color: var(--color-charcoal);
+  font-size: 1rem;
+}
+
+.formPanel form {
+  margin-top: 1.2rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.fieldError {
+  margin: 0;
+  color: var(--color-error);
+  font-size: 0.82rem;
+}
+
+.successState {
+  display: grid;
+  gap: 0.9rem;
+}
+
 .successIcon {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: rgba(92,184,92,0.08); border: 2px solid rgba(92,184,92,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; margin: 0 auto var(--space-xl);
-  animation: scaleIn 0.5s var(--ease-out); color: var(--color-success);
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(45, 125, 85, 0.12);
+  color: var(--color-success);
+  font-weight: 800;
 }
 
-.successTitle { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: var(--space-md); color: var(--color-success); }
-.successMessage { color: var(--color-text-light); margin-bottom: var(--space-2xl); max-width: 420px; margin-left: auto; margin-right: auto; }
+@media (max-width: 1024px) {
+  .bookingGrid {
+    grid-template-columns: 1fr;
+  }
+}
 
-@media (max-width: 768px) { .bookingGrid { grid-template-columns: 1fr; } .formRow { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}

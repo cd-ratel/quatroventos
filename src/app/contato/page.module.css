@@ -1,64 +1,155 @@
-/* Contato — Elegant Warm */
-.hero { padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl); text-align: center; background: var(--color-bg-alt); }
+.contactSection {
+  padding: 5rem 0 3rem;
+}
 
-.contactLayout { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: var(--space-xl); align-items: flex-start; }
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.contactInfo {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.infoCard,
+.formPanel,
+.supportCard,
+.mapCard {
+  padding: 1.8rem;
+}
+
+.infoCard {
+  display: grid;
+  gap: 1rem;
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at top left, rgba(181, 128, 82, 0.16), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 241, 0.95) 100%);
+  border: 1px solid rgba(40, 28, 20, 0.08);
+  box-shadow: var(--shadow-soft);
+}
+
+.infoCard h2,
+.formPanel h2,
+.supportCard h2,
+.mapCard h2,
+.successState h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
+.infoCard p,
+.mapCard p,
+.successState p {
+  margin: 0;
+  color: var(--color-text-soft);
+  line-height: 1.8;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
 
 .contactCard {
-  background: var(--color-bg); border: 1px solid #eee; border-radius: var(--radius-md);
-  padding: var(--space-2xl); box-shadow: var(--shadow-sm);
-  transition: all 0.4s var(--ease-out); position: relative; overflow: hidden;
+  padding: 1.35rem;
+  display: grid;
+  gap: 0.7rem;
 }
 
-.contactCard::before {
-  content: ''; position: absolute; top: 0; left: 0;
-  width: 0; height: 3px; background: var(--color-accent);
-  transition: width var(--transition-slow);
+.cardIcon {
+  width: 2.9rem;
+  height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(181, 128, 82, 0.12);
+  font-size: 1.35rem;
 }
 
-.contactCard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-.contactCard:hover::before { width: 100%; }
-
-.contactCardIcon { font-size: 1.4rem; margin-bottom: var(--space-lg); color: var(--color-accent); }
-.contactCardTitle { font-size: 1rem; font-weight: 600; color: var(--color-heading); margin-bottom: var(--space-md); }
-.contactCardLine { font-size: 0.88rem; color: var(--color-text-light); margin-bottom: var(--space-xs); }
-
-.contactCardBtn {
-  display: inline-flex; align-items: center; gap: var(--space-sm);
-  margin-top: var(--space-lg); padding: 10px 24px;
-  background: var(--color-accent); color: white; border-radius: var(--radius-full);
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
-  text-transform: uppercase; text-decoration: none; font-family: var(--font-accent);
-  transition: all var(--transition-base);
+.contactCard h3 {
+  margin: 0;
+  font-size: 1.3rem;
 }
 
-.contactCardBtn:hover { background: var(--color-accent-dark); transform: translateY(-2px); box-shadow: var(--shadow-accent); }
-
-.contactForm {
-  background: var(--color-bg); border: 1px solid #eee; border-radius: var(--radius-lg);
-  padding: var(--space-2xl); box-shadow: var(--shadow-md);
+.cardLines {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--color-text-soft);
 }
 
-.contactFormTitle { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; margin-bottom: var(--space-xl); }
-.contactFormRow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
-
-.contactSuccess { text-align: center; padding: var(--space-3xl) var(--space-xl); }
-.contactSuccessIcon {
-  width: 70px; height: 70px; border-radius: 50%;
-  background: rgba(92,184,92,0.08); border: 2px solid rgba(92,184,92,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem; margin: 0 auto var(--space-xl);
-  animation: scaleIn 0.5s ease; color: var(--color-success);
+.cardLink {
+  color: var(--color-bronze-dark);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.contactSuccessTitle { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: var(--space-sm); color: var(--color-success); }
-
-.mapPlaceholder {
-  margin-top: var(--space-3xl); border-radius: var(--radius-md);
-  background: var(--color-bg-warm); border: 1px solid #eee;
-  padding: var(--space-4xl) 0; text-align: center; color: var(--color-text-muted);
+.formPanel form {
+  margin-top: 1.2rem;
 }
 
-.mapPlaceholder span { font-size: 2.5rem; display: block; margin-bottom: var(--space-md); color: var(--color-accent-pale); }
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
 
-@media (max-width: 1024px) { .contactLayout { grid-template-columns: 1fr 1fr; } .contactForm { grid-column: 1 / -1; } }
-@media (max-width: 768px) { .contactLayout { grid-template-columns: 1fr; } .contactFormRow { grid-template-columns: 1fr; } }
+.successState {
+  min-height: 100%;
+  display: grid;
+  gap: 0.9rem;
+  place-items: start;
+}
+
+.successIcon {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(45, 125, 85, 0.12);
+  color: var(--color-success);
+  font-weight: 800;
+}
+
+.supportSection {
+  padding: 0 0 6rem;
+}
+
+.supportGrid {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 1rem;
+}
+
+.scheduleList {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--color-text-soft);
+}
+
+.mapCard small {
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 1024px) {
+  .contactGrid,
+  .supportGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .cardsGrid,
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
