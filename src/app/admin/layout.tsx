@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -20,16 +20,45 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    setCurrentDate(
+      new Date().toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    );
+  }, []);
 
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
+
+  const pageTitle = (() => {
+    if (pathname === '/admin') return 'Dashboard';
+    if (pathname === '/admin/agendamentos') return 'Agendamentos';
+    if (pathname === '/admin/midia') return 'Galeria de Mídia';
+    if (pathname === '/admin/configuracoes') return 'Configurações';
+    return 'Admin';
+  })();
+
+  const pageSubtitle = (() => {
+    if (pathname === '/admin') return 'Visão geral do Quatro Ventos';
+    if (pathname === '/admin/agendamentos') return 'Gerencie os agendamentos de visita';
+    if (pathname === '/admin/midia') return 'Gerencie fotos e vídeos do espaço';
+    if (pathname === '/admin/configuracoes') return 'Configurações do espaço e contato';
+    return '';
+  })();
 
   return (
     <div className={styles.adminLayout}>
       <button
         className={styles.sidebarToggle}
         onClick={() => setSidebarOpen(!sidebarOpen)}
+        aria-label="Menu"
       >
         ☰
       </button>
@@ -43,6 +72,8 @@ export default function AdminLayout({
         </div>
 
         <nav className={styles.sidebarNav}>
+          <span className={styles.sidebarSection}>Menu Principal</span>
+
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -57,16 +88,17 @@ export default function AdminLayout({
             </Link>
           ))}
 
-          <div style={{ flex: 1 }} />
+          <span className={styles.sidebarSection}>Acesso Rápido</span>
 
-          <Link
-            href="/"
+          <a
+            href={process.env.NEXT_PUBLIC_APP_URL || 'https://quatroventos.redecm.com.br'}
             className={styles.sidebarLink}
             target="_blank"
+            rel="noopener noreferrer"
           >
             <span className={styles.sidebarIcon}>🌐</span>
-            Ver Site
-          </Link>
+            Ver Site Público
+          </a>
         </nav>
 
         <div className={styles.sidebarFooter}>
@@ -75,12 +107,23 @@ export default function AdminLayout({
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
           >
             <span>🚪</span>
-            Sair
+            Sair do Painel
           </button>
         </div>
       </aside>
 
       <div className={styles.mainContent}>
+        <div className={styles.topHeader}>
+          <div className={styles.topHeaderLeft}>
+            <h1>{pageTitle}</h1>
+            <p>{pageSubtitle}</p>
+          </div>
+          <div className={styles.topHeaderRight}>
+            <span className={styles.headerDate}>{currentDate}</span>
+            <div className={styles.avatarBadge}>QV</div>
+          </div>
+        </div>
+
         {children}
       </div>
     </div>
