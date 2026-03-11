@@ -1,21 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import styles from './Navbar.module.css';
 
-const links = [
-  { href: '/', label: 'Início' },
-  { href: '/espacos', label: 'Espaços' },
-  { href: '/galeria', label: 'Galeria' },
-  { href: '/contato', label: 'Contato' },
-];
+function splitVenueTitle(value: string) {
+  const parts = value.trim().split(/\s+/);
+  if (parts.length <= 1) {
+    return { lead: value, accent: '' };
+  }
+
+  return {
+    lead: parts.slice(0, -1).join(' '),
+    accent: parts.at(-1) || '',
+  };
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const settings = useSiteSettings();
+  const { lead, accent } = splitVenueTitle(settings.venueTitle);
+  const links = settings.footerContent.navigationLinks;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -29,7 +38,9 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [mobileOpen]);
 
   return (
@@ -39,13 +50,19 @@ export default function Navbar() {
           <Link href="/" className={styles.logo}>
             <span className={styles.logoIcon}>QV</span>
             <span className={styles.logoText}>
-              Quatro <span className={styles.logoAccent}>Ventos</span>
+              {lead}
+              {accent ? (
+                <>
+                  {' '}
+                  <span className={styles.logoAccent}>{accent}</span>
+                </>
+              ) : null}
             </span>
           </Link>
 
           <ul className={styles.desktopLinks}>
             {links.map((link) => (
-              <li key={link.href}>
+              <li key={`${link.href}-${link.label}`}>
                 <Link
                   href={link.href}
                   className={`${styles.navLink} ${pathname === link.href ? styles.active : ''}`}
@@ -56,7 +73,7 @@ export default function Navbar() {
             ))}
             <li>
               <Link href="/agendar" className={styles.navCta}>
-                Agendar Visita
+                {settings.footerContent.navigationCtaLabel}
               </Link>
             </li>
           </ul>
@@ -76,7 +93,7 @@ export default function Navbar() {
       <div className={`${styles.mobileMenu} ${mobileOpen ? styles.open : ''}`}>
         {links.map((link) => (
           <Link
-            key={link.href}
+            key={`${link.href}-${link.label}-mobile`}
             href={link.href}
             className={styles.mobileLink}
             onClick={() => setMobileOpen(false)}
@@ -89,7 +106,7 @@ export default function Navbar() {
           className="btn btn-primary btn-lg"
           onClick={() => setMobileOpen(false)}
         >
-          Agendar Visita
+          {settings.footerContent.navigationCtaLabel}
         </Link>
       </div>
     </>

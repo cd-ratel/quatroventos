@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from './agendamentos.module.css';
+import styles from '@/app/admin/agendamentos/agendamentos.module.css';
 
 interface Appointment {
   id: string;

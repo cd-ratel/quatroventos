@@ -25,6 +25,7 @@ model Appointment {
   phone     String
   date      DateTime
   timeSlot  String
+  slotKey   String?  @unique
   eventType String
   guests    Int?
   message   String?
@@ -64,6 +65,12 @@ model Settings {
   venueTitle    String @default("Quatro Ventos")
   venueSubtitle String @default("Espaço para Eventos")
   aboutText     String @default("")
+  homeContent   Json   @default("{}")
+  spacesContent Json   @default("{}")
+  galleryContent Json  @default("{}")
+  bookingContent Json  @default("{}")
+  contactContent Json  @default("{}")
+  footerContent Json   @default("{}")
 
   @@map("settings")
 }

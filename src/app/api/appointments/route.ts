@@ -1,46 +1,188 @@
+import { Prisma, type Appointment } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth';
 import { z } from 'zod';
+import { auth } from '@/lib/auth';
+import {
+  ACTIVE_APPOINTMENT_STATUSES,
+  appointmentDateSchema,
+  appointmentStatusSchema,
+  appointmentTimeSlotSchema,
+  buildSlotKey,
+  createAppointmentDate,
+  getAppointmentDateRange,
+  getDateStringFromDate,
+  getSlotKeyForStatus,
+  isActiveAppointmentStatus,
+} from '@/lib/appointments';
+import { sendEmail } from '@/lib/email';
+import { prisma } from '@/lib/prisma';
 
 const createSchema = z.object({
   name: z.string().min(2, 'Nome muito curto'),
-  email: z.string().email('Email inválido'),
-  phone: z.string().min(8, 'Telefone inválido'),
-  date: z.string().min(1, 'Data obrigatória'),
-  timeSlot: z.string().min(1, 'Horário obrigatório'),
-  eventType: z.string().min(1, 'Tipo de evento obrigatório'),
-  guests: z.string().optional().transform((v) => (v ? parseInt(v) : null)),
+  email: z.string().email('Email invalido'),
+  phone: z.string().min(8, 'Telefone invalido'),
+  date: appointmentDateSchema,
+  timeSlot: appointmentTimeSlotSchema,
+  eventType: z.string().min(1, 'Tipo de evento obrigatorio'),
+  guests: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((value) => {
+      if (value === undefined || value === null || value === '') {
+        return null;
+      }
+
+      const parsed = typeof value === 'number' ? value : Number.parseInt(value, 10);
+      return Number.isNaN(parsed) ? null : parsed;
+    }),
   message: z.string().optional(),
 });
 
-// POST — Create appointment (public)
+const updateSchema = z.object({
+  id: z.string().min(1, 'ID obrigatorio'),
+  status: appointmentStatusSchema,
+});
+
+async function findSlotConflict({
+  date,
+  timeSlot,
+  excludeId,
+}: {
+  date: string;
+  timeSlot: string;
+  excludeId?: string;
+}) {
+  const slotKey = buildSlotKey(date, timeSlot);
+  const { start, end } = getAppointmentDateRange(date);
+
+  return prisma.appointment.findFirst({
+    where: {
+      id: excludeId ? { not: excludeId } : undefined,
+      status: {
+        in: [...ACTIVE_APPOINTMENT_STATUSES],
+      },
+      OR: [
+        { slotKey },
+        {
+          timeSlot,
+          date: {
+            gte: start,
+            lte: end,
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      date: true,
+      timeSlot: true,
+      status: true,
+    },
+  });
+}
+
+async function notifyAdminAboutAppointment(appointment: Appointment) {
+  const settings = await prisma.settings.findUnique({
+    where: { id: 'main' },
+    select: {
+      venueTitle: true,
+      email: true,
+    },
+  });
+
+  const recipient = settings?.email || process.env.ADMIN_EMAIL;
+
+  if (!recipient) {
+    console.warn('Appointment notification skipped because no admin email is configured.');
+    return;
+  }
+
+  const formattedDate = appointment.date.toLocaleDateString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+  });
+
+  await sendEmail({
+    to: recipient,
+    subject: `[${settings?.venueTitle || 'Quatro Ventos'}] Novo agendamento de visita`,
+    text: [
+      'Novo agendamento recebido.',
+      '',
+      `Nome: ${appointment.name}`,
+      `Email: ${appointment.email}`,
+      `Telefone: ${appointment.phone}`,
+      `Data: ${formattedDate}`,
+      `Horario: ${appointment.timeSlot}`,
+      `Tipo de evento: ${appointment.eventType}`,
+      `Convidados: ${appointment.guests ?? 'Nao informado'}`,
+      `Mensagem: ${appointment.message || 'Nao informada'}`,
+    ].join('\n'),
+    html: `
+      <h2>Novo agendamento recebido</h2>
+      <p><strong>Nome:</strong> ${appointment.name}</p>
+      <p><strong>Email:</strong> ${appointment.email}</p>
+      <p><strong>Telefone:</strong> ${appointment.phone}</p>
+      <p><strong>Data:</strong> ${formattedDate}</p>
+      <p><strong>Horario:</strong> ${appointment.timeSlot}</p>
+      <p><strong>Tipo de evento:</strong> ${appointment.eventType}</p>
+      <p><strong>Convidados:</strong> ${appointment.guests ?? 'Nao informado'}</p>
+      <p><strong>Mensagem:</strong> ${appointment.message || 'Nao informada'}</p>
+    `,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = createSchema.parse(body);
+
+    const conflict = await findSlotConflict({
+      date: data.date,
+      timeSlot: data.timeSlot,
+    });
+
+    if (conflict) {
+      return NextResponse.json(
+        { error: 'Este horario ja esta reservado para outra visita.' },
+        { status: 409 }
+      );
+    }
 
     const appointment = await prisma.appointment.create({
       data: {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        date: new Date(data.date),
+        date: createAppointmentDate(data.date),
         timeSlot: data.timeSlot,
+        slotKey: buildSlotKey(data.date, data.timeSlot),
         eventType: data.eventType,
         guests: data.guests,
         message: data.message || null,
       },
     });
 
+    await notifyAdminAboutAppointment(appointment);
+
     return NextResponse.json(appointment, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0].message },
+        { error: error.errors[0]?.message || 'Dados invalidos' },
         { status: 400 }
       );
     }
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return NextResponse.json(
+        { error: 'Este horario ja esta reservado para outra visita.' },
+        { status: 409 }
+      );
+    }
+
     console.error('Appointment creation error:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
@@ -49,17 +191,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET — List appointments (admin only)
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status');
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const page = Number.parseInt(searchParams.get('page') || '1', 10);
+  const limit = Number.parseInt(searchParams.get('limit') || '20', 10);
 
   const where = status ? { status } : {};
 
@@ -76,43 +217,93 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ appointments, total, page, limit });
 }
 
-// PATCH — Update appointment status (admin only)
 export async function PATCH(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
   }
 
   try {
-    const { id, status } = await req.json();
+    const { id, status } = updateSchema.parse(await req.json());
 
-    if (!id || !['confirmed', 'cancelled', 'pending'].includes(status)) {
-      return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
-    }
-
-    const appointment = await prisma.appointment.update({
+    const appointment = await prisma.appointment.findUnique({
       where: { id },
-      data: { status },
     });
 
-    return NextResponse.json(appointment);
-  } catch {
-    return NextResponse.json({ error: 'Agendamento não encontrado' }, { status: 404 });
+    if (!appointment) {
+      return NextResponse.json(
+        { error: 'Agendamento nao encontrado' },
+        { status: 404 }
+      );
+    }
+
+    const appointmentDate = getDateStringFromDate(appointment.date);
+
+    if (isActiveAppointmentStatus(status)) {
+      const conflict = await findSlotConflict({
+        date: appointmentDate,
+        timeSlot: appointment.timeSlot,
+        excludeId: appointment.id,
+      });
+
+      if (conflict) {
+        return NextResponse.json(
+          { error: 'Este horario ja foi ocupado por outro agendamento ativo.' },
+          { status: 409 }
+        );
+      }
+    }
+
+    const updatedAppointment = await prisma.appointment.update({
+      where: { id },
+      data: {
+        status,
+        slotKey: getSlotKeyForStatus(
+          appointmentDate,
+          appointment.timeSlot,
+          status
+        ),
+      },
+    });
+
+    return NextResponse.json(updatedAppointment);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0]?.message || 'Dados invalidos' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return NextResponse.json(
+        { error: 'Este horario ja foi ocupado por outro agendamento ativo.' },
+        { status: 409 }
+      );
+    }
+
+    console.error('Appointment update error:', error);
+    return NextResponse.json(
+      { error: 'Erro ao atualizar agendamento' },
+      { status: 500 }
+    );
   }
 }
 
-// DELETE — Delete appointment (admin only)
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
 
   if (!id) {
-    return NextResponse.json({ error: 'ID obrigatório' }, { status: 400 });
+    return NextResponse.json({ error: 'ID obrigatorio' }, { status: 400 });
   }
 
   await prisma.appointment.delete({ where: { id } });

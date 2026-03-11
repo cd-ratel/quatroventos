@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import styles from './midia.module.css';
+import styles from '@/app/admin/midia/midia.module.css';
 
 interface MediaItem {
   id: string;

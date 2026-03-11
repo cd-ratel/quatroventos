@@ -1,114 +1,75 @@
 'use client';
 
 import Link from 'next/link';
+import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { useScrollAnimation } from '@/hooks/useAnimations';
 import styles from './page.module.css';
 
-const spaces = [
-  {
-    tag: 'Salão Principal',
-    name: 'Salão Grand Ventus',
-    desc: 'Nosso espaço principal, ideal para casamentos, formaturas e grandes celebrações. Com pé-direito duplo, iluminação cênica e capacidade para até 300 convidados, o Grand Ventus oferece a grandiosidade que seu evento merece.',
-    icon: '✨',
-    capacity: '300',
-    area: '450m²',
-  },
-  {
-    tag: 'Espaço Íntimo',
-    name: 'Sala Brisa',
-    desc: 'Perfeito para reuniões corporativas, workshops e eventos mais íntimos. Com equipamentos audiovisuais de última geração, layout flexível e ambiente climatizado, a Sala Brisa combina funcionalidade com elegância.',
-    icon: '🌿',
-    capacity: '80',
-    area: '120m²',
-  },
-  {
-    tag: 'Espaço Kids',
-    name: 'Jardim dos Sonhos',
-    desc: 'Um universo mágico para festas infantis! Com área interna e externa, brinquedoteca, espaço para recreação monitorada e decoração temática personalizável. Segurança e diversão em um só lugar.',
-    icon: '🎪',
-    capacity: '150',
-    area: '280m²',
-  },
-];
-
-const amenities = [
-  { icon: '🅿️', name: 'Estacionamento' },
-  { icon: '❄️', name: 'Ar-condicionado' },
-  { icon: '🎵', name: 'Som Profissional' },
-  { icon: '💡', name: 'Iluminação Cênica' },
-  { icon: '🍽️', name: 'Cozinha Industrial' },
-  { icon: '♿', name: 'Acessibilidade' },
-  { icon: '📶', name: 'Wi-Fi Premium' },
-  { icon: '🔒', name: 'Segurança' },
-];
+type SpaceItem = {
+  tag: string;
+  name: string;
+  desc: string;
+  icon: string;
+  capacity: string;
+  area: string;
+};
 
 export default function EspacosPage() {
+  const { spacesContent } = useSiteSettings();
   const heroAnim = useScrollAnimation(0.1);
   const amenitiesAnim = useScrollAnimation();
 
   return (
     <>
-      {/* Page Hero */}
       <section className={styles.pageHero}>
         <div className={styles.pageHeroDots} />
-        <div
-          className="container"
-          ref={heroAnim.ref}
-        >
-          <span className="section-label">Nossos Espaços</span>
-          <h1 className="section-title">Ambientes Pensados Para Cada Momento</h1>
+        <div className="container" ref={heroAnim.ref}>
+          <span className="section-label">{spacesContent.heroLabel}</span>
+          <h1 className="section-title">{spacesContent.heroTitle}</h1>
           <hr className="divider" />
-          <p className="section-subtitle">
-            Três espaços únicos, cada um projetado para um tipo de celebração,
-            todos com a mesma excelência e atenção aos detalhes.
-          </p>
+          <p className="section-subtitle">{spacesContent.heroSubtitle}</p>
         </div>
       </section>
 
-      {/* Spaces */}
       <section className="section">
         <div className="container">
           <div className={styles.spacesGrid}>
-            {spaces.map((space, i) => {
-              return (
-                <SpaceRow key={space.name} space={space} index={i} />
-              );
-            })}
+            {spacesContent.spaces.map((space, index) => (
+              <SpaceRow key={`${space.name}-${space.icon}-${index}`} space={space} />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Amenities */}
       <section className={styles.amenities}>
         <div className="container">
           <div
             ref={amenitiesAnim.ref}
             className={`section-header animate-on-scroll ${amenitiesAnim.isVisible ? 'visible' : ''}`}
           >
-            <span className="section-label">Infraestrutura</span>
-            <h2 className="section-title">Tudo Que Você Precisa</h2>
+            <span className="section-label">{spacesContent.amenitiesSectionLabel}</span>
+            <h2 className="section-title">{spacesContent.amenitiesSectionTitle}</h2>
             <hr className="divider" />
           </div>
           <div className={`${styles.amenitiesGrid} stagger ${amenitiesAnim.isVisible ? 'visible' : ''}`}>
-            {amenities.map((a) => (
-              <div key={a.name} className={styles.amenityCard}>
-                <span className={styles.amenityIcon}>{a.icon}</span>
-                <span className={styles.amenityName}>{a.name}</span>
+            {spacesContent.amenities.map((amenity) => (
+              <div key={`${amenity.name}-${amenity.icon}`} className={styles.amenityCard}>
+                <span className={styles.amenityIcon}>{amenity.icon}</span>
+                <span className={styles.amenityName}>{amenity.name}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="section" style={{ textAlign: 'center' }}>
         <div className="container">
-          <h2 className="section-title">Ficou Interessado?</h2>
+          <h2 className="section-title">{spacesContent.ctaTitle}</h2>
           <p className="section-subtitle" style={{ marginBottom: 'var(--space-2xl)' }}>
-            Agende uma visita e conheça nossos espaços pessoalmente.
+            {spacesContent.ctaSubtitle}
           </p>
           <Link href="/agendar" className="btn btn-primary btn-lg">
-            Agendar Visita Gratuita
+            {spacesContent.ctaLabel}
           </Link>
         </div>
       </section>
@@ -116,7 +77,7 @@ export default function EspacosPage() {
   );
 }
 
-function SpaceRow({ space, index }: { space: typeof spaces[number]; index: number }) {
+function SpaceRow({ space }: { space: SpaceItem }) {
   const anim = useScrollAnimation();
 
   return (
@@ -138,7 +99,7 @@ function SpaceRow({ space, index }: { space: typeof spaces[number]; index: numbe
           </div>
           <div className={styles.spaceDetail}>
             <span className={styles.spaceDetailValue}>{space.area}</span>
-            <span className={styles.spaceDetailLabel}>Área Total</span>
+            <span className={styles.spaceDetailLabel}>Area total</span>
           </div>
         </div>
       </div>

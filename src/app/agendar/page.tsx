@@ -1,44 +1,105 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import styles from './page.module.css';
 
-const eventTypes = [
-  { value: 'wedding', label: 'Casamento' },
-  { value: 'children', label: 'Festa Infantil' },
-  { value: 'corporate', label: 'Reunião / Corporativo' },
-  { value: 'debutante', label: 'Debutante' },
-  { value: 'party', label: 'Confraternização' },
-  { value: 'other', label: 'Outro' },
-];
-
-const timeSlots = [
-  '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-];
+function getTomorrowDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().slice(0, 10);
+}
 
 export default function AgendarPage() {
+  const { bookingContent } = useSiteSettings();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formKey, setFormKey] = useState(0);
+  const minDate = useMemo(() => getTomorrowDate(), []);
+
+  useEffect(() => {
+    if (!selectedDate) {
+      setUnavailableSlots([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    fetch(`/api/appointments/availability?date=${selectedDate}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (!cancelled) {
+          setUnavailableSlots(Array.isArray(data.unavailableSlots) ? data.unavailableSlots : []);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setUnavailableSlots([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDate]);
 
   const validate = (form: FormData): boolean => {
-    const errs: Record<string, string> = {};
-    if (!form.get('name')) errs.name = 'Nome é obrigatório';
-    if (!form.get('email')) errs.email = 'Email é obrigatório';
-    if (!form.get('phone')) errs.phone = 'Telefone é obrigatório';
-    if (!form.get('date')) errs.date = 'Selecione uma data';
-    if (!form.get('timeSlot')) errs.timeSlot = 'Selecione um horário';
-    if (!form.get('eventType')) errs.eventType = 'Selecione o tipo do evento';
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    const nextErrors: Record<string, string> = {};
+
+    if (!form.get('name')) nextErrors.name = 'Nome e obrigatorio';
+    if (!form.get('email')) nextErrors.email = 'Email e obrigatorio';
+    if (!form.get('phone')) nextErrors.phone = 'Telefone e obrigatorio';
+    if (!form.get('date')) nextErrors.date = 'Selecione uma data';
+    if (!form.get('timeSlot')) nextErrors.timeSlot = 'Selecione um horario';
+    if (!form.get('eventType')) nextErrors.eventType = 'Selecione o tipo do evento';
+
+    const requestedSlot = String(form.get('timeSlot') || '');
+    if (requestedSlot && unavailableSlots.includes(requestedSlot)) {
+      nextErrors.timeSlot = bookingContent.conflictMessage;
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const resetForm = () => {
+    setSubmitted(false);
+    setLoading(false);
+    setSelectedDate('');
+    setSelectedTimeSlot('');
+    setUnavailableSlots([]);
+    setErrors({});
+    setFormKey((current) => current + 1);
+  };
+
+  const refreshAvailability = async (date: string) => {
+    if (!date) {
+      return;
+    }
+
+    const availability = await fetch(
+      `/api/appointments/availability?date=${date}`
+    ).then((response) => response.json());
+
+    setUnavailableSlots(
+      Array.isArray(availability.unavailableSlots) ? availability.unavailableSlots : []
+    );
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    if (!validate(formData)) return;
+    if (!validate(formData)) {
+      return;
+    }
 
     setLoading(true);
+    setErrors({});
+
     try {
       const body = Object.fromEntries(formData.entries());
       const res = await fetch('/api/appointments', {
@@ -49,103 +110,65 @@ export default function AgendarPage() {
 
       if (res.ok) {
         setSubmitted(true);
+        await refreshAvailability(selectedDate);
+        return;
+      }
+
+      const data = await res.json();
+      if (res.status === 409) {
+        setErrors({ form: bookingContent.conflictMessage });
+        await refreshAvailability(selectedDate);
       } else {
-        const data = await res.json();
         setErrors({ form: data.error || 'Erro ao enviar. Tente novamente.' });
       }
     } catch {
-      setErrors({ form: 'Erro de conexão. Tente novamente.' });
+      setErrors({ form: 'Erro de conexao. Tente novamente.' });
     } finally {
       setLoading(false);
     }
   };
 
-  // Get minimum date (tomorrow)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().split('T')[0];
-
   return (
     <div className={styles.bookingPage}>
       <div className="container">
         <div className={styles.bookingGrid}>
-          {/* Left — Info */}
           <div className={styles.bookingInfo}>
-            <span className="section-label">Agendamento</span>
-            <h1 className={styles.bookingTitle}>Agende Sua Visita</h1>
-            <p className={styles.bookingSubtitle}>
-              Conheça nosso espaço pessoalmente! Agende uma visita gratuita em horário
-              comercial e descubra o cenário perfeito para o seu evento.
-            </p>
+            <span className="section-label">{bookingContent.heroLabel}</span>
+            <h1 className={styles.bookingTitle}>{bookingContent.title}</h1>
+            <p className={styles.bookingSubtitle}>{bookingContent.subtitle}</p>
 
             <div className={styles.infoCards}>
-              <div className={styles.infoCard}>
-                <span className={styles.infoCardIcon}>🕐</span>
-                <div>
-                  <div className={styles.infoCardTitle}>Horário Comercial</div>
-                  <div className={styles.infoCardDesc}>
-                    Seg à Sex: 09h às 18h | Sáb: 09h às 14h
+              {bookingContent.infoCards.map((card) => (
+                <div key={`${card.title}-${card.icon}`} className={styles.infoCard}>
+                  <span className={styles.infoCardIcon}>{card.icon}</span>
+                  <div>
+                    <div className={styles.infoCardTitle}>{card.title}</div>
+                    <div className={styles.infoCardDesc}>{card.desc}</div>
                   </div>
                 </div>
-              </div>
-              <div className={styles.infoCard}>
-                <span className={styles.infoCardIcon}>⏱️</span>
-                <div>
-                  <div className={styles.infoCardTitle}>Duração da Visita</div>
-                  <div className={styles.infoCardDesc}>
-                    Aproximadamente 30 a 45 minutos
-                  </div>
-                </div>
-              </div>
-              <div className={styles.infoCard}>
-                <span className={styles.infoCardIcon}>✨</span>
-                <div>
-                  <div className={styles.infoCardTitle}>Visita Personalizada</div>
-                  <div className={styles.infoCardDesc}>
-                    Tour completo por todos os espaços com atendimento exclusivo
-                  </div>
-                </div>
-              </div>
-              <div className={styles.infoCard}>
-                <span className={styles.infoCardIcon}>💰</span>
-                <div>
-                  <div className={styles.infoCardTitle}>Sem Compromisso</div>
-                  <div className={styles.infoCardDesc}>
-                    Visita gratuita e sem obrigação de contratação
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Right — Form */}
           <div className={styles.formCard}>
             {submitted ? (
               <div className={styles.successState}>
-                <span className={styles.successIcon}>🎉</span>
-                <h3 className={styles.successTitle}>Agendamento Confirmado!</h3>
-                <p className={styles.successMsg}>
-                  Recebemos seu agendamento com sucesso. Entraremos em contato
-                  em breve para confirmar os detalhes da sua visita.
-                </p>
-                <button
-                  className="btn btn-outline"
-                  onClick={() => setSubmitted(false)}
-                >
-                  Novo Agendamento
+                <span className={styles.successIcon}>OK</span>
+                <h3 className={styles.successTitle}>{bookingContent.successTitle}</h3>
+                <p className={styles.successMsg}>{bookingContent.successMessage}</p>
+                <button className="btn btn-outline" onClick={resetForm}>
+                  {bookingContent.resetButtonLabel}
                 </button>
               </div>
             ) : (
               <>
-                <h2 className={styles.formTitle}>Preencha os Dados</h2>
-                <p className={styles.formSubtitle}>
-                  Todos os campos são obrigatórios
-                </p>
+                <h2 className={styles.formTitle}>{bookingContent.formTitle}</h2>
+                <p className={styles.formSubtitle}>{bookingContent.formSubtitle}</p>
 
-                <form onSubmit={handleSubmit}>
+                <form key={formKey} onSubmit={handleSubmit}>
                   <div className={styles.formRow}>
                     <div className="form-group">
-                      <label className="form-label">Nome Completo</label>
+                      <label className="form-label">Nome completo</label>
                       <input
                         type="text"
                         name="name"
@@ -178,42 +201,71 @@ export default function AgendarPage() {
                       {errors.phone && <p className={styles.fieldError}>{errors.phone}</p>}
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Tipo do Evento</label>
+                      <label className="form-label">Tipo do evento</label>
                       <select name="eventType" className="form-select">
                         <option value="">Selecione...</option>
-                        {eventTypes.map((t) => (
-                          <option key={t.value} value={t.value}>{t.label}</option>
+                        {bookingContent.eventTypes.map((eventType) => (
+                          <option key={eventType.value} value={eventType.value}>
+                            {eventType.label}
+                          </option>
                         ))}
                       </select>
-                      {errors.eventType && <p className={styles.fieldError}>{errors.eventType}</p>}
+                      {errors.eventType && (
+                        <p className={styles.fieldError}>{errors.eventType}</p>
+                      )}
                     </div>
                   </div>
 
                   <div className={styles.formRow}>
                     <div className="form-group">
-                      <label className="form-label">Data da Visita</label>
+                      <label className="form-label">Data da visita</label>
                       <input
                         type="date"
                         name="date"
                         className="form-input"
                         min={minDate}
+                        onChange={(event) => {
+                          setSelectedDate(event.target.value);
+                          setSelectedTimeSlot('');
+                          setErrors((current) => {
+                            const nextErrors = { ...current };
+                            delete nextErrors.form;
+                            delete nextErrors.timeSlot;
+                            return nextErrors;
+                          });
+                        }}
                       />
                       {errors.date && <p className={styles.fieldError}>{errors.date}</p>}
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Horário</label>
-                      <select name="timeSlot" className="form-select">
-                        <option value="">Selecione...</option>
-                        {timeSlots.map((t) => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
+                      <label className="form-label">Horario</label>
+                      <select
+                        name="timeSlot"
+                        className="form-select"
+                        disabled={!selectedDate}
+                        value={selectedTimeSlot}
+                        onChange={(event) => setSelectedTimeSlot(event.target.value)}
+                      >
+                        <option value="">
+                          {selectedDate ? 'Selecione...' : 'Escolha a data primeiro'}
+                        </option>
+                        {bookingContent.timeSlots.map((timeSlot) => {
+                          const isUnavailable = unavailableSlots.includes(timeSlot);
+                          return (
+                            <option key={timeSlot} value={timeSlot} disabled={isUnavailable}>
+                              {isUnavailable ? `${timeSlot} - indisponivel` : timeSlot}
+                            </option>
+                          );
+                        })}
                       </select>
-                      {errors.timeSlot && <p className={styles.fieldError}>{errors.timeSlot}</p>}
+                      {errors.timeSlot && (
+                        <p className={styles.fieldError}>{errors.timeSlot}</p>
+                      )}
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Número de Convidados (estimado)</label>
+                    <label className="form-label">Numero de convidados (estimado)</label>
                     <input
                       type="number"
                       name="guests"
@@ -228,7 +280,7 @@ export default function AgendarPage() {
                     <textarea
                       name="message"
                       className="form-textarea"
-                      placeholder="Conte-nos mais sobre o evento que você planeja..."
+                      placeholder="Conte mais sobre o evento..."
                       rows={4}
                     />
                   </div>
@@ -244,11 +296,7 @@ export default function AgendarPage() {
                     className={`btn btn-primary btn-lg ${styles.submitBtn}`}
                     disabled={loading}
                   >
-                    {loading ? (
-                      <span className="spinner" />
-                    ) : (
-                      'Confirmar Agendamento'
-                    )}
+                    {loading ? <span className="spinner" /> : bookingContent.submitButtonLabel}
                   </button>
                 </form>
               </>

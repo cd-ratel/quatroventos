@@ -17,6 +17,12 @@ services:
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - APP_URL=${APP_URL}
       - ADMIN_URL=${ADMIN_URL}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
       - NODE_ENV=production
     ports:
       - "3100:3000"

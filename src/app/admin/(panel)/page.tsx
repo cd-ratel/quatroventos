@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import styles from './dashboard.module.css';
+import styles from '@/app/admin/dashboard.module.css';
 
 interface Stats {
   totalAppointments: number;

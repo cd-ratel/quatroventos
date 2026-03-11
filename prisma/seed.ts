@@ -1,5 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
+import {
+  ACTIVE_APPOINTMENT_STATUSES,
+  buildSlotKey,
+  getDateStringFromDate,
+} from '../src/lib/appointments';
+import {
+  createDefaultSiteSettings,
+  normalizeSiteSettings,
+} from '../src/lib/site-settings';
 
 const prisma = new PrismaClient();
 
@@ -23,36 +32,69 @@ async function main() {
     },
   });
 
+  const existingSettings = await prisma.settings.findUnique({
+    where: { id: 'main' },
+  });
+
+  const defaults = createDefaultSiteSettings();
+  const normalizedSettings = normalizeSiteSettings(
+    existingSettings
+      ? (existingSettings as unknown as Record<string, unknown>)
+      : (defaults as unknown as Record<string, unknown>)
+  );
+
   await prisma.settings.upsert({
     where: { id: 'main' },
-    update: {},
+    update: normalizedSettings,
     create: {
       id: 'main',
-      venueTitle: 'Quatro Ventos',
-      venueSubtitle: 'Espaço para Eventos',
-      phone: '(00) 00000-0000',
-      email: 'contato@quatroventos.com.br',
-      address: 'Rua Exemplo, 123 - Centro',
-      whatsapp: '5500000000000',
-      aboutText: 'O Quatro Ventos é o espaço perfeito para celebrar os momentos mais especiais da sua vida. Com ambientes sofisticados e uma equipe dedicada, transformamos seus sonhos em realidade.',
-      businessHours: JSON.stringify({
-        mon: { open: '09:00', close: '18:00' },
-        tue: { open: '09:00', close: '18:00' },
-        wed: { open: '09:00', close: '18:00' },
-        thu: { open: '09:00', close: '18:00' },
-        fri: { open: '09:00', close: '18:00' },
-        sat: { open: '09:00', close: '14:00' },
-        sun: null,
-      }),
+      ...normalizedSettings,
     },
   });
 
-  console.log('✅ Seed completed successfully');
+  const appointments = await prisma.appointment.findMany({
+    where: {
+      status: {
+        in: [...ACTIVE_APPOINTMENT_STATUSES],
+      },
+      slotKey: null,
+    },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  for (const appointment of appointments) {
+    const slotKey = buildSlotKey(
+      getDateStringFromDate(appointment.date),
+      appointment.timeSlot
+    );
+
+    const conflict = await prisma.appointment.findFirst({
+      where: {
+        id: { not: appointment.id },
+        slotKey,
+      },
+      select: { id: true },
+    });
+
+    if (conflict) {
+      console.warn(
+        `Skipping slotKey backfill for appointment ${appointment.id} because ${conflict.id} already blocks ${slotKey}.`
+      );
+      continue;
+    }
+
+    await prisma.appointment.update({
+      where: { id: appointment.id },
+      data: { slotKey },
+    });
+  }
+
+  console.log('Seed completed successfully');
 }
 
 main()
-  .catch((e) => {
-    console.error('❌ Seed failed:', e);
+  .catch((error) => {
+    console.error('Seed failed:', error);
     process.exit(1);
   })
   .finally(async () => {

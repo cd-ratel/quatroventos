@@ -28,10 +28,101 @@
   gap: var(--space-lg);
 }
 
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.itemList {
+  margin-top: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.itemCard {
+  border: 1px solid rgba(250, 248, 245, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  background: rgba(4, 13, 26, 0.35);
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.itemTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-ivory);
+}
+
+.subsectionTitle {
+  font-size: 1rem;
+  color: var(--color-ivory);
+  margin: 0;
+}
+
+.dayHoursGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.dayCard {
+  border: 1px solid rgba(250, 248, 245, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  background: rgba(4, 13, 26, 0.35);
+}
+
+.dayToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(250, 248, 245, 0.7);
+  font-size: 0.9rem;
+}
+
+.helperText {
+  margin: 0;
+  color: rgba(250, 248, 245, 0.55);
+  font-size: 0.9rem;
+}
+
+.addButton,
+.dangerButton {
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-ivory);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.addButton {
+  justify-self: flex-start;
+}
+
+.dangerButton {
+  color: #ffb3b3;
+}
+
 .formActions {
   display: flex;
   justify-content: flex-end;
   padding-top: var(--space-lg);
+}
+
+.errorMessage {
+  margin-bottom: var(--space-lg);
+  color: #ffb3b3;
+  font-size: 0.95rem;
 }
 
 .loading {
@@ -41,5 +132,15 @@
 }
 
 @media (max-width: 768px) {
-  .formRow, .formRow3 { grid-template-columns: 1fr; }
+  .formRow,
+  .formRow3,
+  .fieldGrid,
+  .dayHoursGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .itemHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
