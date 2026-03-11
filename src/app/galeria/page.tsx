@@ -72,19 +72,10 @@ export default function GaleriaPage() {
 
   return (
     <>
-      <section
-        className={styles.pageHero || ''}
-        style={{
-          paddingTop: 'calc(var(--nav-height) + var(--space-4xl))',
-          paddingBottom: 'var(--space-4xl)',
-          textAlign: 'center',
-          background: 'linear-gradient(180deg, var(--color-midnight), var(--color-navy))',
-        }}
-      >
+      <section className={styles.hero}>
         <div className="container">
           <span className="section-label">{galleryContent.heroLabel}</span>
           <h1 className="section-title">{galleryContent.heroTitle}</h1>
-          <hr className="divider" />
           <p className="section-subtitle">{galleryContent.heroSubtitle}</p>
         </div>
       </section>
@@ -127,10 +118,9 @@ export default function GaleriaPage() {
                       {resolveContentIcon(item.icon || 'IMG')}
                     </div>
                   )}
-                  <div className={styles.galleryOverlay}>
-                    <span className={styles.galleryCaption}>
-                      {item.caption || item.originalName}
-                    </span>
+                  <div className={styles.galleryCaption}>
+                    <span>{item.category}</span>
+                    <p>{item.caption || item.originalName}</p>
                   </div>
                 </div>
               ))}
@@ -181,11 +171,10 @@ export default function GaleriaPage() {
               <div
                 style={{
                   fontSize: '5rem',
-                  background:
-                    'linear-gradient(135deg, var(--color-navy-medium), var(--color-navy-light))',
+                  background: 'var(--color-bg-warm)',
                   padding: '4rem 6rem',
                   borderRadius: 'var(--radius-xl)',
-                  border: '1px solid var(--glass-border)',
+                  border: '1px solid #eee',
                 }}
               >
                 {resolveContentIcon(item.icon || 'IMG')}

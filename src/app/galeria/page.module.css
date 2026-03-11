@@ -1,71 +1,155 @@
 /* Galeria — Elegant Warm */
-.hero { padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl); text-align: center; background: var(--color-bg-alt); }
+.hero {
+  padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl);
+  text-align: center;
+  background: var(--color-bg-alt);
+}
 
-.filters { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-3xl); }
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-3xl);
+}
 
 .filterBtn {
-  padding: 10px 24px; border-radius: var(--radius-full);
-  border: 1.5px solid #ddd; background: var(--color-bg);
-  color: var(--color-text-light); font-size: 0.78rem; font-weight: 600;
-  letter-spacing: 0.04em; cursor: pointer; transition: all var(--transition-base);
+  padding: 10px 24px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid #ddd;
+  background: var(--color-bg);
+  color: var(--color-text-light);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all var(--transition-base);
   font-family: var(--font-accent);
 }
 
 .filterBtn:hover { border-color: var(--color-accent); color: var(--color-accent); }
 .filterBtn.active { background: var(--color-accent); color: white; border-color: var(--color-accent); box-shadow: var(--shadow-accent); }
 
-.galleryGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md); }
-
-.galleryItem {
-  position: relative; border-radius: var(--radius-md); overflow: hidden;
-  aspect-ratio: 4/3; cursor: pointer; box-shadow: var(--shadow-sm);
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-md);
 }
 
-.galleryItem img, .galleryItem video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-out); }
+.galleryItem {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.galleryItem img, .galleryItem video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
 .galleryItem:hover img, .galleryItem:hover video { transform: scale(1.08); }
 
 .galleryCaption {
-  position: absolute; bottom: 0; left: 0; right: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: var(--space-xl) var(--space-lg) var(--space-lg);
   background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  transform: translateY(100%); transition: transform 0.4s var(--ease-out);
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease-out);
 }
 
 .galleryItem:hover .galleryCaption { transform: translateY(0); }
-.galleryCaption p { font-size: 0.92rem; color: white; font-weight: 500; }
-.galleryCaption span { font-size: 0.72rem; color: var(--color-accent-light); text-transform: uppercase; font-family: var(--font-accent); letter-spacing: 0.08em; }
 
-.galleryPlaceholder {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-sm);
-  background: var(--color-bg-warm); width: 100%; height: 100%;
+.galleryCaption p {
+  font-size: 0.92rem;
+  color: white;
+  font-weight: 500;
+  margin: 0;
 }
 
-.galleryPlaceholderIcon { font-size: 2.5rem; color: var(--color-accent-pale); }
-.galleryPlaceholderTitle { font-size: 0.85rem; color: var(--color-text-muted); }
+.galleryCaption span {
+  font-size: 0.72rem;
+  color: var(--color-accent-light);
+  text-transform: uppercase;
+  font-family: var(--font-accent);
+  letter-spacing: 0.08em;
+}
+
+.galleryPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: var(--color-bg-warm);
+  width: 100%;
+  height: 100%;
+  font-size: 2.5rem;
+  color: var(--color-accent-pale);
+}
 
 .lightbox {
-  position: fixed; inset: 0; z-index: 10000;
-  background: rgba(0,0,0,0.92); backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: fadeIn 0.3s ease;
 }
 
-.lightboxContent { max-width: 90vw; max-height: 85vh; }
-.lightboxContent img, .lightboxContent video { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: var(--radius-sm); }
+.lightboxImage {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
 
 .lightboxClose {
-  position: fixed; top: var(--space-xl); right: var(--space-xl);
-  width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-  color: white; font-size: 1.3rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all var(--transition-base);
 }
 
-.lightboxClose:hover { background: var(--color-accent); border-color: var(--color-accent); transform: rotate(90deg); }
+.lightboxClose:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: rotate(90deg);
+}
 
-.emptyState { text-align: center; padding: var(--space-4xl); color: var(--color-text-muted); }
-.emptyState span { font-size: 3rem; margin-bottom: var(--space-md); display: block; }
+.emptyState {
+  text-align: center;
+  padding: var(--space-4xl);
+  color: var(--color-text-muted);
+}
+
+.emptyState span, .emptyIcon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  display: block;
+  color: var(--color-accent-pale);
+}
 
 @media (max-width: 768px) { .galleryGrid { grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); } }
 @media (max-width: 480px) { .galleryGrid { grid-template-columns: 1fr; } }

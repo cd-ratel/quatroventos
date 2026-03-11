@@ -1,12 +1,15 @@
+/* Agendamentos — Elegant Warm Admin */
 .title {
-  font-size: 1.8rem;
-  color: var(--color-ivory);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-heading);
   margin-bottom: var(--space-xs);
 }
 
 .subtitle {
-  font-size: 0.9rem;
-  color: rgba(250, 248, 245, 0.4);
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
   margin-bottom: var(--space-xl);
 }
 
@@ -14,32 +17,35 @@
   display: flex;
   gap: var(--space-sm);
   margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
 }
 
 .filterBtn {
   padding: var(--space-sm) var(--space-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1.5px solid #ddd;
   border-radius: var(--radius-full);
   background: transparent;
-  color: rgba(250, 248, 245, 0.5);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
+  color: var(--color-text-light);
+  font-family: var(--font-accent);
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .filterBtn:hover,
 .filterBtn.active {
-  border-color: var(--color-gold);
-  color: var(--color-gold);
-  background: var(--color-gold-glow);
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
+  background: var(--color-accent-glow);
 }
 
 .tableWrapper {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--color-bg);
+  border: 1px solid #eee;
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .tableHead {
@@ -47,12 +53,14 @@
   grid-template-columns: 2fr 1.2fr 1fr 0.8fr 1.5fr 1fr 1fr;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: rgba(250, 248, 245, 0.3);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid #eee;
+  font-family: var(--font-accent);
+  background: var(--color-bg-alt);
 }
 
 .tableRow {
@@ -60,35 +68,20 @@
   grid-template-columns: 2fr 1.2fr 1fr 0.8fr 1.5fr 1fr 1fr;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  font-size: 0.9rem;
-  color: rgba(250, 248, 245, 0.6);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.88rem;
+  color: var(--color-text);
+  border-bottom: 1px solid #f5f5f5;
   align-items: center;
   transition: background var(--transition-fast);
 }
 
-.tableRow:last-child {
-  border-bottom: none;
-}
+.tableRow:last-child { border-bottom: none; }
+.tableRow:hover { background: var(--color-bg-warm); }
 
-.tableRow:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
+.cellName { font-weight: 600; color: var(--color-heading); }
+.cellSub { font-size: 0.78rem; color: var(--color-text-muted); }
 
-.cellName {
-  font-weight: 500;
-  color: var(--color-ivory);
-}
-
-.cellSub {
-  font-size: 0.8rem;
-  color: rgba(250, 248, 245, 0.35);
-}
-
-.actions {
-  display: flex;
-  gap: var(--space-sm);
-}
+.actions { display: flex; gap: var(--space-sm); }
 
 .actionConfirm,
 .actionCancel,
@@ -102,43 +95,37 @@
   transition: all var(--transition-fast);
 }
 
-.actionConfirm:hover {
-  background: rgba(74, 222, 128, 0.1);
-}
+.actionConfirm:hover { background: rgba(92, 184, 92, 0.1); }
+.actionCancel:hover { background: rgba(240, 173, 78, 0.1); }
+.actionDelete:hover { background: rgba(217, 83, 79, 0.1); }
 
-.actionCancel:hover {
-  background: rgba(251, 191, 36, 0.1);
-}
-
-.actionDelete:hover {
-  background: rgba(248, 113, 113, 0.1);
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  padding: var(--space-3xl);
-}
+.loading { display: flex; justify-content: center; padding: var(--space-3xl); }
 
 .emptyState {
   text-align: center;
   padding: var(--space-3xl);
-  color: rgba(250, 248, 245, 0.3);
+  color: var(--color-text-muted);
 }
 
 .emptyState span {
   font-size: 2.5rem;
   display: block;
   margin-bottom: var(--space-md);
+  color: var(--color-accent-pale);
 }
 
 @media (max-width: 1024px) {
-  .tableHead,
-  .tableRow {
+  .tableHead, .tableRow {
     grid-template-columns: 1.5fr 1fr 1fr 0.8fr 1fr;
   }
   .tableHead span:nth-child(5),
-  .tableRow div:nth-child(5) {
-    display: none;
+  .tableRow div:nth-child(5) { display: none; }
+}
+
+@media (max-width: 768px) {
+  .tableHead, .tableRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-xs);
   }
+  .tableWrapper { overflow-x: auto; }
 }
