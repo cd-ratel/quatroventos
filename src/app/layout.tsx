@@ -4,23 +4,23 @@ import ConditionalLayout from '@/components/ConditionalLayout';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Quatro Ventos | Espaço para Eventos',
+    default: 'Quatro Ventos | Espaco para Eventos',
     template: '%s | Quatro Ventos',
   },
   description:
-    'Quatro Ventos — O espaço perfeito para casamentos, festas infantis, reuniões corporativas e confraternizações. Agende sua visita.',
+    'Quatro Ventos - O espaco perfeito para casamentos, festas infantis, reunioes corporativas e confraternizacoes. Agende sua visita.',
   keywords: [
-    'salão de festas',
-    'espaço para eventos',
+    'salao de festas',
+    'espaco para eventos',
     'casamento',
     'festa infantil',
-    'reunião corporativa',
+    'reuniao corporativa',
     'buffet',
     'quatroventos',
   ],
   openGraph: {
-    title: 'Quatro Ventos | Espaço para Eventos',
-    description: 'O espaço perfeito para celebrar os momentos mais especiais da sua vida.',
+    title: 'Quatro Ventos | Espaco para Eventos',
+    description: 'O espaco perfeito para celebrar os momentos mais especiais da sua vida.',
     url: 'https://quatroventos.redecm.com.br',
     siteName: 'Quatro Ventos',
     locale: 'pt_BR',
