@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { useMemo } from 'react';
+import VisualPlaceholder from '@/components/VisualPlaceholder';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { usePublicMedia, type PublicMediaItem } from '@/hooks/usePublicMedia';
 import { resolveContentIcon } from '@/lib/content-icons';
+import { getCategoryLabel } from '@/lib/public-site';
 import styles from './page.module.css';
 
 function placeholderToMedia(
@@ -38,7 +40,7 @@ export default function EspacosPage() {
     [galleryContent.placeholderMedia]
   );
   const { media } = usePublicMedia(fallbackMedia);
-  const venueMedia = media.filter((item) => item.category === 'venue');
+  const venueMedia = media.filter((item) => ['venue', 'gallery'].includes(item.category));
 
   return (
     <>
@@ -70,7 +72,13 @@ export default function EspacosPage() {
                       style={{ backgroundImage: `url(${getMediaUrl(visual)})` }}
                     />
                   ) : (
-                    <div className={styles.spaceFallback}>{resolveContentIcon(visual?.icon || space.icon)}</div>
+                    <div className={styles.spaceFallback}>
+                      <VisualPlaceholder
+                        label={getCategoryLabel(visual?.category || 'venue', galleryContent.categories)}
+                        title={space.name}
+                        description={`${space.capacity} convidados • ${space.area}`}
+                      />
+                    </div>
                   )}
                 </div>
 

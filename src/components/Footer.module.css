@@ -151,6 +151,14 @@
   color: rgba(255, 247, 238, 0.7);
 }
 
+.supportNote {
+  max-width: 38ch;
+  margin: 0;
+  color: rgba(255, 247, 238, 0.58);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
 .contactStack {
   display: grid;
   gap: 0.7rem;

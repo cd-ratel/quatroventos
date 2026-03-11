@@ -1,19 +1,48 @@
 'use client';
 
 import { FormEvent, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { resolveContentIcon } from '@/lib/content-icons';
+import {
+  createMapsHref,
+  createWhatsAppHref,
+  getDisplayAddress,
+  isPlaceholderAddress,
+  isPlaceholderEmail,
+  isPlaceholderPhone,
+} from '@/lib/public-site';
 import styles from './page.module.css';
 
-function normalizePhone(phone: string) {
-  return phone.replace(/\D/g, '');
+function ActionLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  if (href.startsWith('/')) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  );
 }
 
 function formatBusinessHours(
   businessHours: Record<string, { open: string; close: string } | null>
 ) {
   const entries = [
-    ['Seg. a Sex.', ['mon', 'tue', 'wed', 'thu', 'fri']],
+    ['Seg. a sex.', ['mon', 'tue', 'wed', 'thu', 'fri']],
     ['Sábado', ['sat']],
     ['Domingo', ['sun']],
   ] as const;
@@ -45,18 +74,106 @@ export default function ContatoPage() {
   const { contactContent } = settings;
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const whatsappHref = useMemo(
-    () => `https://wa.me/${normalizePhone(settings.whatsapp || settings.phone)}`,
-    [settings.phone, settings.whatsapp]
+    () => createWhatsAppHref(settings.whatsapp || settings.phone, settings.venueTitle),
+    [settings.phone, settings.venueTitle, settings.whatsapp]
   );
   const businessHours = useMemo(
     () => formatBusinessHours(settings.businessHours),
     [settings.businessHours]
   );
+  const displayAddress = useMemo(() => getDisplayAddress(settings), [settings]);
+  const hasAddress = !isPlaceholderAddress(settings.address);
+  const hasPhone = !isPlaceholderPhone(settings.phone);
+  const hasWhatsApp = !isPlaceholderPhone(settings.whatsapp || settings.phone);
+  const hasEmail = !isPlaceholderEmail(settings.email);
+
+  const contactCards = useMemo(() => {
+    return contactContent.cards.map((card) => {
+      if (card.icon === 'END') {
+        return hasAddress
+          ? {
+              ...card,
+              lines: [settings.address],
+              buttonLabel: 'Ver no mapa',
+              buttonUrl: createMapsHref(settings.address),
+            }
+          : {
+              ...card,
+              lines: [
+                'Localização compartilhada após o primeiro atendimento',
+                'Agende uma visita para receber a rota completa',
+              ],
+              buttonLabel: 'Agendar visita',
+              buttonUrl: '/agendar',
+            };
+      }
+
+      if (card.icon === 'TEL') {
+        if (hasPhone) {
+          return {
+            ...card,
+            lines: [settings.phone],
+            buttonLabel: hasWhatsApp ? 'WhatsApp' : '',
+            buttonUrl: hasWhatsApp ? whatsappHref : '',
+          };
+        }
+
+        if (hasWhatsApp) {
+          return {
+            ...card,
+            lines: ['Atendimento prioritário pelo WhatsApp'],
+            buttonLabel: 'Abrir conversa',
+            buttonUrl: whatsappHref,
+          };
+        }
+
+        return {
+          ...card,
+          lines: ['Atendimento com retorno rápido pelo site', 'Agende uma visita ou envie uma mensagem'],
+          buttonLabel: 'Agendar visita',
+          buttonUrl: '/agendar',
+        };
+      }
+
+      if (card.icon === 'MAIL') {
+        return hasEmail
+          ? { ...card, lines: [settings.email] }
+          : {
+              ...card,
+              lines: ['Retorno rápido pelo formulário do site'],
+              buttonLabel: '',
+              buttonUrl: '',
+            };
+      }
+
+      if (card.icon === 'HRS') {
+        return {
+          ...card,
+          lines: businessHours,
+        };
+      }
+
+      return card;
+    });
+  }, [
+    businessHours,
+    contactContent.cards,
+    hasAddress,
+    hasEmail,
+    hasPhone,
+    hasWhatsApp,
+    settings.address,
+    settings.email,
+    settings.phone,
+    whatsappHref,
+  ]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+    setError('');
 
     const formData = new FormData(event.currentTarget);
     const body = Object.fromEntries(formData.entries());
@@ -70,7 +187,14 @@ export default function ContatoPage() {
 
       if (response.ok) {
         setSent(true);
+        event.currentTarget.reset();
+        return;
       }
+
+      const data = await response.json().catch(() => null);
+      setError(data?.error || 'Não foi possível enviar a mensagem agora. Tente novamente em instantes.');
+    } catch {
+      setError('Não foi possível enviar a mensagem agora. Tente novamente em instantes.');
     } finally {
       setLoading(false);
     }
@@ -96,13 +220,13 @@ export default function ContatoPage() {
                 Estamos prontos para apresentar o espaço, tirar dúvidas sobre
                 formatos de evento e alinhar o melhor horário para uma visita.
               </p>
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                Conversar no WhatsApp
-              </a>
+              <ActionLink href={whatsappHref} className="btn-primary">
+                {hasWhatsApp ? 'Conversar no WhatsApp' : 'Agendar visita'}
+              </ActionLink>
             </div>
 
             <div className={styles.cardsGrid}>
-              {contactContent.cards.map((card) => (
+              {contactCards.map((card) => (
                 <article key={`${card.title}-${card.icon}`} className={`${styles.contactCard} surfaceCard`}>
                   <span className={styles.cardIcon}>{resolveContentIcon(card.icon)}</span>
                   <h3>{card.title}</h3>
@@ -112,14 +236,9 @@ export default function ContatoPage() {
                     ))}
                   </div>
                   {card.buttonLabel && card.buttonUrl ? (
-                    <a
-                      href={card.buttonUrl}
-                      className={styles.cardLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <ActionLink href={card.buttonUrl} className={styles.cardLink}>
                       {card.buttonLabel}
-                    </a>
+                    </ActionLink>
                   ) : null}
                 </article>
               ))}
@@ -132,7 +251,14 @@ export default function ContatoPage() {
                 <div className={styles.successIcon}>OK</div>
                 <h2>{contactContent.formSuccessTitle}</h2>
                 <p>{contactContent.formSuccessMessage}</p>
-                <button type="button" className="btn-outline" onClick={() => setSent(false)}>
+                <button
+                  type="button"
+                  className="btn-outline"
+                  onClick={() => {
+                    setSent(false);
+                    setError('');
+                  }}
+                >
                   {contactContent.formResetLabel}
                 </button>
               </div>
@@ -185,6 +311,8 @@ export default function ContatoPage() {
                     />
                   </div>
 
+                  {error ? <p className={styles.formError}>{error}</p> : null}
+
                   <button type="submit" className="btn-primary btn-lg" disabled={loading}>
                     {loading ? <span className="spinner" /> : 'Enviar mensagem'}
                   </button>
@@ -209,9 +337,13 @@ export default function ContatoPage() {
             </div>
             <div className={`${styles.mapCard} surfaceCard`}>
               <span className="eyebrow">Localização</span>
-              <h2>{contactContent.mapPlaceholderTitle}</h2>
-              <p>{settings.address}</p>
-              <small>{contactContent.mapPlaceholderSubtitle}</small>
+              <h2>{hasAddress ? contactContent.mapPlaceholderTitle : 'Localização compartilhada no atendimento'}</h2>
+              <p>{displayAddress}</p>
+              <small>
+                {hasAddress
+                  ? contactContent.mapPlaceholderSubtitle
+                  : 'Assim que a visita for alinhada, enviamos a rota completa e os pontos de referência.'}
+              </small>
             </div>
           </div>
         </div>

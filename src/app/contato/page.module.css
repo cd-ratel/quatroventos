@@ -120,6 +120,12 @@
   font-weight: 800;
 }
 
+.formError {
+  margin: 0 0 1rem;
+  color: var(--color-error);
+  line-height: 1.6;
+}
+
 .supportSection {
   padding: 0 0 6rem;
 }

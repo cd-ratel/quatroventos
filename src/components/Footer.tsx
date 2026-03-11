@@ -1,8 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { resolveContentIcon } from '@/lib/content-icons';
+import {
+  createWhatsAppHref,
+  getVisibleSocialLinks,
+  isPlaceholderAddress,
+  isPlaceholderEmail,
+  isPlaceholderPhone,
+} from '@/lib/public-site';
 import styles from './Footer.module.css';
 
 function splitVenueTitle(value: string) {
@@ -18,15 +26,19 @@ function splitVenueTitle(value: string) {
   };
 }
 
-function normalizePhone(phone: string) {
-  return phone.replace(/\D/g, '');
-}
-
 export default function Footer() {
   const settings = useSiteSettings();
   const { lead, accent } = splitVenueTitle(settings.venueTitle);
   const year = new Date().getFullYear();
-  const whatsappHref = `https://wa.me/${normalizePhone(settings.whatsapp || settings.phone)}`;
+  const socialLinks = useMemo(() => getVisibleSocialLinks(settings), [settings]);
+  const whatsappHref = useMemo(
+    () => createWhatsAppHref(settings.whatsapp || settings.phone, settings.venueTitle),
+    [settings.phone, settings.venueTitle, settings.whatsapp]
+  );
+  const hasExternalWhatsApp = whatsappHref.startsWith('http');
+  const hasAddress = !isPlaceholderAddress(settings.address);
+  const hasPhone = !isPlaceholderPhone(settings.phone);
+  const hasEmail = !isPlaceholderEmail(settings.email);
 
   return (
     <footer className={styles.footer}>
@@ -41,9 +53,15 @@ export default function Footer() {
             <Link href="/agendar" className={styles.primaryButton}>
               {settings.homeContent.ctaPrimaryLabel}
             </Link>
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryButton}>
-              Falar no WhatsApp
-            </a>
+            {hasExternalWhatsApp ? (
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryButton}>
+                Falar no WhatsApp
+              </a>
+            ) : (
+              <Link href={whatsappHref} className={styles.secondaryButton}>
+                Solicitar atendimento
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -67,19 +85,30 @@ export default function Footer() {
           </div>
           <p className={styles.brandDescription}>{settings.footerContent.description}</p>
           <div className={styles.contactStack}>
-            <div className={styles.contactItem}>
-              <span>{resolveContentIcon('END')}</span>
-              <span>{settings.address}</span>
-            </div>
-            <div className={styles.contactItem}>
-              <span>{resolveContentIcon('TEL')}</span>
-              <span>{settings.phone}</span>
-            </div>
-            <div className={styles.contactItem}>
-              <span>{resolveContentIcon('MAIL')}</span>
-              <span>{settings.email}</span>
-            </div>
+            {hasAddress ? (
+              <div className={styles.contactItem}>
+                <span>{resolveContentIcon('END')}</span>
+                <span>{settings.address}</span>
+              </div>
+            ) : null}
+            {hasPhone ? (
+              <div className={styles.contactItem}>
+                <span>{resolveContentIcon('TEL')}</span>
+                <span>{settings.phone}</span>
+              </div>
+            ) : null}
+            {hasEmail ? (
+              <div className={styles.contactItem}>
+                <span>{resolveContentIcon('MAIL')}</span>
+                <span>{settings.email}</span>
+              </div>
+            ) : null}
           </div>
+          {!hasAddress || !hasPhone ? (
+            <p className={styles.supportNote}>
+              Detalhes completos de localização e atendimento são compartilhados no primeiro contato.
+            </p>
+          ) : null}
         </div>
 
         <div className={styles.footerColumn}>
@@ -109,25 +138,37 @@ export default function Footer() {
           <h4>{settings.footerContent.contactTitle}</h4>
           <div className={styles.scheduleCard}>
             <strong>Atendimento consultivo</strong>
-            <p>Respondemos visitas, dúvidas e orçamento com prioridade pelo WhatsApp.</p>
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.scheduleButton}>
-              Abrir conversa
-            </a>
-          </div>
-          <div className={styles.socialRow}>
-            {settings.footerContent.socialLinks.map((link) => (
-              <a
-                key={`${link.href}-${link.label}-footer-social`}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.ariaLabel}
-                className={styles.socialLink}
-              >
-                {link.label}
+            <p>
+              {!hasExternalWhatsApp
+                ? 'Organizamos visitas e retornos pelo formulário do site e pelo agendamento online.'
+                : 'Respondemos visitas, dúvidas e orçamento com prioridade pelo WhatsApp.'}
+            </p>
+            {hasExternalWhatsApp ? (
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.scheduleButton}>
+                Abrir conversa
               </a>
-            ))}
+            ) : (
+              <Link href={whatsappHref} className={styles.scheduleButton}>
+                Agendar visita
+              </Link>
+            )}
           </div>
+          {socialLinks.length > 0 ? (
+            <div className={styles.socialRow}>
+              {socialLinks.map((link) => (
+                <a
+                  key={`${link.href}-${link.label}-footer-social`}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.ariaLabel}
+                  className={styles.socialLink}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
 

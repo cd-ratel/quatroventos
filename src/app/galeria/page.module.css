@@ -57,14 +57,7 @@
 }
 
 .galleryFallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    linear-gradient(135deg, rgba(181, 128, 82, 0.16), rgba(255, 248, 241, 0.84)),
-    linear-gradient(180deg, #fffdf9 0%, #f7ede3 100%);
-  color: var(--color-bronze-dark);
-  font-size: 3rem;
+  padding: 0;
 }
 
 .galleryCaption {
@@ -133,12 +126,8 @@
 }
 
 .lightboxFallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 28rem;
-  color: var(--color-ivory);
-  font-size: 4rem;
+  padding: 0;
 }
 
 .lightboxMeta {

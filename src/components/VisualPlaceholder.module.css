@@ -1,0 +1,105 @@
+.placeholder {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  padding: 1.35rem;
+  display: grid;
+  align-content: space-between;
+  gap: 1rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(217, 181, 145, 0.26), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(18, 22, 24, 0.2), transparent 44%),
+    linear-gradient(145deg, #1b1f22 0%, #111416 100%);
+  color: var(--color-ivory);
+}
+
+.placeholder::after {
+  content: '';
+  position: absolute;
+  inset: auto 1.2rem 1.2rem auto;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.32;
+  transform: translate(20%, 20%);
+}
+
+.compact {
+  padding: 1rem;
+  gap: 0.75rem;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: rgba(255, 248, 241, 0.76);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.label::before {
+  content: '';
+  width: 1.8rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.mark {
+  width: 5rem;
+  height: 5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.4rem;
+  background: linear-gradient(145deg, rgba(217, 181, 145, 0.24), rgba(255, 255, 255, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-ivory);
+}
+
+.compact .mark {
+  width: 3.3rem;
+  height: 3.3rem;
+  border-radius: 1rem;
+  font-size: 1.4rem;
+}
+
+.content {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.content strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.compact .content strong {
+  font-size: 1.2rem;
+  line-height: 1.02;
+}
+
+.content p {
+  margin: 0;
+  max-width: 24rem;
+  color: rgba(255, 248, 241, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.compact .content p {
+  font-size: 0.78rem;
+}

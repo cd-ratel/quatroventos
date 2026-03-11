@@ -2,9 +2,15 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import VisualPlaceholder from '@/components/VisualPlaceholder';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { usePublicMedia, type PublicMediaItem } from '@/hooks/usePublicMedia';
 import { resolveContentIcon } from '@/lib/content-icons';
+import {
+  getCategoryLabel,
+  getDisplayAddress,
+  getDisplayPhone,
+} from '@/lib/public-site';
 import styles from './page.module.css';
 
 type HeroSlide = {
@@ -72,6 +78,8 @@ export default function HomePage() {
     [galleryContent.placeholderMedia]
   );
   const { media } = usePublicMedia(fallbackMedia);
+  const addressLabel = useMemo(() => getDisplayAddress(settings), [settings]);
+  const phoneLabel = useMemo(() => getDisplayPhone(settings), [settings]);
 
   const heroSlides = useMemo<HeroSlide[]>(() => {
     const categoryMap = [
@@ -107,7 +115,7 @@ export default function HomePage() {
       return {
         event,
         imageUrl: visual?.filename ? getMediaUrl(visual) : undefined,
-        icon: visual?.icon || event.icon,
+        category: visual?.category || preferredCategory[0],
       };
     });
   }, [homeContent.events, media]);
@@ -168,7 +176,11 @@ export default function HomePage() {
                 />
               ) : (
                 <div className={styles.heroSlideFallback}>
-                  <span>{resolveContentIcon(slide.icon || 'EV')}</span>
+                  <VisualPlaceholder
+                    label={getCategoryLabel(slide.category, galleryContent.categories)}
+                    title={slide.title}
+                    description={settings.venueSubtitle}
+                  />
                 </div>
               )}
               <div className={styles.heroSlideShade} />
@@ -200,8 +212,8 @@ export default function HomePage() {
               <p className={styles.heroAsideCategory}>{activeHero?.title}</p>
               <h2>{activeHero?.description}</h2>
               <div className={styles.heroAsideMeta}>
-                <span className="metricPill">{settings.address}</span>
-                <span className="metricPill">{settings.phone}</span>
+                <span className="metricPill">{addressLabel}</span>
+                {phoneLabel ? <span className="metricPill">{phoneLabel}</span> : null}
               </div>
             </div>
           </div>
@@ -242,7 +254,13 @@ export default function HomePage() {
                 style={{ backgroundImage: `url(${heroSlides[0].imageUrl})` }}
               />
             ) : (
-              <div className={styles.storyVisualFallback}>QV</div>
+              <div className={styles.storyVisualFallback}>
+                <VisualPlaceholder
+                  label="Assinatura do espaço"
+                  title={settings.venueTitle}
+                  description={settings.venueSubtitle}
+                />
+              </div>
             )}
             <div className={styles.storyBadge}>
               <span>{settings.venueSubtitle}</span>
@@ -283,7 +301,7 @@ export default function HomePage() {
 
       <section className={styles.showcaseSection}>
         <div className="container">
-          {showcaseCards.map(({ event, imageUrl, icon }, index) => (
+          {showcaseCards.map(({ event, imageUrl, category }, index) => (
             <article
               key={`${event.title}-${index}`}
               className={`${styles.showcaseRow} ${index % 2 === 1 ? styles.showcaseRowReverse : ''}`}
@@ -295,7 +313,13 @@ export default function HomePage() {
                     style={{ backgroundImage: `url(${imageUrl})` }}
                   />
                 ) : (
-                  <div className={styles.showcaseFallback}>{resolveContentIcon(icon || event.icon)}</div>
+                  <div className={styles.showcaseFallback}>
+                    <VisualPlaceholder
+                      label={getCategoryLabel(category, galleryContent.categories)}
+                      title={event.title}
+                      description={event.desc}
+                    />
+                  </div>
                 )}
               </div>
 
@@ -359,16 +383,27 @@ export default function HomePage() {
                       style={{ backgroundImage: `url(${getMediaUrl(item)})` }}
                     />
                   ) : (
-                    <div className={styles.galleryCardFallback}>Vídeo</div>
+                    <div className={styles.galleryCardFallback}>
+                      <VisualPlaceholder
+                        compact
+                        label="Vídeo"
+                        title={item.caption || item.originalName}
+                        description={getCategoryLabel(item.category, galleryContent.categories)}
+                      />
+                    </div>
                   )
                 ) : (
                   <div className={styles.galleryCardFallback}>
-                    {resolveContentIcon(item.icon || 'EV')}
+                    <VisualPlaceholder
+                      compact
+                      label={getCategoryLabel(item.category, galleryContent.categories)}
+                      title={item.caption || item.originalName}
+                    />
                   </div>
                 )}
                 <div className={styles.galleryCardBody}>
                   <strong>{item.caption || item.originalName}</strong>
-                  <span>{item.category}</span>
+                  <span>{getCategoryLabel(item.category, galleryContent.categories)}</span>
                 </div>
               </div>
             ))}

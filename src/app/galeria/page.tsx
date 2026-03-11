@@ -1,9 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import VisualPlaceholder from '@/components/VisualPlaceholder';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { usePublicMedia, type PublicMediaItem } from '@/hooks/usePublicMedia';
 import { resolveContentIcon } from '@/lib/content-icons';
+import { getCategoryLabel } from '@/lib/public-site';
 import styles from './page.module.css';
 
 function placeholderToMedia(
@@ -40,11 +42,15 @@ export default function GaleriaPage() {
   );
   const { media } = usePublicMedia(fallbackMedia);
 
-  const filteredMedia = filter === 'all'
-    ? media
-    : media.filter((item) => item.category === filter);
+  const filteredMedia =
+    filter === 'all'
+      ? media
+      : media.filter((item) => item.category === filter);
 
-  const currentItem = filteredMedia.find((item) => item.id === lightboxId) || media.find((item) => item.id === lightboxId) || null;
+  const currentItem =
+    filteredMedia.find((item) => item.id === lightboxId) ||
+    media.find((item) => item.id === lightboxId) ||
+    null;
 
   return (
     <>
@@ -86,16 +92,27 @@ export default function GaleriaPage() {
                         style={{ backgroundImage: `url(${getMediaUrl(item)})` }}
                       />
                     ) : (
-                      <div className={styles.galleryFallback}>Vídeo</div>
+                      <div className={styles.galleryFallback}>
+                        <VisualPlaceholder
+                          compact
+                          label="Vídeo"
+                          title={item.caption || item.originalName}
+                          description={getCategoryLabel(item.category, galleryContent.categories)}
+                        />
+                      </div>
                     )
                   ) : (
                     <div className={styles.galleryFallback}>
-                      {resolveContentIcon(item.icon || 'EV')}
+                      <VisualPlaceholder
+                        compact
+                        label={getCategoryLabel(item.category, galleryContent.categories)}
+                        title={item.caption || item.originalName}
+                      />
                     </div>
                   )}
                   <div className={styles.galleryCaption}>
                     <strong>{item.caption || item.originalName}</strong>
-                    <span>{item.category}</span>
+                    <span>{getCategoryLabel(item.category, galleryContent.categories)}</span>
                   </div>
                 </button>
               ))}
@@ -133,12 +150,15 @@ export default function GaleriaPage() {
               )
             ) : (
               <div className={styles.lightboxFallback}>
-                {resolveContentIcon(currentItem.icon || 'EV')}
+                <VisualPlaceholder
+                  label={getCategoryLabel(currentItem.category, galleryContent.categories)}
+                  title={currentItem.caption || currentItem.originalName}
+                />
               </div>
             )}
             <div className={styles.lightboxMeta}>
               <strong>{currentItem.caption || currentItem.originalName}</strong>
-              <span>{currentItem.category}</span>
+              <span>{getCategoryLabel(currentItem.category, galleryContent.categories)}</span>
             </div>
           </div>
         </div>
