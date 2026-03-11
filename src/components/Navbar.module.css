@@ -103,8 +103,28 @@
 .navLink.active::after { width: 100%; }
 
 .navCta {
-  composes: btn btn-primary btn-sm from global;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-family: var(--font-accent);
   font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.navCta:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
 }
 
 /* Hamburger */

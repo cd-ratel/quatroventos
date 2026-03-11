@@ -16,7 +16,6 @@
   position: absolute;
   inset: 0;
   background: var(--color-bg-dark);
-  background-image: url('');
   background-size: cover;
   background-position: center;
 }
