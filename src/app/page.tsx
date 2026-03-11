@@ -6,34 +6,6 @@ import { resolveContentIcon } from '@/lib/content-icons';
 import { useCountUp, useScrollAnimation } from '@/hooks/useAnimations';
 import styles from './page.module.css';
 
-function HeroParticles() {
-  const particles = Array.from({ length: 30 }, (_, index) => ({
-    id: index,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 8}s`,
-    duration: `${6 + Math.random() * 6}s`,
-    size: `${2 + Math.random() * 3}px`,
-  }));
-
-  return (
-    <div className={styles.heroParticles}>
-      {particles.map((particle) => (
-        <span
-          key={particle.id}
-          className={styles.particle}
-          style={{
-            left: particle.left,
-            animationDelay: particle.delay,
-            animationDuration: particle.duration,
-            width: particle.size,
-            height: particle.size,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 function StatItem({
   end,
   label,
@@ -58,68 +30,105 @@ function StatItem({
 
 export default function HomePage() {
   const { homeContent } = useSiteSettings();
-  const eventsAnim = useScrollAnimation();
-  const statsAnim = useScrollAnimation();
   const aboutAnim = useScrollAnimation();
+  const taglineAnim = useScrollAnimation();
+  const statsAnim = useScrollAnimation();
   const ctaAnim = useScrollAnimation();
 
   return (
     <>
+      {/* ── HERO (full-screen banner like Maggiore) ── */}
       <section className={styles.hero}>
         <div className={styles.heroBg} />
-        <HeroParticles />
+        <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <p className={styles.heroLabel}>{homeContent.heroLabel}</p>
           <h1 className={styles.heroTitle}>
             {homeContent.heroTitle}
             <span className={styles.heroTitleAccent}>
               {homeContent.heroTitleAccent}
             </span>
           </h1>
-          <p className={styles.heroSubtitle}>{homeContent.heroSubtitle}</p>
-          <div className={styles.heroCta}>
-            <Link href="/agendar" className="btn btn-primary btn-lg">
-              {homeContent.primaryCtaLabel}
-            </Link>
-            <Link href="/espacos" className="btn btn-outline btn-lg">
-              {homeContent.secondaryCtaLabel}
-            </Link>
-          </div>
         </div>
-
         <div className={styles.heroScroll}>
-          <span>Explore</span>
           <span className={styles.scrollLine} />
         </div>
       </section>
 
-      <section className={styles.events}>
-        <div className={styles.eventsBg} />
+      {/* ── ABOUT (two-column: logo+text left, image right, like Maggiore) ── */}
+      <section className={styles.aboutSection}>
         <div className="container">
           <div
-            ref={eventsAnim.ref}
-            className={`section-header animate-on-scroll ${eventsAnim.isVisible ? 'visible' : ''}`}
+            ref={aboutAnim.ref}
+            className={`${styles.aboutRow} animate-on-scroll ${aboutAnim.isVisible ? 'visible' : ''}`}
           >
-            <span className="section-label">{homeContent.eventsSectionLabel}</span>
-            <h2 className="section-title">{homeContent.eventsSectionTitle}</h2>
-            <hr className="divider" />
-            <p className="section-subtitle">{homeContent.eventsSectionSubtitle}</p>
-          </div>
-
-          <div
-            className={`${styles.eventsGrid} stagger ${eventsAnim.isVisible ? 'visible' : ''}`}
-          >
-            {homeContent.events.map((event) => (
-              <div key={`${event.title}-${event.icon}`} className={styles.eventCard}>
-                <span className={styles.eventIcon}>{resolveContentIcon(event.icon)}</span>
-                <h3 className={styles.eventTitle}>{event.title}</h3>
-                <p className={styles.eventDesc}>{event.desc}</p>
+            <div className={styles.aboutLeft}>
+              <div className={styles.aboutLogo}>QV</div>
+              {homeContent.aboutParagraphs.map((paragraph, index) => (
+                <p key={`${paragraph.slice(0, 20)}-${index}`} className={styles.aboutText}>
+                  {paragraph}
+                </p>
+              ))}
+              <Link href="/espacos" className={`btn btn-outline ${styles.aboutBtn}`}>
+                {homeContent.aboutCtaLabel}
+              </Link>
+            </div>
+            <div className={styles.aboutRight}>
+              <div className={styles.aboutImagePlaceholder}>
+                <span>🏛️</span>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
+      {/* ── TAGLINE (centered quote like Maggiore) ── */}
+      <section className={styles.taglineSection}>
+        <div className="container">
+          <div
+            ref={taglineAnim.ref}
+            className={`${styles.taglineInner} animate-on-scroll ${taglineAnim.isVisible ? 'visible' : ''}`}
+          >
+            <h3 className={styles.taglineText}>
+              {homeContent.heroSubtitle}
+            </h3>
+          </div>
+        </div>
+      </section>
+
+      {/* ── EVENT SECTIONS (alternating image+text rows like Maggiore) ── */}
+      {homeContent.events.map((event, index) => (
+        <EventSection key={`${event.title}-${event.icon}`} event={event} index={index} />
+      ))}
+
+      {/* ── DIFFERENTIALS (3-column grid like Maggiore "Diferenciais") ── */}
+      <section className={styles.differentials}>
+        <div className="container">
+          <h2 className={styles.differentialsTitle}>
+            Diferenciais Quatro Ventos
+          </h2>
+          <div className={styles.differentialsGrid}>
+            {homeContent.features.slice(0, 3).map((feature, index) => {
+              const icons = ['🌿', '🏠', '🍽️'];
+              const subtitles = [
+                'Espaço acolhedor em meio à natureza, proporcionando um ambiente único para eventos.',
+                'Múltiplos ambientes que podem ser utilizados juntos ou separadamente para cada tipo de evento.',
+                'Gastronomia sofisticada com cardápios personalizados para atender cada ocasião.',
+              ];
+              return (
+                <div key={feature} className={styles.differentialCard}>
+                  <div className={styles.differentialImagePlaceholder}>
+                    <span>{icons[index]}</span>
+                  </div>
+                  <h3 className={styles.differentialName}>{feature}</h3>
+                  <p className={styles.differentialDesc}>{subtitles[index]}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── STATS BAR ── */}
       <section className={styles.stats}>
         <div className="container" ref={statsAnim.ref}>
           <div className={`${styles.statsGrid} ${statsAnim.isVisible ? 'visible' : ''}`}>
@@ -135,79 +144,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className={styles.about}>
-        <div className="container">
-          <div
-            ref={aboutAnim.ref}
-            className={`${styles.aboutGrid} animate-on-scroll ${aboutAnim.isVisible ? 'visible' : ''}`}
-          >
-            <div className={styles.aboutImageWrapper}>
-              <div
-                className={styles.aboutImage}
-                style={{
-                  background:
-                    'linear-gradient(135deg, var(--color-navy-medium), var(--color-navy-light))',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '4rem',
-                }}
-              >
-                QV
-              </div>
-              <div className={styles.aboutDecorative} />
-            </div>
-
-            <div className={styles.aboutContent}>
-              <span className="section-label">{homeContent.aboutSectionLabel}</span>
-              <h2 className="section-title">{homeContent.aboutSectionTitle}</h2>
-
-              {homeContent.aboutParagraphs.map((paragraph, index) => (
-                <p key={`${paragraph.slice(0, 20)}-${index}`} className={styles.aboutText}>
-                  {paragraph}
-                </p>
-              ))}
-
-              <div className={styles.aboutFeatures}>
-                {homeContent.features.map((feature) => (
-                  <div key={feature} className={styles.featureItem}>
-                    <span className={styles.featureCheck}>+</span>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href="/espacos"
-                className="btn btn-outline"
-                style={{ alignSelf: 'flex-start' }}
-              >
-                {homeContent.aboutCtaLabel}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.cta}>
+      {/* ── CTA (contact section like Maggiore footer CTA) ── */}
+      <section className={styles.ctaSection}>
         <div className={styles.ctaBg} />
         <div
           ref={ctaAnim.ref}
-          className={`${styles.ctaContent} animate-on-scroll ${ctaAnim.isVisible ? 'visible' : ''}`}
+          className={`container ${styles.ctaInner} animate-on-scroll ${ctaAnim.isVisible ? 'visible' : ''}`}
         >
-          <span className="section-label">{homeContent.ctaLabel}</span>
-          <h2 className={styles.ctaTitle}>{homeContent.ctaTitle}</h2>
-          <p className={styles.ctaSubtitle}>{homeContent.ctaSubtitle}</p>
-          <div className={styles.ctaButtons}>
+          <div className={styles.ctaLeft}>
+            <h2 className={styles.ctaTitle}>{homeContent.ctaTitle}</h2>
+            <p className={styles.ctaSubtitle}>{homeContent.ctaSubtitle}</p>
+          </div>
+          <div className={styles.ctaRight}>
             <Link href="/agendar" className="btn btn-primary btn-lg">
               {homeContent.ctaPrimaryLabel}
             </Link>
-            <Link href="/contato" className="btn btn-glass btn-lg">
+            <Link href="/contato" className="btn btn-white btn-lg">
               {homeContent.ctaSecondaryLabel}
             </Link>
           </div>
         </div>
       </section>
     </>
+  );
+}
+
+/* Alternating event row component (image left / right like Maggiore) */
+function EventSection({
+  event,
+  index,
+}: {
+  event: { icon: string; title: string; desc: string };
+  index: number;
+}) {
+  const anim = useScrollAnimation();
+  const isEven = index % 2 === 0;
+
+  return (
+    <section
+      ref={anim.ref}
+      className={`${styles.eventSection} ${isEven ? '' : styles.eventSectionAlt} animate-on-scroll ${anim.isVisible ? 'visible' : ''}`}
+    >
+      <div className={`container ${styles.eventRow}`}>
+        <div className={styles.eventImage}>
+          <div className={styles.eventImagePlaceholder}>
+            <span className={styles.eventPlaceholderIcon}>
+              {resolveContentIcon(event.icon)}
+            </span>
+          </div>
+        </div>
+        <div className={styles.eventContent}>
+          <h2 className={styles.eventTitle}>{event.title}</h2>
+          <p className={styles.eventDesc}>{event.desc}</p>
+          <Link href="/espacos" className="btn btn-outline">
+            Saiba mais
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }

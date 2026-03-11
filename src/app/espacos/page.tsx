@@ -22,25 +22,17 @@ export default function EspacosPage() {
 
   return (
     <>
-      <section className={styles.pageHero}>
-        <div className={styles.pageHeroDots} />
+      <section className={styles.hero}>
         <div className="container" ref={heroAnim.ref}>
           <span className="section-label">{spacesContent.heroLabel}</span>
           <h1 className="section-title">{spacesContent.heroTitle}</h1>
-          <hr className="divider" />
           <p className="section-subtitle">{spacesContent.heroSubtitle}</p>
         </div>
       </section>
 
-      <section className="section">
-        <div className="container">
-          <div className={styles.spacesGrid}>
-            {spacesContent.spaces.map((space, index) => (
-              <SpaceRow key={`${space.name}-${space.icon}-${index}`} space={space} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {spacesContent.spaces.map((space, index) => (
+        <SpaceRow key={`${space.name}-${space.icon}-${index}`} space={space} index={index} />
+      ))}
 
       <section className={styles.amenities}>
         <div className="container">
@@ -50,7 +42,6 @@ export default function EspacosPage() {
           >
             <span className="section-label">{spacesContent.amenitiesSectionLabel}</span>
             <h2 className="section-title">{spacesContent.amenitiesSectionTitle}</h2>
-            <hr className="divider" />
           </div>
           <div className={`${styles.amenitiesGrid} stagger ${amenitiesAnim.isVisible ? 'visible' : ''}`}>
             {spacesContent.amenities.map((amenity) => (
@@ -63,9 +54,9 @@ export default function EspacosPage() {
         </div>
       </section>
 
-      <section className="section" style={{ textAlign: 'center' }}>
+      <section className={styles.spaceCta}>
         <div className="container">
-          <h2 className="section-title">{spacesContent.ctaTitle}</h2>
+          <h2 className={styles.spaceCtaTitle}>{spacesContent.ctaTitle}</h2>
           <p className="section-subtitle" style={{ marginBottom: 'var(--space-2xl)' }}>
             {spacesContent.ctaSubtitle}
           </p>
@@ -78,32 +69,35 @@ export default function EspacosPage() {
   );
 }
 
-function SpaceRow({ space }: { space: SpaceItem }) {
+function SpaceRow({ space, index }: { space: SpaceItem; index: number }) {
   const anim = useScrollAnimation();
+  const isEven = index % 2 === 0;
 
   return (
-    <div
+    <section
       ref={anim.ref}
-      className={`${styles.spaceRow} animate-on-scroll ${anim.isVisible ? 'visible' : ''}`}
+      className={`${styles.spaceRow} ${isEven ? '' : styles.spaceRowAlt} animate-on-scroll ${anim.isVisible ? 'visible' : ''}`}
     >
-      <div className={styles.spaceImageWrapper}>
-        <div className={styles.spaceImagePlaceholder}>{resolveContentIcon(space.icon)}</div>
-      </div>
-      <div className={styles.spaceContent}>
-        <span className={styles.spaceTag}>{space.tag}</span>
-        <h2 className={styles.spaceName}>{space.name}</h2>
-        <p className={styles.spaceDesc}>{space.desc}</p>
-        <div className={styles.spaceDetails}>
-          <div className={styles.spaceDetail}>
-            <span className={styles.spaceDetailValue}>{space.capacity}</span>
-            <span className={styles.spaceDetailLabel}>Convidados</span>
-          </div>
-          <div className={styles.spaceDetail}>
-            <span className={styles.spaceDetailValue}>{space.area}</span>
-            <span className={styles.spaceDetailLabel}>Área total</span>
+      <div className={`container ${styles.spaceRowInner}`}>
+        <div className={styles.spaceImageWrapper}>
+          <div className={styles.spaceImagePlaceholder}>{resolveContentIcon(space.icon)}</div>
+        </div>
+        <div className={styles.spaceContent}>
+          <span className={styles.spaceTag}>{space.tag}</span>
+          <h2 className={styles.spaceName}>{space.name}</h2>
+          <p className={styles.spaceDesc}>{space.desc}</p>
+          <div className={styles.spaceMeta}>
+            <div className={styles.spaceMetaItem}>
+              <span className={styles.spaceMetaIcon}>👥</span>
+              <span>{space.capacity} convidados</span>
+            </div>
+            <div className={styles.spaceMetaItem}>
+              <span className={styles.spaceMetaIcon}>📐</span>
+              <span>{space.area}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
