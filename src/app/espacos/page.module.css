@@ -1,68 +1,64 @@
-/* ═══════════════════════════════════
-   ESPAÇOS PAGE — Immersive Spaces
-   ═══════════════════════════════════ */
+/* Espaços Page — Vibrant Party */
 
-.pageHero {
-  padding: calc(var(--nav-height) + var(--space-4xl)) 0 var(--space-4xl);
+.hero {
+  padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl);
   text-align: center;
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(212, 168, 83, 0.05) 0%, transparent 50%),
-    linear-gradient(180deg, var(--color-midnight) 0%, var(--color-navy) 100%);
 }
 
-.pageHero::after {
+.hero::before {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  background: linear-gradient(to bottom, transparent, var(--color-navy));
-  pointer-events: none;
-}
-
-.pageHeroDots {
-  position: absolute;
-  top: 50%;
-  right: -50px;
-  transform: translateY(-50%);
-  width: 200px;
-  height: 200px;
-  background-image: radial-gradient(var(--color-gold) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.03;
-}
-
-.spacesGrid {
-  display: grid;
-  gap: var(--space-4xl);
-  padding: var(--space-4xl) 0;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 30%, rgba(168, 85, 247, 0.08), transparent),
+    radial-gradient(ellipse 50% 40% at 80% 60%, rgba(6, 182, 212, 0.05), transparent);
 }
 
 .spaceRow {
+  position: relative;
+  padding: var(--space-4xl) 0;
+}
+
+.spaceRowInner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-3xl);
+  gap: var(--space-4xl);
   align-items: center;
 }
 
-.spaceRow:nth-child(even) {
-  direction: rtl;
-}
-
-.spaceRow:nth-child(even) > * {
-  direction: ltr;
-}
+.spaceRow:nth-child(even) .spaceRowInner { direction: rtl; }
+.spaceRow:nth-child(even) .spaceRowInner > * { direction: ltr; }
 
 .spaceImageWrapper {
   position: relative;
   border-radius: var(--radius-xl);
   overflow: hidden;
   aspect-ratio: 16/10;
-  background: linear-gradient(135deg, var(--color-navy-medium), var(--color-navy-light));
+  background: var(--color-surface);
 }
+
+.spaceImageWrapper::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--gradient-shimmer);
+  background-size: 400% auto;
+  z-index: -1;
+  opacity: 0.3;
+  animation: border-flow 8s linear infinite;
+}
+
+.spaceImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s var(--ease-out);
+}
+
+.spaceImageWrapper:hover .spaceImage { transform: scale(1.08); }
 
 .spaceImagePlaceholder {
   width: 100%;
@@ -70,144 +66,126 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 5rem;
-  background:
-    radial-gradient(circle at 30% 40%, rgba(212, 168, 83, 0.06) 0%, transparent 50%),
-    linear-gradient(135deg, rgba(212, 168, 83, 0.03), rgba(212, 168, 83, 0.01));
-  transition: transform var(--transition-luxury);
-}
-
-.spaceImageWrapper:hover .spaceImagePlaceholder {
-  transform: scale(1.05);
-}
-
-.spaceImageWrapper::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(212, 168, 83, 0.1);
-  border-radius: var(--radius-xl);
-  pointer-events: none;
-  transition: border-color var(--transition-base);
-}
-
-.spaceImageWrapper:hover::after {
-  border-color: rgba(212, 168, 83, 0.25);
-}
-
-.spaceContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
+  background: linear-gradient(135deg, var(--color-bg-card), var(--color-surface));
+  font-size: 3.5rem;
+  opacity: 0.3;
 }
 
 .spaceTag {
   font-family: var(--font-accent);
-  font-size: 0.8rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--color-gold);
-}
-
-.spaceName {
-  font-size: 2.2rem;
-  color: var(--color-ivory);
-  letter-spacing: -0.02em;
-}
-
-.spaceDesc {
-  font-size: 1rem;
-  color: rgba(250, 248, 245, 0.55);
-  line-height: 1.9;
-}
-
-.spaceDetails {
-  display: flex;
-  gap: var(--space-2xl);
-  margin-top: var(--space-md);
-}
-
-.spaceDetail {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.spaceDetailValue {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  background: var(--color-gold-shimmer);
-  background-size: 200% auto;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--gradient-hero);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  margin-bottom: var(--space-md);
+  display: inline-block;
 }
 
-.spaceDetailLabel {
-  font-size: 0.75rem;
-  color: rgba(250, 248, 245, 0.35);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 600;
+.spaceName {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  margin-bottom: var(--space-lg);
 }
 
+.spaceDesc {
+  font-size: 0.95rem;
+  color: var(--color-text-dim);
+  line-height: 1.9;
+  margin-bottom: var(--space-xl);
+}
+
+.spaceMeta {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.spaceMetaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.spaceMetaIcon {
+  font-size: 1.2rem;
+  color: var(--color-primary-light);
+}
+
+/* Amenities */
 .amenities {
   padding: var(--space-5xl) 0;
-  background:
-    radial-gradient(ellipse 40% 30% at 80% 20%, rgba(78, 198, 193, 0.03), transparent),
-    linear-gradient(180deg, var(--color-navy), var(--color-surface), var(--color-navy));
+  position: relative;
+}
+
+.amenities::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 800px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.15), transparent);
 }
 
 .amenitiesGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-xl);
+  gap: var(--space-lg);
+  margin-top: var(--space-3xl);
 }
 
 .amenityCard {
   text-align: center;
   padding: var(--space-2xl) var(--space-lg);
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: var(--shadow-inner-glow);
+  transition: all 0.5s var(--ease-out);
 }
 
 .amenityCard:hover {
-  border-color: rgba(212, 168, 83, 0.2);
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-glow), var(--shadow-inner-glow);
+  border-color: rgba(168, 85, 247, 0.2);
   background: var(--glass-bg-light);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-glow);
 }
 
 .amenityIcon {
-  font-size: 2.2rem;
+  font-size: 2rem;
   margin-bottom: var(--space-md);
   display: block;
-  transition: transform var(--transition-base);
-}
-
-.amenityCard:hover .amenityIcon {
-  transform: scale(1.12);
 }
 
 .amenityName {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--color-ivory);
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* CTA */
+.spaceCta {
+  padding: var(--space-4xl) 0 var(--space-5xl);
+  text-align: center;
+}
+
+.spaceCtaTitle {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  margin-bottom: var(--space-md);
+}
+
+@media (max-width: 1024px) {
+  .amenitiesGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .spaceRow,
-  .spaceRow:nth-child(even) {
-    grid-template-columns: 1fr;
-    direction: ltr;
-  }
-  .amenitiesGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .spaceRowInner { grid-template-columns: 1fr; }
+  .spaceRow:nth-child(even) .spaceRowInner { direction: ltr; }
+  .spaceMeta { flex-direction: column; gap: var(--space-md); }
+  .amenitiesGrid { grid-template-columns: 1fr 1fr; }
 }

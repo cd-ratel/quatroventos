@@ -1,249 +1,267 @@
-/* ═══════════════════════════════════════════════════════════
-   Dashboard — Premium Admin Stats & Overview v2.0
-   ═══════════════════════════════════════════════════════════ */
+/* Admin Dashboard — Vibrant Party */
 
-/* ── Stats Grid ── */
-.statsGrid {
+.dashboard { display: flex; flex-direction: column; gap: var(--space-2xl); }
+
+/* Stat Cards */
+.statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-  margin-bottom: 2rem;
+  gap: var(--space-lg);
 }
 
 .statCard {
-  background: linear-gradient(135deg, rgba(10, 17, 32, 0.98), rgba(18, 31, 61, 0.5));
-  border: 1px solid rgba(212, 168, 83, 0.06);
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  align-items: flex-start;
+  gap: var(--space-lg);
+  transition: all 0.4s var(--ease-out);
   position: relative;
   overflow: hidden;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.04);
 }
 
-.statCard::before {
+.statCard::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.25), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 0 0 0 40px;
+  opacity: 0.03;
+  transition: opacity var(--transition-base);
 }
 
 .statCard:hover {
-  border-color: rgba(212, 168, 83, 0.12);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.04);
+  border-color: rgba(168, 85, 247, 0.15);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
 }
 
-.statCard:hover::before {
-  opacity: 1;
-}
+.statCard:hover::after { opacity: 0.08; }
 
 .statIcon {
-  font-size: 1.8rem;
-  width: 54px;
-  height: 54px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(212, 168, 83, 0.06);
-  border-radius: 14px;
+  font-size: 1.2rem;
   flex-shrink: 0;
 }
 
-.statValue {
-  font-family: var(--font-body);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--color-ivory);
-  line-height: 1;
-  margin-bottom: 0.3rem;
+.statIcon.purple {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  color: var(--color-primary-light);
 }
+
+.statIcon.cyan {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  color: var(--color-accent-light);
+}
+
+.statIcon.rose {
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.15);
+  color: var(--color-hot);
+}
+
+.statIcon.amber {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  color: var(--color-warm);
+}
+
+.statCard::after { background: var(--color-primary); }
+.statCard:nth-child(2)::after { background: var(--color-accent); }
+.statCard:nth-child(3)::after { background: var(--color-hot); }
+.statCard:nth-child(4)::after { background: var(--color-warm); }
 
 .statLabel {
-  font-size: 0.75rem;
-  color: rgba(250, 248, 245, 0.35);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 0.68rem;
+  color: var(--color-text-dim);
   text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  margin-bottom: var(--space-xs);
 }
 
-.statWarning .statIcon {
-  background: rgba(251, 191, 36, 0.08);
+.statValue {
+  font-size: 1.8rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--color-white);
 }
 
-.statSuccess .statIcon {
-  background: rgba(52, 211, 153, 0.08);
+/* Section Card */
+.sectionCard {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
 }
 
-/* ── Two Column Layout ── */
-.dashboardGrid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-/* ── Recent Section ── */
-.recentSection {
-  background: linear-gradient(135deg, rgba(10, 17, 32, 0.98), rgba(18, 31, 61, 0.35));
-  border: 1px solid rgba(212, 168, 83, 0.06);
-  border-radius: 16px;
-  padding: 1.5rem;
-}
-
-.recentHeader {
+.sectionHeader {
+  padding: var(--space-xl) var(--space-2xl);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.recentTitle {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-ivory);
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
 }
 
-.viewAll {
-  font-size: 0.78rem;
-  color: var(--color-gold);
-  text-decoration: none;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  transition: color 0.2s ease;
+.sectionBadge {
+  display: inline-flex;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-glow);
+  color: var(--color-primary-light);
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--font-accent);
 }
 
-.viewAll:hover {
-  color: var(--color-gold-light);
+.sectionBody {
+  padding: var(--space-xl) var(--space-2xl);
 }
 
-/* ── Table ── */
+/* Table */
 .table {
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.tableHead {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr;
-  padding: 0.7rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 0.68rem;
+.table th {
+  padding: var(--space-md) var(--space-lg);
+  font-size: 0.65rem;
   font-weight: 700;
-  color: rgba(250, 248, 245, 0.25);
+  color: var(--color-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.12em;
+  text-align: left;
+  font-family: var(--font-accent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.tableRow {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr;
-  padding: 0.8rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.025);
-  font-size: 0.82rem;
-  color: rgba(250, 248, 245, 0.6);
-  align-items: center;
-  transition: background 0.2s ease;
+.table td {
+  padding: var(--space-md) var(--space-lg);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  vertical-align: middle;
+}
+
+.table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background: rgba(168, 85, 247, 0.03);
+}
+
+.table tbody tr:last-child td { border-bottom: none; }
+
+.tableAction {
+  padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius-sm);
-}
-
-.tableRow:hover {
-  background: rgba(212, 168, 83, 0.03);
-}
-
-.tableRow:last-child {
-  border-bottom: none;
-}
-
-.tableName {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: var(--color-text-dim);
+  font-size: 0.72rem;
   font-weight: 600;
-  color: var(--color-ivory);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-accent);
 }
 
-/* ── Quick Actions ── */
-.quickActions {
-  background: linear-gradient(135deg, rgba(10, 17, 32, 0.98), rgba(18, 31, 61, 0.35));
-  border: 1px solid rgba(212, 168, 83, 0.06);
-  border-radius: 16px;
-  padding: 1.5rem;
+.tableAction:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-light);
+  background: var(--color-primary-glow);
 }
 
+.tableAction.danger:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* Action Cards */
 .actionsGrid {
   display: grid;
-  gap: 0.6rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
 }
 
 .actionCard {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.8rem 1rem;
-  background: rgba(212, 168, 83, 0.03);
-  border: 1px solid rgba(212, 168, 83, 0.04);
-  border-radius: var(--radius-md);
-  color: rgba(250, 248, 245, 0.6);
+  text-align: center;
+  padding: var(--space-xl);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.4s var(--ease-out);
   text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: inherit;
 }
 
 .actionCard:hover {
-  background: rgba(212, 168, 83, 0.07);
-  border-color: rgba(212, 168, 83, 0.12);
-  color: var(--color-ivory);
-  transform: translateX(6px);
+  border-color: rgba(168, 85, 247, 0.2);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
+  background: var(--glass-bg-light);
 }
 
-/* ── Empty State ── */
+.actionIcon {
+  font-size: 2rem;
+  margin-bottom: var(--space-md);
+  display: block;
+}
+
+.actionTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: var(--space-xs);
+}
+
+.actionDesc {
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+}
+
+/* Empty State */
 .emptyState {
   text-align: center;
-  padding: 3rem 1rem;
-  color: rgba(250, 248, 245, 0.25);
+  padding: var(--space-4xl);
+  color: var(--color-text-dim);
 }
+.emptyState span { font-size: 3rem; margin-bottom: var(--space-md); display: block; opacity: 0.4; }
+.emptyState p { color: var(--color-text-dim); }
 
-.emptyState span {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 0.5rem;
-  opacity: 0.4;
-}
-
-.emptyState p {
-  font-size: 0.85rem;
-  color: rgba(250, 248, 245, 0.25);
-}
-
-/* ── Responsive ── */
-@media (max-width: 1200px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .dashboardGrid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 1024px) {
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+  .actionsGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
-  .tableHead,
-  .tableRow {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.25rem;
-  }
-  .tableHead span:nth-child(n+3),
-  .tableRow span:nth-child(n+3) {
-    display: none;
-  }
+  .statsRow { grid-template-columns: 1fr; }
+  .actionsGrid { grid-template-columns: 1fr; }
+  .sectionHeader { padding: var(--space-lg); }
+  .sectionBody { padding: var(--space-lg); }
+  .table { display: block; overflow-x: auto; }
 }

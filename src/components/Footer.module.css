@@ -1,6 +1,7 @@
+/* Footer — Vibrant Party */
 .footer {
-  background: var(--color-midnight);
-  border-top: 1px solid rgba(212, 168, 83, 0.08);
+  background: var(--color-bg);
+  border-top: 1px solid rgba(168, 85, 247, 0.06);
   padding: var(--space-4xl) 0 0;
   position: relative;
   overflow: hidden;
@@ -12,9 +13,9 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(212, 168, 83, 0.04), transparent 70%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.04), transparent 60%);
   pointer-events: none;
 }
 
@@ -27,79 +28,64 @@
   gap: var(--space-3xl);
 }
 
-.footerBrand {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-}
+.footerBrand { display: flex; flex-direction: column; gap: var(--space-lg); }
 
 .footerLogo {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--color-ivory);
-  letter-spacing: -0.01em;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-white);
 }
 
 .footerLogoAccent {
-  color: var(--color-gold);
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footerDesc {
-  font-size: 0.88rem;
-  color: rgba(250, 248, 245, 0.4);
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
   line-height: 1.9;
 }
 
-.footerSocial {
-  display: flex;
-  gap: var(--space-md);
-  margin-top: var(--space-md);
-}
+.footerSocial { display: flex; gap: var(--space-sm); margin-top: var(--space-md); }
 
 .socialLink {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(250, 248, 245, 0.5);
-  font-size: 0.9rem;
+  color: var(--color-text-dim);
+  font-size: 0.85rem;
   transition: all var(--transition-base);
   text-decoration: none;
   position: relative;
   overflow: hidden;
 }
 
-.socialLink::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), transparent);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-}
-
 .socialLink:hover {
-  border-color: var(--color-gold);
-  color: var(--color-gold);
+  border-color: var(--color-primary);
+  color: var(--color-primary-light);
   transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(212, 168, 83, 0.15);
-}
-
-.socialLink:hover::before {
-  opacity: 1;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);
+  background: var(--color-primary-glow);
 }
 
 .footerColumn h4 {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-family: var(--font-accent);
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-gold);
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: var(--space-xl);
   position: relative;
   padding-bottom: var(--space-md);
@@ -110,9 +96,9 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 25px;
+  width: 28px;
   height: 2px;
-  background: var(--color-gold);
+  background: var(--gradient-primary);
   border-radius: var(--radius-full);
 }
 
@@ -124,35 +110,30 @@
 }
 
 .footerLink {
-  color: rgba(250, 248, 245, 0.4);
-  font-size: 0.88rem;
+  color: var(--color-text-dim);
+  font-size: 0.85rem;
   text-decoration: none;
   transition: all var(--transition-fast);
   display: inline-block;
 }
 
 .footerLink:hover {
-  color: var(--color-gold-light);
-  transform: translateX(4px);
+  color: var(--color-primary-light);
+  transform: translateX(5px);
 }
 
 .contactItem {
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
-  color: rgba(250, 248, 245, 0.4);
-  font-size: 0.88rem;
+  color: var(--color-text-dim);
+  font-size: 0.85rem;
   margin-bottom: var(--space-md);
-  transition: color var(--transition-fast);
-}
-
-.contactItem:hover {
-  color: rgba(250, 248, 245, 0.7);
 }
 
 .contactIcon {
-  color: var(--color-gold);
-  font-size: 0.9rem;
+  color: var(--color-primary-light);
+  font-size: 0.85rem;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -161,33 +142,16 @@
   max-width: var(--max-width);
   margin: var(--space-3xl) auto 0;
   padding: var(--space-xl) var(--space-xl);
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.copyright {
-  font-size: 0.78rem;
-  color: rgba(250, 248, 245, 0.25);
-}
-
-.footerCredits {
-  font-size: 0.78rem;
-  color: rgba(250, 248, 245, 0.25);
-}
+.copyright { font-size: 0.75rem; color: var(--color-text-dim); }
+.footerCredits { font-size: 0.75rem; color: var(--color-text-dim); }
 
 @media (max-width: 768px) {
-  .footerGrid {
-    grid-template-columns: 1fr;
-    gap: var(--space-2xl);
-    padding: 0 var(--space-md);
-  }
-
-  .footerBottom {
-    flex-direction: column;
-    gap: var(--space-md);
-    text-align: center;
-    padding: var(--space-lg) var(--space-md);
-  }
+  .footerGrid { grid-template-columns: 1fr; gap: var(--space-2xl); padding: 0 var(--space-md); }
+  .footerBottom { flex-direction: column; gap: var(--space-md); text-align: center; }
 }
