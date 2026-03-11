@@ -471,24 +471,39 @@ function parseJsonValue<T>(value: unknown, fallback: T) {
   return value as T;
 }
 
+function readString(value: unknown, fallback: string) {
+  return typeof value === 'string' && value.trim() ? value : fallback;
+}
+
+function mergeSection<T extends Record<string, unknown>>(value: unknown, fallback: T) {
+  const parsed = parseJsonValue<Partial<T>>(value, {});
+  return {
+    ...fallback,
+    ...parsed,
+  } as T;
+}
+
 export function normalizeSiteSettings(raw?: Record<string, unknown> | null): SiteSettings {
   return siteSettingsSchema.parse({
-    venueTitle: raw?.venueTitle ?? defaultSiteSettings.venueTitle,
-    venueSubtitle: raw?.venueSubtitle ?? defaultSiteSettings.venueSubtitle,
-    phone: raw?.phone ?? defaultSiteSettings.phone,
-    email: raw?.email ?? defaultSiteSettings.email,
-    address: raw?.address ?? defaultSiteSettings.address,
-    whatsapp: raw?.whatsapp ?? defaultSiteSettings.whatsapp,
-    instagram: raw?.instagram ?? defaultSiteSettings.instagram,
-    facebook: raw?.facebook ?? defaultSiteSettings.facebook,
-    aboutText: raw?.aboutText ?? defaultSiteSettings.aboutText,
-    businessHours: parseJsonValue(raw?.businessHours, defaultSiteSettings.businessHours),
-    homeContent: parseJsonValue(raw?.homeContent, defaultSiteSettings.homeContent),
-    spacesContent: parseJsonValue(raw?.spacesContent, defaultSiteSettings.spacesContent),
-    galleryContent: parseJsonValue(raw?.galleryContent, defaultSiteSettings.galleryContent),
-    bookingContent: parseJsonValue(raw?.bookingContent, defaultSiteSettings.bookingContent),
-    contactContent: parseJsonValue(raw?.contactContent, defaultSiteSettings.contactContent),
-    footerContent: parseJsonValue(raw?.footerContent, defaultSiteSettings.footerContent),
+    venueTitle: readString(raw?.venueTitle, defaultSiteSettings.venueTitle),
+    venueSubtitle: readString(raw?.venueSubtitle, defaultSiteSettings.venueSubtitle),
+    phone: readString(raw?.phone, defaultSiteSettings.phone),
+    email: readString(raw?.email, defaultSiteSettings.email),
+    address: readString(raw?.address, defaultSiteSettings.address),
+    whatsapp: readString(raw?.whatsapp, defaultSiteSettings.whatsapp),
+    instagram: readString(raw?.instagram, defaultSiteSettings.instagram),
+    facebook: readString(raw?.facebook, defaultSiteSettings.facebook),
+    aboutText: readString(raw?.aboutText, defaultSiteSettings.aboutText),
+    businessHours: {
+      ...defaultSiteSettings.businessHours,
+      ...parseJsonValue(raw?.businessHours, {}),
+    },
+    homeContent: mergeSection(raw?.homeContent, defaultSiteSettings.homeContent),
+    spacesContent: mergeSection(raw?.spacesContent, defaultSiteSettings.spacesContent),
+    galleryContent: mergeSection(raw?.galleryContent, defaultSiteSettings.galleryContent),
+    bookingContent: mergeSection(raw?.bookingContent, defaultSiteSettings.bookingContent),
+    contactContent: mergeSection(raw?.contactContent, defaultSiteSettings.contactContent),
+    footerContent: mergeSection(raw?.footerContent, defaultSiteSettings.footerContent),
   });
 }
 
