@@ -1,25 +1,12 @@
-/* Espaços Page — Vibrant Party */
-
+/* Espaços — Elegant Warm */
 .hero {
   padding: calc(var(--nav-height) + var(--space-5xl)) 0 var(--space-4xl);
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  background: var(--color-bg-alt);
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 30%, rgba(168, 85, 247, 0.08), transparent),
-    radial-gradient(ellipse 50% 40% at 80% 60%, rgba(6, 182, 212, 0.05), transparent);
-}
-
-.spaceRow {
-  position: relative;
-  padding: var(--space-4xl) 0;
-}
+.spaceRow { padding: var(--space-4xl) 0; }
+.spaceRow:nth-child(even) { background: var(--color-bg-alt); }
 
 .spaceRowInner {
   display: grid;
@@ -32,157 +19,56 @@
 .spaceRow:nth-child(even) .spaceRowInner > * { direction: ltr; }
 
 .spaceImageWrapper {
-  position: relative;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-md);
   overflow: hidden;
   aspect-ratio: 16/10;
-  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
 }
 
-.spaceImageWrapper::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: var(--gradient-shimmer);
-  background-size: 400% auto;
-  z-index: -1;
-  opacity: 0.3;
-  animation: border-flow 8s linear infinite;
-}
-
-.spaceImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1s var(--ease-out);
-}
-
-.spaceImageWrapper:hover .spaceImage { transform: scale(1.08); }
+.spaceImage { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease-out); }
+.spaceImageWrapper:hover .spaceImage { transform: scale(1.05); }
 
 .spaceImagePlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--color-bg-card), var(--color-surface));
-  font-size: 3.5rem;
-  opacity: 0.3;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-bg-warm); font-size: 3rem; color: var(--color-accent-pale);
 }
 
 .spaceTag {
-  font-family: var(--font-accent);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: var(--gradient-hero);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: var(--font-accent); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent);
   margin-bottom: var(--space-md);
-  display: inline-block;
 }
 
-.spaceName {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  margin-bottom: var(--space-lg);
-}
+.spaceName { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: var(--space-lg); }
+.spaceDesc { font-size: 0.95rem; color: var(--color-text-light); line-height: 1.9; margin-bottom: var(--space-xl); }
 
-.spaceDesc {
-  font-size: 0.95rem;
-  color: var(--color-text-dim);
-  line-height: 1.9;
-  margin-bottom: var(--space-xl);
-}
-
-.spaceMeta {
-  display: flex;
-  gap: var(--space-xl);
-}
-
-.spaceMetaItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-}
-
-.spaceMetaIcon {
-  font-size: 1.2rem;
-  color: var(--color-primary-light);
-}
+.spaceMeta { display: flex; gap: var(--space-xl); }
+.spaceMetaItem { display: flex; align-items: center; gap: var(--space-sm); font-size: 0.85rem; color: var(--color-text); }
+.spaceMetaIcon { font-size: 1.1rem; color: var(--color-accent); }
 
 /* Amenities */
-.amenities {
-  padding: var(--space-5xl) 0;
-  position: relative;
-}
-
-.amenities::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70%;
-  max-width: 800px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.15), transparent);
-}
+.amenities { padding: var(--space-5xl) 0; background: var(--color-bg-alt); }
 
 .amenitiesGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
-  margin-top: var(--space-3xl);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); margin-top: var(--space-3xl);
 }
 
 .amenityCard {
-  text-align: center;
-  padding: var(--space-2xl) var(--space-lg);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  transition: all 0.5s var(--ease-out);
+  text-align: center; padding: var(--space-2xl) var(--space-lg);
+  background: var(--color-bg); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm); transition: all var(--transition-base);
+  border: 1px solid transparent;
 }
 
-.amenityCard:hover {
-  border-color: rgba(168, 85, 247, 0.2);
-  background: var(--glass-bg-light);
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-glow);
-}
+.amenityCard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--color-accent-pale); }
+.amenityIcon { font-size: 1.8rem; margin-bottom: var(--space-md); color: var(--color-accent); }
+.amenityName { font-size: 0.85rem; color: var(--color-text); font-weight: 500; }
 
-.amenityIcon {
-  font-size: 2rem;
-  margin-bottom: var(--space-md);
-  display: block;
-}
+.spaceCta { padding: var(--space-4xl) 0; text-align: center; }
+.spaceCtaTitle { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.8rem); margin-bottom: var(--space-lg); }
 
-.amenityName {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
-}
-
-/* CTA */
-.spaceCta {
-  padding: var(--space-4xl) 0 var(--space-5xl);
-  text-align: center;
-}
-
-.spaceCtaTitle {
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
-  margin-bottom: var(--space-md);
-}
-
-@media (max-width: 1024px) {
-  .amenitiesGrid { grid-template-columns: repeat(2, 1fr); }
-}
-
+@media (max-width: 1024px) { .amenitiesGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 768px) {
   .spaceRowInner { grid-template-columns: 1fr; }
   .spaceRow:nth-child(even) .spaceRowInner { direction: ltr; }
