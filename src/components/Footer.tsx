@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { resolveContentIcon } from '@/lib/content-icons';
 import styles from './Footer.module.css';
 
 function splitVenueTitle(value: string) {
@@ -85,15 +86,15 @@ export default function Footer() {
         <div className={styles.footerColumn}>
           <h4>{settings.footerContent.contactTitle}</h4>
           <div className={styles.contactItem}>
-            <span className={styles.contactIcon}>[</span>
+            <span className={styles.contactIcon}>{resolveContentIcon('END')}</span>
             <span>{settings.address}</span>
           </div>
           <div className={styles.contactItem}>
-            <span className={styles.contactIcon}>T</span>
+            <span className={styles.contactIcon}>{resolveContentIcon('TEL')}</span>
             <span>{settings.phone}</span>
           </div>
           <div className={styles.contactItem}>
-            <span className={styles.contactIcon}>@</span>
+            <span className={styles.contactIcon}>{resolveContentIcon('MAIL')}</span>
             <span>{settings.email}</span>
           </div>
         </div>

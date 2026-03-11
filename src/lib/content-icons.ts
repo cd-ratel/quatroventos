@@ -1,0 +1,35 @@
+const iconMap: Record<string, string> = {
+  CV: '💍',
+  FI: '🎈',
+  EV: '✨',
+  SV: '✨',
+  SB: '🌿',
+  JK: '🎠',
+  PK: '🚗',
+  AC: '❄',
+  SM: '♪',
+  IL: '✦',
+  CZ: '🍽',
+  ACS: '♿',
+  WF: '📶',
+  SEG: '🛡',
+  DC: '🌸',
+  JE: '🌳',
+  BF: '🍽',
+  CR: '💒',
+  RP: '💼',
+  DE: '✨',
+  PD: '🎵',
+  HR: '🕘',
+  TM: '⏱',
+  VIP: '✦',
+  FREE: '✓',
+  END: '📍',
+  TEL: '☎',
+  MAIL: '✉',
+  HRS: '⏰',
+};
+
+export function resolveContentIcon(value: string) {
+  return iconMap[value] || value;
+}

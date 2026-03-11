@@ -15,15 +15,15 @@ export function SpacesGallerySection({
   return (
     <>
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Pagina de espacos</h2>
+        <h2 className={styles.sectionTitle}>Página de espaços</h2>
         <div className={styles.fieldGrid}>
           {[
             ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero titulo'],
+            ['heroTitle', 'Hero título'],
             ['amenitiesSectionLabel', 'Label de amenidades'],
-            ['amenitiesSectionTitle', 'Titulo de amenidades'],
-            ['ctaTitle', 'Titulo do CTA'],
-            ['ctaLabel', 'Botao do CTA'],
+            ['amenitiesSectionTitle', 'Título de amenidades'],
+            ['ctaTitle', 'Título do CTA'],
+            ['ctaLabel', 'Botão do CTA'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -42,8 +42,8 @@ export function SpacesGallerySection({
           ))}
         </div>
         {[
-          ['heroSubtitle', 'Hero descricao'],
-          ['ctaSubtitle', 'Descricao do CTA'],
+          ['heroSubtitle', 'Hero descrição'],
+          ['ctaSubtitle', 'Descrição do CTA'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
             <label className="form-label">{label}</label>
@@ -63,17 +63,17 @@ export function SpacesGallerySection({
         ))}
 
         <ObjectListEditor
-          title="Espaco"
+          title="Espaço"
           items={settings.spacesContent.spaces}
           fields={[
             { key: 'tag', label: 'Tag' },
             { key: 'name', label: 'Nome' },
-            { key: 'icon', label: 'Icone' },
+            { key: 'icon', label: 'Ícone' },
             { key: 'capacity', label: 'Capacidade' },
-            { key: 'area', label: 'Area' },
-            { key: 'desc', label: 'Descricao', type: 'textarea', rows: 4 },
+            { key: 'area', label: 'Área' },
+            { key: 'desc', label: 'Descrição', type: 'textarea', rows: 4 },
           ]}
-          addLabel="Adicionar espaco"
+          addLabel="Adicionar espaço"
           createEmpty={() => ({
             tag: '',
             name: '',
@@ -93,7 +93,7 @@ export function SpacesGallerySection({
           title="Amenidade"
           items={settings.spacesContent.amenities}
           fields={[
-            { key: 'icon', label: 'Icone' },
+            { key: 'icon', label: 'Ícone' },
             { key: 'name', label: 'Nome' },
           ]}
           addLabel="Adicionar amenidade"
@@ -111,7 +111,7 @@ export function SpacesGallerySection({
         <div className={styles.fieldGrid}>
           {[
             ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero titulo'],
+            ['heroTitle', 'Hero título'],
             ['emptyMessage', 'Mensagem vazia'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
@@ -131,7 +131,7 @@ export function SpacesGallerySection({
           ))}
         </div>
         <div className="form-group">
-          <label className="form-label">Hero descricao</label>
+          <label className="form-label">Hero descrição</label>
           <textarea
             className="form-textarea"
             rows={3}
@@ -147,7 +147,7 @@ export function SpacesGallerySection({
           items={settings.galleryContent.categories}
           fields={[
             { key: 'value', label: 'Valor' },
-            { key: 'label', label: 'Rotulo' },
+            { key: 'label', label: 'Rótulo' },
           ]}
           addLabel="Adicionar categoria"
           createEmpty={() => ({ value: '', label: '' })}
@@ -163,10 +163,10 @@ export function SpacesGallerySection({
           items={settings.galleryContent.placeholderMedia}
           fields={[
             { key: 'id', label: 'ID' },
-            { key: 'title', label: 'Titulo' },
+            { key: 'title', label: 'Título' },
             { key: 'category', label: 'Categoria' },
             { key: 'caption', label: 'Legenda' },
-            { key: 'icon', label: 'Icone' },
+            { key: 'icon', label: 'Ícone' },
           ]}
           addLabel="Adicionar placeholder"
           createEmpty={() => ({

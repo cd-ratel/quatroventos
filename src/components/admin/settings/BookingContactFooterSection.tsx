@@ -15,16 +15,16 @@ export function BookingContactFooterSection({
   return (
     <>
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Pagina de agendamento</h2>
+        <h2 className={styles.sectionTitle}>Página de agendamento</h2>
         <div className={styles.fieldGrid}>
           {[
             ['heroLabel', 'Hero label'],
-            ['title', 'Titulo'],
-            ['formTitle', 'Titulo do formulario'],
-            ['formSubtitle', 'Subtitulo do formulario'],
-            ['successTitle', 'Titulo de sucesso'],
-            ['resetButtonLabel', 'Botao de reset'],
-            ['submitButtonLabel', 'Botao de envio'],
+            ['title', 'Título'],
+            ['formTitle', 'Título do formulário'],
+            ['formSubtitle', 'Subtítulo do formulário'],
+            ['successTitle', 'Título de sucesso'],
+            ['resetButtonLabel', 'Botão de reset'],
+            ['submitButtonLabel', 'Botão de envio'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -43,9 +43,9 @@ export function BookingContactFooterSection({
           ))}
         </div>
         {[
-          ['subtitle', 'Descricao principal'],
+          ['subtitle', 'Descrição principal'],
           ['successMessage', 'Mensagem de sucesso'],
-          ['conflictMessage', 'Mensagem de conflito de horario'],
+          ['conflictMessage', 'Mensagem de conflito de horário'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
             <label className="form-label">{label}</label>
@@ -68,9 +68,9 @@ export function BookingContactFooterSection({
           title="Card informativo"
           items={settings.bookingContent.infoCards}
           fields={[
-            { key: 'icon', label: 'Icone' },
-            { key: 'title', label: 'Titulo' },
-            { key: 'desc', label: 'Descricao', type: 'textarea', rows: 3 },
+            { key: 'icon', label: 'Ícone' },
+            { key: 'title', label: 'Título' },
+            { key: 'desc', label: 'Descrição', type: 'textarea', rows: 3 },
           ]}
           addLabel="Adicionar card"
           createEmpty={() => ({ icon: '', title: '', desc: '' })}
@@ -86,7 +86,7 @@ export function BookingContactFooterSection({
           items={settings.bookingContent.eventTypes}
           fields={[
             { key: 'value', label: 'Valor' },
-            { key: 'label', label: 'Rotulo' },
+            { key: 'label', label: 'Rótulo' },
           ]}
           addLabel="Adicionar tipo de evento"
           createEmpty={() => ({ value: '', label: '' })}
@@ -98,9 +98,9 @@ export function BookingContactFooterSection({
         />
 
         <TextListEditor
-          title="Horario disponivel"
+          title="Horário disponível"
           items={settings.bookingContent.timeSlots}
-          addLabel="Adicionar horario"
+          addLabel="Adicionar horário"
           onChange={(index, value) =>
             helpers.updateStringArrayItem('bookingContent', 'timeSlots', index, value)
           }
@@ -110,18 +110,18 @@ export function BookingContactFooterSection({
       </div>
 
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Pagina de contato</h2>
+        <h2 className={styles.sectionTitle}>Página de contato</h2>
         <div className={styles.fieldGrid}>
           {[
             ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero titulo'],
-            ['formTitle', 'Titulo do formulario'],
-            ['formSuccessTitle', 'Titulo de sucesso'],
-            ['formResetLabel', 'Botao de reset'],
+            ['heroTitle', 'Hero título'],
+            ['formTitle', 'Título do formulário'],
+            ['formSuccessTitle', 'Título de sucesso'],
+            ['formResetLabel', 'Botão de reset'],
             ['namePlaceholder', 'Placeholder nome'],
             ['emailPlaceholder', 'Placeholder email'],
             ['subjectPlaceholder', 'Placeholder assunto'],
-            ['mapPlaceholderTitle', 'Titulo do placeholder do mapa'],
+            ['mapPlaceholderTitle', 'Título do placeholder do mapa'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -140,10 +140,10 @@ export function BookingContactFooterSection({
           ))}
         </div>
         {[
-          ['heroSubtitle', 'Hero descricao'],
+          ['heroSubtitle', 'Hero descrição'],
           ['formSuccessMessage', 'Mensagem de sucesso'],
           ['messagePlaceholder', 'Placeholder mensagem'],
-          ['mapPlaceholderSubtitle', 'Descricao do placeholder do mapa'],
+          ['mapPlaceholderSubtitle', 'Descrição do placeholder do mapa'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
             <label className="form-label">{label}</label>
@@ -166,10 +166,10 @@ export function BookingContactFooterSection({
           title="Card de contato"
           items={settings.contactContent.cards}
           fields={[
-            { key: 'icon', label: 'Icone' },
-            { key: 'title', label: 'Titulo' },
-            { key: 'buttonLabel', label: 'Texto do botao' },
-            { key: 'buttonUrl', label: 'URL do botao' },
+            { key: 'icon', label: 'Ícone' },
+            { key: 'title', label: 'Título' },
+            { key: 'buttonLabel', label: 'Texto do botão' },
+            { key: 'buttonUrl', label: 'URL do botão' },
           ]}
           addLabel="Adicionar card"
           createEmpty={() => ({
@@ -198,14 +198,14 @@ export function BookingContactFooterSection({
       </div>
 
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Footer e navegacao</h2>
+        <h2 className={styles.sectionTitle}>Footer e navegação</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['navigationTitle', 'Titulo da navegacao'],
-            ['navigationCtaLabel', 'CTA da navegacao'],
-            ['eventsTitle', 'Titulo da coluna de eventos'],
-            ['contactTitle', 'Titulo da coluna de contato'],
-            ['creditsText', 'Texto de creditos'],
+            ['navigationTitle', 'Título da navegação'],
+            ['navigationCtaLabel', 'CTA da navegação'],
+            ['eventsTitle', 'Título da coluna de eventos'],
+            ['contactTitle', 'Título da coluna de contato'],
+            ['creditsText', 'Texto de créditos'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -224,7 +224,7 @@ export function BookingContactFooterSection({
           ))}
         </div>
         <div className="form-group">
-          <label className="form-label">Descricao do footer</label>
+          <label className="form-label">Descrição do footer</label>
           <textarea
             className="form-textarea"
             rows={3}
@@ -236,10 +236,10 @@ export function BookingContactFooterSection({
         </div>
 
         <ObjectListEditor
-          title="Link de navegacao"
+          title="Link de navegação"
           items={settings.footerContent.navigationLinks}
           fields={[
-            { key: 'label', label: 'Rotulo' },
+            { key: 'label', label: 'Rótulo' },
             { key: 'href', label: 'URL' },
           ]}
           addLabel="Adicionar link"
@@ -255,7 +255,7 @@ export function BookingContactFooterSection({
           title="Link de evento"
           items={settings.footerContent.eventLinks}
           fields={[
-            { key: 'label', label: 'Rotulo' },
+            { key: 'label', label: 'Rótulo' },
             { key: 'href', label: 'URL' },
           ]}
           addLabel="Adicionar link de evento"
@@ -273,7 +273,7 @@ export function BookingContactFooterSection({
           fields={[
             { key: 'label', label: 'Sigla' },
             { key: 'href', label: 'URL' },
-            { key: 'ariaLabel', label: 'Descricao acessivel' },
+            { key: 'ariaLabel', label: 'Descrição acessível' },
           ]}
           addLabel="Adicionar rede social"
           createEmpty={() => ({ label: '', href: '', ariaLabel: '' })}

@@ -15,11 +15,11 @@ export type ObjectField<T> = {
 
 export const dayLabels: Record<BusinessDay, string> = {
   mon: 'Segunda',
-  tue: 'Terca',
+  tue: 'Terça',
   wed: 'Quarta',
   thu: 'Quinta',
   fri: 'Sexta',
-  sat: 'Sabado',
+  sat: 'Sábado',
   sun: 'Domingo',
 };
 

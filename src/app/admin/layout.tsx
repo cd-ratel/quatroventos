@@ -1,6 +1,11 @@
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { getRequestHost, isAdminHost, isKnownHost } from '@/lib/site-host';
+import {
+  getRequestHost,
+  isAdminHost,
+  isAllowedHost,
+  isInternalHost,
+} from '@/lib/site-host';
 
 export default async function AdminRootLayout({
   children,
@@ -10,7 +15,7 @@ export default async function AdminRootLayout({
   const requestHeaders = await headers();
   const host = getRequestHost(requestHeaders);
 
-  if (host && isKnownHost(host) && !isAdminHost(host)) {
+  if (host && (!isAllowedHost(host) || (!isInternalHost(host) && !isAdminHost(host)))) {
     notFound();
   }
 

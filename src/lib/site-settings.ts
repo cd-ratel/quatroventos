@@ -98,7 +98,7 @@ export const defaultBusinessHours = {
   sun: null,
 };
 
-export const defaultSiteSettings = {
+const legacyDefaultSiteSettings = {
   venueTitle: 'Quatro Ventos',
   venueSubtitle: 'Espaco para Eventos',
   phone: '(00) 00000-0000',
@@ -345,6 +345,253 @@ export const defaultSiteSettings = {
   },
 } as const;
 
+export const defaultSiteSettings = {
+  venueTitle: 'Quatro Ventos',
+  venueSubtitle: 'Espaço para Eventos',
+  phone: '(00) 00000-0000',
+  email: 'contato@quatroventos.com.br',
+  address: 'Rua Exemplo, 123 - Centro',
+  whatsapp: '5500000000000',
+  instagram: 'https://instagram.com/quatroventos',
+  facebook: 'https://facebook.com/quatroventos',
+  aboutText:
+    'O Quatro Ventos é o espaço perfeito para celebrar os momentos mais especiais da sua vida.',
+  businessHours: defaultBusinessHours,
+  homeContent: {
+    heroLabel: 'Espaço para Eventos',
+    heroTitle: 'Transformamos Sonhos em',
+    heroTitleAccent: 'Celebrações Inesquecíveis',
+    heroSubtitle:
+      'Um espaço sofisticado e versátil, projetado para tornar cada evento único e cada momento eterno.',
+    primaryCtaLabel: 'Agendar Visita',
+    secondaryCtaLabel: 'Conheça os Espaços',
+    eventsSectionLabel: 'Nossos Eventos',
+    eventsSectionTitle: 'Cada Celebração é Única',
+    eventsSectionSubtitle:
+      'Do íntimo ao grandioso, nosso espaço se adapta para realizar o evento dos seus sonhos.',
+    events: [
+      {
+        icon: 'CV',
+        title: 'Casamentos',
+        desc: 'Celebre o dia mais especial da sua vida em um cenário encantador, com elegância e sofisticação.',
+      },
+      {
+        icon: 'FI',
+        title: 'Festas Infantis',
+        desc: 'Um espaço mágico e seguro para criar memórias inesquecíveis para toda a família.',
+      },
+      {
+        icon: 'EV',
+        title: 'Reuniões e Eventos',
+        desc: 'Ambiente profissional e versátil para workshops, confraternizações e eventos corporativos.',
+      },
+    ],
+    stats: [
+      { value: 500, suffix: '+', label: 'Eventos Realizados' },
+      { value: 98, suffix: '%', label: 'Clientes Satisfeitos' },
+      { value: 15, suffix: '', label: 'Anos de Experiência' },
+      { value: 3, suffix: '', label: 'Espaços Exclusivos' },
+    ],
+    aboutSectionLabel: 'Sobre Nós',
+    aboutSectionTitle: 'Um Espaço Pensado em Cada Detalhe',
+    aboutParagraphs: [
+      'O Quatro Ventos nasceu da paixão por criar momentos especiais. Com ambientes cuidadosamente projetados e uma equipe dedicada, oferecemos a estrutura ideal para que cada evento seja único e inesquecível.',
+      'Nossa missão é proporcionar experiências memoráveis, com conforto, elegância e todo o suporte necessário para que você aproveite cada instante.',
+    ],
+    features: [
+      'Estacionamento amplo',
+      'Equipe dedicada',
+      'Cozinha industrial',
+      'Ar-condicionado',
+      'Som profissional',
+      'Acessibilidade',
+      'Área externa',
+      'Segurança 24h',
+    ],
+    aboutCtaLabel: 'Explorar Espaços',
+    ctaLabel: 'Comece Agora',
+    ctaTitle: 'Pronto para Conhecer Nosso Espaço?',
+    ctaSubtitle:
+      'Agende uma visita sem compromisso e descubra como podemos tornar o seu evento inesquecível.',
+    ctaPrimaryLabel: 'Agendar Visita Gratuita',
+    ctaSecondaryLabel: 'Fale Conosco',
+  },
+  spacesContent: {
+    heroLabel: 'Nossos Espaços',
+    heroTitle: 'Ambientes Pensados para Cada Momento',
+    heroSubtitle:
+      'Três espaços únicos, cada um projetado para um tipo de celebração, todos com a mesma excelência.',
+    spaces: [
+      {
+        tag: 'Salão Principal',
+        name: 'Salão Grand Ventus',
+        desc: 'Nosso espaço principal, ideal para casamentos, formaturas e grandes celebrações.',
+        icon: 'SV',
+        capacity: '300',
+        area: '450 m²',
+      },
+      {
+        tag: 'Espaço Íntimo',
+        name: 'Sala Brisa',
+        desc: 'Perfeito para reuniões corporativas, workshops e eventos mais intimistas.',
+        icon: 'SB',
+        capacity: '80',
+        area: '120 m²',
+      },
+      {
+        tag: 'Espaço Kids',
+        name: 'Jardim dos Sonhos',
+        desc: 'Um universo mágico para festas infantis, com área interna e externa.',
+        icon: 'JK',
+        capacity: '150',
+        area: '280 m²',
+      },
+    ],
+    amenitiesSectionLabel: 'Infraestrutura',
+    amenitiesSectionTitle: 'Tudo o Que Você Precisa',
+    amenities: [
+      { icon: 'PK', name: 'Estacionamento' },
+      { icon: 'AC', name: 'Ar-condicionado' },
+      { icon: 'SM', name: 'Som Profissional' },
+      { icon: 'IL', name: 'Iluminação Cênica' },
+      { icon: 'CZ', name: 'Cozinha Industrial' },
+      { icon: 'ACS', name: 'Acessibilidade' },
+      { icon: 'WF', name: 'Wi-Fi Premium' },
+      { icon: 'SEG', name: 'Segurança' },
+    ],
+    ctaTitle: 'Ficou Interessado?',
+    ctaSubtitle: 'Agende uma visita e conheça nossos espaços pessoalmente.',
+    ctaLabel: 'Agendar Visita Gratuita',
+  },
+  galleryContent: {
+    heroLabel: 'Galeria',
+    heroTitle: 'Momentos que Encantam',
+    heroSubtitle: 'Confira registros dos nossos espaços e eventos que marcam vidas.',
+    categories: [
+      { value: 'all', label: 'Todos' },
+      { value: 'venue', label: 'Espaço' },
+      { value: 'wedding', label: 'Casamentos' },
+      { value: 'children', label: 'Festas Infantis' },
+      { value: 'corporate', label: 'Corporativo' },
+      { value: 'decoration', label: 'Decoração' },
+    ],
+    placeholderMedia: [
+      { id: '1', title: 'Salão Principal', category: 'venue', caption: 'Salão Grand Ventus', icon: 'SV' },
+      { id: '2', title: 'Decoração de Casamento', category: 'wedding', caption: 'Mesa dos Noivos', icon: 'DC' },
+      { id: '3', title: 'Jardim Externo', category: 'venue', caption: 'Área Externa', icon: 'JE' },
+      { id: '4', title: 'Festa Infantil', category: 'children', caption: 'Espaço Kids', icon: 'FI' },
+      { id: '5', title: 'Buffet', category: 'venue', caption: 'Área do Buffet', icon: 'BF' },
+      { id: '6', title: 'Cerimônia', category: 'wedding', caption: 'Altar ao Ar Livre', icon: 'CR' },
+      { id: '7', title: 'Reunião', category: 'corporate', caption: 'Sala de Reuniões', icon: 'RP' },
+      { id: '8', title: 'Decoração', category: 'decoration', caption: 'Arranjo Floral', icon: 'DE' },
+      { id: '9', title: 'Pista de Dança', category: 'venue', caption: 'Pista de Dança', icon: 'PD' },
+    ],
+    emptyMessage: 'Nenhuma imagem encontrada nesta categoria.',
+  },
+  bookingContent: {
+    heroLabel: 'Agendamento',
+    title: 'Agende Sua Visita',
+    subtitle:
+      'Conheça nosso espaço pessoalmente. Agende uma visita em horário comercial e descubra o cenário perfeito para o seu evento.',
+    infoCards: [
+      { icon: 'HR', title: 'Horário Comercial', desc: 'Seg. a Sex.: 09h às 18h | Sáb.: 09h às 14h' },
+      { icon: 'TM', title: 'Duração da Visita', desc: 'Aproximadamente 30 a 45 minutos' },
+      { icon: 'VIP', title: 'Visita Personalizada', desc: 'Tour completo por todos os espaços com atendimento exclusivo' },
+      { icon: 'FREE', title: 'Sem Compromisso', desc: 'Visita gratuita e sem obrigação de contratação' },
+    ],
+    formTitle: 'Preencha os Dados',
+    formSubtitle: 'Todos os campos são obrigatórios',
+    successTitle: 'Agendamento Confirmado!',
+    successMessage:
+      'Recebemos seu agendamento com sucesso. Entraremos em contato em breve para confirmar os detalhes da sua visita.',
+    resetButtonLabel: 'Novo Agendamento',
+    submitButtonLabel: 'Confirmar Agendamento',
+    conflictMessage:
+      'Este horário já foi reservado para outra visita. Escolha outro horário.',
+    eventTypes: [
+      { value: 'wedding', label: 'Casamento' },
+      { value: 'children', label: 'Festa Infantil' },
+      { value: 'corporate', label: 'Reunião / Corporativo' },
+      { value: 'debutante', label: 'Debutante' },
+      { value: 'party', label: 'Confraternização' },
+      { value: 'other', label: 'Outro' },
+    ],
+    timeSlots: ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+  },
+  contactContent: {
+    heroLabel: 'Contato',
+    heroTitle: 'Fale Conosco',
+    heroSubtitle: 'Estamos prontos para ajudá-lo a planejar o evento perfeito.',
+    cards: [
+      {
+        icon: 'END',
+        title: 'Endereço',
+        lines: ['Rua Exemplo, 123', 'Centro - Cidade/UF', 'CEP: 00000-000'],
+        buttonLabel: '',
+        buttonUrl: '',
+      },
+      {
+        icon: 'TEL',
+        title: 'Telefone',
+        lines: ['(00) 00000-0000'],
+        buttonLabel: 'WhatsApp',
+        buttonUrl: 'https://wa.me/5500000000000',
+      },
+      {
+        icon: 'MAIL',
+        title: 'E-mail',
+        lines: ['contato@quatroventos.com.br'],
+        buttonLabel: '',
+        buttonUrl: '',
+      },
+      {
+        icon: 'HRS',
+        title: 'Horário de Atendimento',
+        lines: ['Seg. a Sex.: 09h às 18h', 'Sábado: 09h às 14h', 'Domingo: Fechado'],
+        buttonLabel: '',
+        buttonUrl: '',
+      },
+    ],
+    formTitle: 'Envie uma Mensagem',
+    formSuccessTitle: 'Mensagem Enviada!',
+    formSuccessMessage: 'Retornaremos em breve.',
+    formResetLabel: 'Nova Mensagem',
+    namePlaceholder: 'Seu nome',
+    emailPlaceholder: 'seu@email.com',
+    subjectPlaceholder: 'Assunto da mensagem',
+    messagePlaceholder: 'Escreva sua mensagem...',
+    mapPlaceholderTitle: 'Mapa será exibido aqui',
+    mapPlaceholderSubtitle: 'Configure o Google Maps embed nas configurações',
+  },
+  footerContent: {
+    description:
+      'O espaço perfeito para celebrar os momentos mais especiais da sua vida. Casamentos, festas infantis, reuniões corporativas e muito mais.',
+    navigationTitle: 'Navegação',
+    navigationLinks: [
+      { href: '/', label: 'Início' },
+      { href: '/espacos', label: 'Espaços' },
+      { href: '/galeria', label: 'Galeria' },
+      { href: '/contato', label: 'Contato' },
+    ],
+    navigationCtaLabel: 'Agendar Visita',
+    eventsTitle: 'Eventos',
+    eventLinks: [
+      { href: '/espacos', label: 'Casamentos' },
+      { href: '/espacos', label: 'Festas Infantis' },
+      { href: '/espacos', label: 'Reuniões' },
+      { href: '/espacos', label: 'Confraternizações' },
+      { href: '/espacos', label: 'Eventos Corporativos' },
+    ],
+    contactTitle: 'Contato',
+    socialLinks: [
+      { label: 'IG', href: 'https://instagram.com/quatroventos', ariaLabel: 'Instagram' },
+      { label: 'FB', href: 'https://facebook.com/quatroventos', ariaLabel: 'Facebook' },
+      { label: 'WA', href: 'https://wa.me/5500000000000', ariaLabel: 'WhatsApp' },
+    ],
+    creditsText: 'Feito com carinho para momentos inesquecíveis',
+  },
+} as const;
+
 const dayHoursShape = z.object({
   mon: dayHoursSchema,
   tue: dayHoursSchema,
@@ -455,6 +702,114 @@ export const siteSettingsSchema = z.object({
 
 export type SiteSettings = z.infer<typeof siteSettingsSchema>;
 
+function collectStringReplacements(
+  legacyValue: unknown,
+  currentValue: unknown,
+  replacements = new Map<string, string>()
+) {
+  if (typeof legacyValue === 'string' && typeof currentValue === 'string') {
+    if (legacyValue !== currentValue) {
+      replacements.set(legacyValue, currentValue);
+    }
+    return replacements;
+  }
+
+  if (Array.isArray(legacyValue) && Array.isArray(currentValue)) {
+    legacyValue.forEach((item, index) => {
+      collectStringReplacements(item, currentValue[index], replacements);
+    });
+    return replacements;
+  }
+
+  if (
+    legacyValue &&
+    currentValue &&
+    typeof legacyValue === 'object' &&
+    typeof currentValue === 'object'
+  ) {
+    Object.keys(legacyValue).forEach((key) => {
+      collectStringReplacements(
+        (legacyValue as Record<string, unknown>)[key],
+        (currentValue as Record<string, unknown>)[key],
+        replacements
+      );
+    });
+  }
+
+  return replacements;
+}
+
+const legacyTextReplacements = collectStringReplacements(
+  legacyDefaultSiteSettings,
+  defaultSiteSettings
+);
+
+function decodeLatin1AsUtf8(value: string) {
+  const bytes = Uint8Array.from(
+    Array.from(value, (char) => char.charCodeAt(0) & 0xff)
+  );
+
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function scoreTextRepair(value: string) {
+  let score = 0;
+
+  if (/[À-ÿ]/.test(value)) {
+    score += 4;
+  }
+
+  if (!/[ÃÂâ]/.test(value)) {
+    score += 3;
+  }
+
+  if (!value.includes('�')) {
+    score += 2;
+  }
+
+  return score;
+}
+
+function repairLegacyText(value: string) {
+  const directReplacement = legacyTextReplacements.get(value);
+  if (directReplacement) {
+    return directReplacement;
+  }
+
+  if (!/[ÃÂâ]/.test(value)) {
+    return value;
+  }
+
+  try {
+    const decoded = decodeLatin1AsUtf8(value);
+    const repaired = legacyTextReplacements.get(decoded) || decoded;
+    return scoreTextRepair(repaired) >= scoreTextRepair(value) ? repaired : value;
+  } catch {
+    return value;
+  }
+}
+
+function repairLegacyValue<T>(value: T): T {
+  if (typeof value === 'string') {
+    return repairLegacyText(value) as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => repairLegacyValue(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [
+        key,
+        repairLegacyValue(nestedValue),
+      ])
+    ) as T;
+  }
+
+  return value;
+}
+
 function parseJsonValue<T>(value: unknown, fallback: T) {
   if (!value) {
     return fallback;
@@ -462,17 +817,19 @@ function parseJsonValue<T>(value: unknown, fallback: T) {
 
   if (typeof value === 'string') {
     try {
-      return JSON.parse(value) as T;
+      return repairLegacyValue(JSON.parse(value) as T);
     } catch {
       return fallback;
     }
   }
 
-  return value as T;
+  return repairLegacyValue(value as T);
 }
 
 function readString(value: unknown, fallback: string) {
-  return typeof value === 'string' && value.trim() ? value : fallback;
+  return typeof value === 'string' && value.trim()
+    ? repairLegacyText(value)
+    : fallback;
 }
 
 function mergeSection<T extends Record<string, unknown>>(value: unknown, fallback: T) {

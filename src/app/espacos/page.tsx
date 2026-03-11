@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { resolveContentIcon } from '@/lib/content-icons';
 import { useScrollAnimation } from '@/hooks/useAnimations';
 import styles from './page.module.css';
 
@@ -54,7 +55,7 @@ export default function EspacosPage() {
           <div className={`${styles.amenitiesGrid} stagger ${amenitiesAnim.isVisible ? 'visible' : ''}`}>
             {spacesContent.amenities.map((amenity) => (
               <div key={`${amenity.name}-${amenity.icon}`} className={styles.amenityCard}>
-                <span className={styles.amenityIcon}>{amenity.icon}</span>
+                <span className={styles.amenityIcon}>{resolveContentIcon(amenity.icon)}</span>
                 <span className={styles.amenityName}>{amenity.name}</span>
               </div>
             ))}
@@ -86,7 +87,7 @@ function SpaceRow({ space }: { space: SpaceItem }) {
       className={`${styles.spaceRow} animate-on-scroll ${anim.isVisible ? 'visible' : ''}`}
     >
       <div className={styles.spaceImageWrapper}>
-        <div className={styles.spaceImagePlaceholder}>{space.icon}</div>
+        <div className={styles.spaceImagePlaceholder}>{resolveContentIcon(space.icon)}</div>
       </div>
       <div className={styles.spaceContent}>
         <span className={styles.spaceTag}>{space.tag}</span>
@@ -99,7 +100,7 @@ function SpaceRow({ space }: { space: SpaceItem }) {
           </div>
           <div className={styles.spaceDetail}>
             <span className={styles.spaceDetailValue}>{space.area}</span>
-            <span className={styles.spaceDetailLabel}>Area total</span>
+            <span className={styles.spaceDetailLabel}>Área total</span>
           </div>
         </div>
       </div>

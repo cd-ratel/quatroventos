@@ -22,7 +22,7 @@ export default function SiteSettingsForm() {
     fetch('/api/settings')
       .then((response) => response.json())
       .then((data) => setSettings(normalizeSiteSettings(data)))
-      .catch(() => setError('Nao foi possivel carregar as configuracoes.'));
+      .catch(() => setError('Não foi possível carregar as configurações.'));
   }, []);
 
   const updateSettings = (updater: (draft: SiteSettings) => void) => {
@@ -144,7 +144,7 @@ export default function SiteSettingsForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao salvar as configuracoes.');
+        throw new Error(data.error || 'Erro ao salvar as configurações.');
       }
 
       setSettings(normalizeSiteSettings(data));
@@ -154,7 +154,7 @@ export default function SiteSettingsForm() {
       setError(
         saveError instanceof Error
           ? saveError.message
-          : 'Erro ao salvar as configuracoes.'
+          : 'Erro ao salvar as configurações.'
       );
     } finally {
       setSaving(false);
@@ -171,8 +171,8 @@ export default function SiteSettingsForm() {
 
   return (
     <>
-      <h1 className={styles.title}>Configuracoes</h1>
-      <p className={styles.subtitle}>Edite o conteudo completo do site publico.</p>
+      <h1 className={styles.title}>Configurações</h1>
+      <p className={styles.subtitle}>Edite o conteúdo completo do site público.</p>
       {error ? <p className={styles.errorMessage}>{error}</p> : null}
 
       <form onSubmit={handleSubmit}>
@@ -185,9 +185,9 @@ export default function SiteSettingsForm() {
             {saving ? (
               <span className="spinner" />
             ) : saved ? (
-              'Configuracoes salvas'
+              'Configurações salvas'
             ) : (
-              'Salvar configuracoes'
+              'Salvar configurações'
             )}
           </button>
         </div>

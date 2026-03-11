@@ -1,16 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { writeFile, unlink, mkdir } from 'fs/promises';
-import path from 'path';
-import { existsSync } from 'fs';
+import { unlink, writeFile } from 'fs/promises';
+import {
+  ensureMediaDir,
+  getMediaFilePath,
+  getPublicMediaPath,
+  getStoredMediaFilename,
+  MediaValidationError,
+  validateUploadedFile,
+} from '@/lib/media-storage';
+import { assertTrustedMutationRequest } from '@/lib/request-security';
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-
-async function ensureUploadDir() {
-  if (!existsSync(UPLOAD_DIR)) {
-    await mkdir(UPLOAD_DIR, { recursive: true });
-  }
+function toClientMedia<T extends { id: string }>(media: T) {
+  return {
+    ...media,
+    url: getPublicMediaPath(media.id),
+  };
 }
 
 // GET — List media (public)
@@ -18,45 +24,51 @@ export async function GET() {
   const media = await prisma.media.findMany({
     orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }],
   });
-  return NextResponse.json(media);
+  return NextResponse.json(media.map(toClientMedia));
 }
 
 // POST — Upload media (admin only)
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+  }
+
+  const trustedRequestError = assertTrustedMutationRequest(req, 'admin');
+  if (trustedRequestError) {
+    return trustedRequestError;
   }
 
   try {
-    await ensureUploadDir();
+    await ensureMediaDir();
 
     const formData = await req.formData();
-    const files = formData.getAll('files') as File[];
-    const category = formData.get('category') as string || 'gallery';
-    const caption = formData.get('caption') as string || null;
+    const files = formData.getAll('files').filter((item): item is File => item instanceof File);
+    const category = (formData.get('category') as string) || 'gallery';
+    const caption = (formData.get('caption') as string) || null;
 
     if (!files.length) {
       return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 });
     }
 
+    const preparedFiles = await Promise.all(
+      files.map(async (file) => {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const descriptor = validateUploadedFile(file, buffer);
+
+        return {
+          file,
+          buffer,
+          descriptor,
+        };
+      })
+    );
+
     const results = [];
 
-    for (const file of files) {
-      // Validate file type
-      if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-        continue;
-      }
-
-      // Validate size (50MB max)
-      if (file.size > 50 * 1024 * 1024) {
-        continue;
-      }
-
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const ext = path.extname(file.name) || '.jpg';
-      const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-      const filepath = path.join(UPLOAD_DIR, filename);
+    for (const { file, buffer, descriptor } of preparedFiles) {
+      const filename = getStoredMediaFilename(descriptor.extension);
+      const filepath = getMediaFilePath(filename);
 
       await writeFile(filepath, buffer);
 
@@ -64,20 +76,24 @@ export async function POST(req: NextRequest) {
         data: {
           filename,
           originalName: file.name,
-          mimeType: file.type,
+          mimeType: descriptor.mimeType,
           size: file.size,
           category,
           caption,
         },
       });
 
-      results.push(media);
+      results.push(toClientMedia(media));
     }
 
     return NextResponse.json(results, { status: 201 });
   } catch (error) {
+    if (error instanceof MediaValidationError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Erro no upload' }, { status: 500 });
+    return NextResponse.json({ error: 'Erro no upload.' }, { status: 500 });
   }
 }
 
@@ -85,7 +101,12 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+  }
+
+  const trustedRequestError = assertTrustedMutationRequest(req, 'admin');
+  if (trustedRequestError) {
+    return trustedRequestError;
   }
 
   const { searchParams } = new URL(req.url);
@@ -101,17 +122,16 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Mídia não encontrada' }, { status: 404 });
     }
 
-    // Delete file from disk
-    const filepath = path.join(UPLOAD_DIR, media.filename);
+    const filepath = getMediaFilePath(media.filename);
     try {
       await unlink(filepath);
     } catch {
-      // File may not exist, continue
+      // The record should still be removed even if the file is already gone.
     }
 
     await prisma.media.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: 'Erro ao deletar' }, { status: 500 });
+    return NextResponse.json({ error: 'Erro ao excluir a mídia.' }, { status: 500 });
   }
 }

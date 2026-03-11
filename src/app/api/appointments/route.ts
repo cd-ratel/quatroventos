@@ -16,14 +16,15 @@ import {
 } from '@/lib/appointments';
 import { sendEmail } from '@/lib/email';
 import { prisma } from '@/lib/prisma';
+import { assertTrustedMutationRequest } from '@/lib/request-security';
 
 const createSchema = z.object({
   name: z.string().min(2, 'Nome muito curto'),
-  email: z.string().email('Email invalido'),
-  phone: z.string().min(8, 'Telefone invalido'),
+  email: z.string().email('E-mail inválido.'),
+  phone: z.string().min(8, 'Telefone inválido.'),
   date: appointmentDateSchema,
   timeSlot: appointmentTimeSlotSchema,
-  eventType: z.string().min(1, 'Tipo de evento obrigatorio'),
+  eventType: z.string().min(1, 'Tipo de evento obrigatório.'),
   guests: z
     .union([z.string(), z.number()])
     .optional()
@@ -39,9 +40,18 @@ const createSchema = z.object({
 });
 
 const updateSchema = z.object({
-  id: z.string().min(1, 'ID obrigatorio'),
+  id: z.string().min(1, 'ID obrigatório.'),
   status: appointmentStatusSchema,
 });
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
 async function findSlotConflict({
   date,
@@ -101,6 +111,11 @@ async function notifyAdminAboutAppointment(appointment: Appointment) {
   const formattedDate = appointment.date.toLocaleDateString('pt-BR', {
     timeZone: 'America/Sao_Paulo',
   });
+  const safeMessage = escapeHtml(appointment.message || 'Não informada');
+  const safeName = escapeHtml(appointment.name);
+  const safeEmail = escapeHtml(appointment.email);
+  const safePhone = escapeHtml(appointment.phone);
+  const safeEventType = escapeHtml(appointment.eventType);
 
   await sendEmail({
     to: recipient,
@@ -112,21 +127,21 @@ async function notifyAdminAboutAppointment(appointment: Appointment) {
       `Email: ${appointment.email}`,
       `Telefone: ${appointment.phone}`,
       `Data: ${formattedDate}`,
-      `Horario: ${appointment.timeSlot}`,
+      `Horário: ${appointment.timeSlot}`,
       `Tipo de evento: ${appointment.eventType}`,
-      `Convidados: ${appointment.guests ?? 'Nao informado'}`,
-      `Mensagem: ${appointment.message || 'Nao informada'}`,
+      `Convidados: ${appointment.guests ?? 'Não informado'}`,
+      `Mensagem: ${appointment.message || 'Não informada'}`,
     ].join('\n'),
     html: `
       <h2>Novo agendamento recebido</h2>
-      <p><strong>Nome:</strong> ${appointment.name}</p>
-      <p><strong>Email:</strong> ${appointment.email}</p>
-      <p><strong>Telefone:</strong> ${appointment.phone}</p>
+      <p><strong>Nome:</strong> ${safeName}</p>
+      <p><strong>Email:</strong> ${safeEmail}</p>
+      <p><strong>Telefone:</strong> ${safePhone}</p>
       <p><strong>Data:</strong> ${formattedDate}</p>
-      <p><strong>Horario:</strong> ${appointment.timeSlot}</p>
-      <p><strong>Tipo de evento:</strong> ${appointment.eventType}</p>
-      <p><strong>Convidados:</strong> ${appointment.guests ?? 'Nao informado'}</p>
-      <p><strong>Mensagem:</strong> ${appointment.message || 'Nao informada'}</p>
+      <p><strong>Horário:</strong> ${appointment.timeSlot}</p>
+      <p><strong>Tipo de evento:</strong> ${safeEventType}</p>
+      <p><strong>Convidados:</strong> ${appointment.guests ?? 'Não informado'}</p>
+      <p><strong>Mensagem:</strong> ${safeMessage}</p>
     `,
   });
 }
@@ -143,7 +158,7 @@ export async function POST(req: NextRequest) {
 
     if (conflict) {
       return NextResponse.json(
-        { error: 'Este horario ja esta reservado para outra visita.' },
+        { error: 'Este horário já está reservado para outra visita.' },
         { status: 409 }
       );
     }
@@ -168,7 +183,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0]?.message || 'Dados invalidos' },
+        { error: error.errors[0]?.message || 'Dados inválidos.' },
         { status: 400 }
       );
     }
@@ -178,7 +193,7 @@ export async function POST(req: NextRequest) {
       error.code === 'P2002'
     ) {
       return NextResponse.json(
-        { error: 'Este horario ja esta reservado para outra visita.' },
+        { error: 'Este horário já está reservado para outra visita.' },
         { status: 409 }
       );
     }
@@ -194,7 +209,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
@@ -220,7 +235,12 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+  }
+
+  const trustedRequestError = assertTrustedMutationRequest(req, 'admin');
+  if (trustedRequestError) {
+    return trustedRequestError;
   }
 
   try {
@@ -232,7 +252,7 @@ export async function PATCH(req: NextRequest) {
 
     if (!appointment) {
       return NextResponse.json(
-        { error: 'Agendamento nao encontrado' },
+        { error: 'Agendamento não encontrado.' },
         { status: 404 }
       );
     }
@@ -248,7 +268,7 @@ export async function PATCH(req: NextRequest) {
 
       if (conflict) {
         return NextResponse.json(
-          { error: 'Este horario ja foi ocupado por outro agendamento ativo.' },
+          { error: 'Este horário já foi ocupado por outro agendamento ativo.' },
           { status: 409 }
         );
       }
@@ -270,7 +290,7 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0]?.message || 'Dados invalidos' },
+        { error: error.errors[0]?.message || 'Dados inválidos.' },
         { status: 400 }
       );
     }
@@ -280,14 +300,14 @@ export async function PATCH(req: NextRequest) {
       error.code === 'P2002'
     ) {
       return NextResponse.json(
-        { error: 'Este horario ja foi ocupado por outro agendamento ativo.' },
+        { error: 'Este horário já foi ocupado por outro agendamento ativo.' },
         { status: 409 }
       );
     }
 
     console.error('Appointment update error:', error);
     return NextResponse.json(
-      { error: 'Erro ao atualizar agendamento' },
+      { error: 'Erro ao atualizar o agendamento.' },
       { status: 500 }
     );
   }
@@ -296,14 +316,19 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+  }
+
+  const trustedRequestError = assertTrustedMutationRequest(req, 'admin');
+  if (trustedRequestError) {
+    return trustedRequestError;
   }
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
 
   if (!id) {
-    return NextResponse.json({ error: 'ID obrigatorio' }, { status: 400 });
+    return NextResponse.json({ error: 'ID obrigatório.' }, { status: 400 });
   }
 
   await prisma.appointment.delete({ where: { id } });

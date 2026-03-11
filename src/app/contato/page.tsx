@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { resolveContentIcon } from '@/lib/content-icons';
 import styles from './page.module.css';
 
 export default function ContatoPage() {
@@ -49,7 +50,7 @@ export default function ContatoPage() {
             <div className={styles.contactInfo}>
               {contactContent.cards.map((card) => (
                 <div key={`${card.title}-${card.icon}`} className={styles.contactCard}>
-                  <span className={styles.cardIcon}>{card.icon}</span>
+                  <span className={styles.cardIcon}>{resolveContentIcon(card.icon)}</span>
                   <h3 className={styles.cardTitle}>{card.title}</h3>
                   <p className={styles.cardText}>
                     {card.lines.map((line) => (

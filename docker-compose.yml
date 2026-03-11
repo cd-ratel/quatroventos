@@ -27,7 +27,7 @@ services:
     ports:
       - "3100:3000"
     volumes:
-      - uploads:/app/public/uploads
+      - uploads:/app/storage/media
     depends_on:
       db:
         condition: service_healthy

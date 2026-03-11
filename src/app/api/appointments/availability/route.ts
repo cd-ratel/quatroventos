@@ -46,14 +46,14 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0]?.message || 'Data invalida' },
+        { error: error.errors[0]?.message || 'Data inválida.' },
         { status: 400 }
       );
     }
 
     console.error('Availability lookup error:', error);
     return NextResponse.json(
-      { error: 'Erro ao consultar disponibilidade' },
+      { error: 'Erro ao consultar a disponibilidade.' },
       { status: 500 }
     );
   }

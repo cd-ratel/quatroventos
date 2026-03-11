@@ -5,11 +5,11 @@ export const APPOINTMENT_STATUSES = [...ACTIVE_APPOINTMENT_STATUSES, 'cancelled'
 
 export const appointmentDateSchema = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data invalida');
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data inválida.');
 
 export const appointmentTimeSlotSchema = z
   .string()
-  .regex(/^\d{2}:\d{2}$/, 'Horario invalido');
+  .regex(/^\d{2}:\d{2}$/, 'Horário inválido.');
 
 export const appointmentStatusSchema = z.enum(APPOINTMENT_STATUSES);
 

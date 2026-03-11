@@ -2,7 +2,14 @@ import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import AdminShell from '@/components/admin/AdminShell';
 import { auth } from '@/lib/auth';
-import { ADMIN_URL, PUBLIC_URL, getRequestHost, isAdminHost, isKnownHost } from '@/lib/site-host';
+import {
+  ADMIN_URL,
+  PUBLIC_URL,
+  getRequestHost,
+  isAdminHost,
+  isAllowedHost,
+  isInternalHost,
+} from '@/lib/site-host';
 
 export default async function AdminPanelLayout({
   children,
@@ -12,7 +19,7 @@ export default async function AdminPanelLayout({
   const requestHeaders = await headers();
   const host = getRequestHost(requestHeaders);
 
-  if (host && isKnownHost(host) && !isAdminHost(host)) {
+  if (host && (!isAllowedHost(host) || (!isInternalHost(host) && !isAdminHost(host)))) {
     notFound();
   }
 

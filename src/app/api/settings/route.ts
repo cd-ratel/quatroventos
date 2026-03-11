@@ -6,6 +6,7 @@ import {
   normalizeSiteSettings,
   siteSettingsSchema,
 } from '@/lib/site-settings';
+import { assertTrustedMutationRequest } from '@/lib/request-security';
 import { z } from 'zod';
 
 async function getOrCreateSettings() {
@@ -37,7 +38,12 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+  }
+
+  const trustedRequestError = assertTrustedMutationRequest(req, 'admin');
+  if (trustedRequestError) {
+    return trustedRequestError;
   }
 
   try {
@@ -63,12 +69,12 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0]?.message || 'Dados invalidos' },
+        { error: error.errors[0]?.message || 'Dados inválidos.' },
         { status: 400 }
       );
     }
 
     console.error('Settings update error:', error);
-    return NextResponse.json({ error: 'Erro ao atualizar' }, { status: 500 });
+    return NextResponse.json({ error: 'Erro ao atualizar as configurações.' }, { status: 500 });
   }
 }

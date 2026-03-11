@@ -2,12 +2,17 @@
 
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { resolveContentIcon } from '@/lib/content-icons';
 import styles from './page.module.css';
 
 function getTomorrowDate() {
   const tomorrow = new Date();
+  tomorrow.setHours(12, 0, 0, 0);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().slice(0, 10);
+  const year = tomorrow.getFullYear();
+  const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+  const day = String(tomorrow.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 export default function AgendarPage() {
@@ -50,11 +55,11 @@ export default function AgendarPage() {
   const validate = (form: FormData): boolean => {
     const nextErrors: Record<string, string> = {};
 
-    if (!form.get('name')) nextErrors.name = 'Nome e obrigatorio';
-    if (!form.get('email')) nextErrors.email = 'Email e obrigatorio';
-    if (!form.get('phone')) nextErrors.phone = 'Telefone e obrigatorio';
+    if (!form.get('name')) nextErrors.name = 'Nome é obrigatório.';
+    if (!form.get('email')) nextErrors.email = 'E-mail é obrigatório.';
+    if (!form.get('phone')) nextErrors.phone = 'Telefone é obrigatório.';
     if (!form.get('date')) nextErrors.date = 'Selecione uma data';
-    if (!form.get('timeSlot')) nextErrors.timeSlot = 'Selecione um horario';
+    if (!form.get('timeSlot')) nextErrors.timeSlot = 'Selecione um horário';
     if (!form.get('eventType')) nextErrors.eventType = 'Selecione o tipo do evento';
 
     const requestedSlot = String(form.get('timeSlot') || '');
@@ -122,7 +127,7 @@ export default function AgendarPage() {
         setErrors({ form: data.error || 'Erro ao enviar. Tente novamente.' });
       }
     } catch {
-      setErrors({ form: 'Erro de conexao. Tente novamente.' });
+      setErrors({ form: 'Erro de conexão. Tente novamente.' });
     } finally {
       setLoading(false);
     }
@@ -140,7 +145,9 @@ export default function AgendarPage() {
             <div className={styles.infoCards}>
               {bookingContent.infoCards.map((card) => (
                 <div key={`${card.title}-${card.icon}`} className={styles.infoCard}>
-                  <span className={styles.infoCardIcon}>{card.icon}</span>
+                  <span className={styles.infoCardIcon}>
+                    {resolveContentIcon(card.icon)}
+                  </span>
                   <div>
                     <div className={styles.infoCardTitle}>{card.title}</div>
                     <div className={styles.infoCardDesc}>{card.desc}</div>
@@ -238,7 +245,7 @@ export default function AgendarPage() {
                       {errors.date && <p className={styles.fieldError}>{errors.date}</p>}
                     </div>
                     <div className="form-group">
-                      <label className="form-label">Horario</label>
+                      <label className="form-label">Horário</label>
                       <select
                         name="timeSlot"
                         className="form-select"
@@ -253,7 +260,7 @@ export default function AgendarPage() {
                           const isUnavailable = unavailableSlots.includes(timeSlot);
                           return (
                             <option key={timeSlot} value={timeSlot} disabled={isUnavailable}>
-                              {isUnavailable ? `${timeSlot} - indisponivel` : timeSlot}
+                              {isUnavailable ? `${timeSlot} - indisponível` : timeSlot}
                             </option>
                           );
                         })}
@@ -265,7 +272,7 @@ export default function AgendarPage() {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Numero de convidados (estimado)</label>
+                    <label className="form-label">Número de convidados (estimado)</label>
                     <input
                       type="number"
                       name="guests"

@@ -11,17 +11,7 @@ const contactSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const data = contactSchema.parse(body);
-
-    // For now, log the contact. SMTP integration can be added later.
-    console.log('📩 New contact form submission:', data);
-
-    // TODO: Send email notification when SMTP is configured
-    // await sendEmail({
-    //   to: process.env.SMTP_FROM,
-    //   subject: `[Quatro Ventos] ${data.subject}`,
-    //   body: `Nome: ${data.name}\nEmail: ${data.email}\n\n${data.message}`,
-    // });
+    contactSchema.parse(body);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -32,7 +22,7 @@ export async function POST(req: NextRequest) {
       );
     }
     return NextResponse.json(
-      { error: 'Erro interno' },
+      { error: 'Erro interno.' },
       { status: 500 }
     );
   }

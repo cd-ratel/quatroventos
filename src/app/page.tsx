@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { resolveContentIcon } from '@/lib/content-icons';
 import { useCountUp, useScrollAnimation } from '@/hooks/useAnimations';
 import styles from './page.module.css';
 
@@ -110,7 +111,7 @@ export default function HomePage() {
           >
             {homeContent.events.map((event) => (
               <div key={`${event.title}-${event.icon}`} className={styles.eventCard}>
-                <span className={styles.eventIcon}>{event.icon}</span>
+                <span className={styles.eventIcon}>{resolveContentIcon(event.icon)}</span>
                 <h3 className={styles.eventTitle}>{event.title}</h3>
                 <p className={styles.eventDesc}>{event.desc}</p>
               </div>

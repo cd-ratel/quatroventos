@@ -15,14 +15,14 @@ export function GeneralHomeSection({
   return (
     <>
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Informacoes gerais</h2>
+        <h2 className={styles.sectionTitle}>Informações gerais</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['venueTitle', 'Nome do espaco'],
-            ['venueSubtitle', 'Subtitulo'],
+            ['venueTitle', 'Nome do espaço'],
+            ['venueSubtitle', 'Subtítulo'],
             ['phone', 'Telefone'],
             ['email', 'Email principal'],
-            ['address', 'Endereco'],
+            ['address', 'Endereço'],
             ['whatsapp', 'WhatsApp'],
             ['instagram', 'Instagram'],
             ['facebook', 'Facebook'],
@@ -44,7 +44,7 @@ export function GeneralHomeSection({
           ))}
         </div>
         <div className="form-group">
-          <label className="form-label">Descricao institucional</label>
+          <label className="form-label">Descrição institucional</label>
           <textarea
             className="form-textarea"
             rows={4}
@@ -55,7 +55,7 @@ export function GeneralHomeSection({
       </div>
 
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Horario de atendimento</h2>
+        <h2 className={styles.sectionTitle}>Horário de atendimento</h2>
         <BusinessHoursEditor
           businessHours={settings.businessHours}
           toggleBusinessDay={helpers.toggleBusinessDay}
@@ -68,18 +68,18 @@ export function GeneralHomeSection({
         <div className={styles.fieldGrid}>
           {[
             ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero titulo'],
+            ['heroTitle', 'Hero título'],
             ['heroTitleAccent', 'Hero destaque'],
-            ['primaryCtaLabel', 'CTA primario'],
+            ['primaryCtaLabel', 'CTA primário'],
             ['secondaryCtaLabel', 'CTA secundario'],
-            ['eventsSectionLabel', 'Label da secao de eventos'],
-            ['eventsSectionTitle', 'Titulo da secao de eventos'],
-            ['aboutSectionLabel', 'Label da secao sobre'],
-            ['aboutSectionTitle', 'Titulo da secao sobre'],
-            ['aboutCtaLabel', 'Botao da secao sobre'],
+            ['eventsSectionLabel', 'Label da seção de eventos'],
+            ['eventsSectionTitle', 'Título da seção de eventos'],
+            ['aboutSectionLabel', 'Label da seção sobre'],
+            ['aboutSectionTitle', 'Título da seção sobre'],
+            ['aboutCtaLabel', 'Botão da seção sobre'],
             ['ctaLabel', 'Label do CTA final'],
-            ['ctaTitle', 'Titulo do CTA final'],
-            ['ctaPrimaryLabel', 'CTA final primario'],
+            ['ctaTitle', 'Título do CTA final'],
+            ['ctaPrimaryLabel', 'CTA final primário'],
             ['ctaSecondaryLabel', 'CTA final secundario'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
@@ -100,9 +100,9 @@ export function GeneralHomeSection({
         </div>
 
         {[
-          ['heroSubtitle', 'Hero subtitulo'],
-          ['eventsSectionSubtitle', 'Descricao da secao de eventos'],
-          ['ctaSubtitle', 'Descricao do CTA final'],
+          ['heroSubtitle', 'Hero subtítulo'],
+          ['eventsSectionSubtitle', 'Descrição da seção de eventos'],
+          ['ctaSubtitle', 'Descrição do CTA final'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
             <label className="form-label">{label}</label>
@@ -125,9 +125,9 @@ export function GeneralHomeSection({
           title="Evento"
           items={settings.homeContent.events}
           fields={[
-            { key: 'icon', label: 'Icone' },
-            { key: 'title', label: 'Titulo' },
-            { key: 'desc', label: 'Descricao', type: 'textarea', rows: 3 },
+            { key: 'icon', label: 'Ícone' },
+            { key: 'title', label: 'Título' },
+            { key: 'desc', label: 'Descrição', type: 'textarea', rows: 3 },
           ]}
           addLabel="Adicionar evento"
           createEmpty={() => ({ icon: '', title: '', desc: '' })}
@@ -139,14 +139,14 @@ export function GeneralHomeSection({
         />
 
         <ObjectListEditor
-          title="Estatistica"
+          title="Estatística"
           items={settings.homeContent.stats}
           fields={[
             { key: 'value', label: 'Valor', type: 'number' },
             { key: 'suffix', label: 'Sufixo' },
             { key: 'label', label: 'Legenda' },
           ]}
-          addLabel="Adicionar estatistica"
+          addLabel="Adicionar estatística"
           createEmpty={() => ({ value: 0, suffix: '', label: '' })}
           onChange={(index, key, value) =>
             helpers.updateArrayItem('homeContent', 'stats', index, key, value)
@@ -156,9 +156,9 @@ export function GeneralHomeSection({
         />
 
         <TextListEditor
-          title="Paragrafo da secao sobre"
+          title="Parágrafo da seção sobre"
           items={settings.homeContent.aboutParagraphs}
-          addLabel="Adicionar paragrafo"
+          addLabel="Adicionar parágrafo"
           onChange={(index, value) =>
             helpers.updateStringArrayItem('homeContent', 'aboutParagraphs', index, value)
           }

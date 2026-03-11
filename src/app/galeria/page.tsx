@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { resolveContentIcon } from '@/lib/content-icons';
 import styles from './page.module.css';
 
 interface MediaItem {
@@ -13,6 +14,7 @@ interface MediaItem {
   caption: string | null;
   mimeType: string;
   icon?: string;
+  url?: string;
 }
 
 export default function GaleriaPage() {
@@ -111,15 +113,21 @@ export default function GaleriaPage() {
                   onClick={() => setLightbox(item.id)}
                 >
                   {item.filename ? (
-                    <Image
-                      src={`/uploads/${item.filename}`}
-                      alt={item.caption || item.originalName}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
+                    item.mimeType.startsWith('image/') ? (
+                      <Image
+                        src={item.url || `/media/${item.id}`}
+                        alt={item.caption || item.originalName}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    ) : (
+                      <div className={styles.galleryPlaceholder}>🎬</div>
+                    )
                   ) : (
-                    <div className={styles.galleryPlaceholder}>{item.icon || 'IMG'}</div>
+                    <div className={styles.galleryPlaceholder}>
+                      {resolveContentIcon(item.icon || 'IMG')}
+                    </div>
                   )}
                   <div className={styles.galleryOverlay}>
                     <span className={styles.galleryCaption}>
@@ -131,7 +139,7 @@ export default function GaleriaPage() {
             </div>
           ) : (
             <div className={styles.emptyState}>
-              <span className={styles.emptyIcon}>IMG</span>
+              <span className={styles.emptyIcon}>🖼</span>
               <p>{galleryContent.emptyMessage}</p>
             </div>
           )}
@@ -150,9 +158,20 @@ export default function GaleriaPage() {
             }
 
             if (item.filename) {
+              if (item.mimeType.startsWith('video/')) {
+                return (
+                  <video
+                    src={item.url || `/media/${item.id}`}
+                    controls
+                    className={styles.lightboxImage}
+                    style={{ objectFit: 'contain' }}
+                  />
+                );
+              }
+
               return (
                 <Image
-                  src={`/uploads/${item.filename}`}
+                  src={item.url || `/media/${item.id}`}
                   alt={item.caption || ''}
                   width={1200}
                   height={800}
@@ -173,7 +192,7 @@ export default function GaleriaPage() {
                   border: '1px solid var(--glass-border)',
                 }}
               >
-                {item.icon || 'IMG'}
+                {resolveContentIcon(item.icon || 'IMG')}
               </div>
             );
           })()}

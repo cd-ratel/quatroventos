@@ -12,6 +12,7 @@ interface MediaItem {
   size: number;
   category: string;
   caption: string | null;
+  url?: string;
 }
 
 const categories = [
@@ -28,15 +29,20 @@ export default function MidiaPage() {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [category, setCategory] = useState('gallery');
+  const [error, setError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const fetchMedia = async () => {
     try {
       const res = await fetch('/api/media');
+      if (!res.ok) {
+        throw new Error('Não foi possível carregar a mídia.');
+      }
       const data = await res.json();
       setMedia(data);
+      setError('');
     } catch {
-      // silent
+      setError('Não foi possível carregar a mídia.');
     }
   };
 
@@ -46,18 +52,27 @@ export default function MidiaPage() {
 
   const uploadFiles = async (files: FileList | File[]) => {
     setUploading(true);
+    setError('');
     const formData = new FormData();
     Array.from(files).forEach((f) => formData.append('files', f));
     formData.append('category', category);
 
     try {
-      await fetch('/api/media', {
+      const response = await fetch('/api/media', {
         method: 'POST',
         body: formData,
       });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Não foi possível enviar os arquivos.');
+      }
       fetchMedia();
-    } catch {
-      // silent
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : 'Não foi possível enviar os arquivos.'
+      );
     } finally {
       setUploading(false);
     }
@@ -74,10 +89,18 @@ export default function MidiaPage() {
   const deleteMedia = async (id: string) => {
     if (!confirm('Excluir esta mídia?')) return;
     try {
-      await fetch(`/api/media?id=${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/media?id=${id}`, { method: 'DELETE' });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Não foi possível excluir a mídia.');
+      }
       fetchMedia();
-    } catch {
-      // silent
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'Não foi possível excluir a mídia.'
+      );
     }
   };
 
@@ -91,6 +114,7 @@ export default function MidiaPage() {
     <>
       <h1 className={styles.title}>Gerenciador de Mídia</h1>
       <p className={styles.subtitle}>{media.length} arquivo{media.length !== 1 ? 's' : ''}</p>
+      {error ? <p className={styles.emptyHint}>{error}</p> : null}
 
       {/* Upload Zone */}
       <div
@@ -104,7 +128,7 @@ export default function MidiaPage() {
           ref={fileRef}
           type="file"
           multiple
-          accept="image/*,video/*"
+          accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm"
           style={{ display: 'none' }}
           onChange={(e) => e.target.files && uploadFiles(e.target.files)}
         />
@@ -119,7 +143,9 @@ export default function MidiaPage() {
             <p className={styles.uploadText}>
               Arraste imagens/vídeos aqui ou <strong>clique para selecionar</strong>
             </p>
-            <p className={styles.uploadHint}>Máx. 50MB por arquivo • JPG, PNG, MP4, MOV</p>
+            <p className={styles.uploadHint}>
+              Máx. 50MB por arquivo • JPG, PNG, WebP, AVIF, MP4 e WebM
+            </p>
           </>
         )}
       </div>
@@ -148,7 +174,7 @@ export default function MidiaPage() {
               <div className={styles.mediaPreview}>
                 {item.mimeType.startsWith('image/') ? (
                   <Image
-                    src={`/uploads/${item.filename}`}
+                    src={item.url || `/media/${item.id}`}
                     alt={item.caption || item.originalName}
                     fill
                     style={{ objectFit: 'cover' }}

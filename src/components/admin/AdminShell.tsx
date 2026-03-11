@@ -9,8 +9,8 @@ import styles from '@/app/admin/admin.module.css';
 const navItems = [
   { href: '/admin', icon: '📊', label: 'Dashboard' },
   { href: '/admin/agendamentos', icon: '📅', label: 'Agendamentos' },
-  { href: '/admin/midia', icon: '🖼️', label: 'Midia' },
-  { href: '/admin/configuracoes', icon: '⚙️', label: 'Configuracoes' },
+  { href: '/admin/midia', icon: '🖼️', label: 'Mídia' },
+  { href: '/admin/configuracoes', icon: '⚙️', label: 'Configurações' },
 ];
 
 export default function AdminShell({
@@ -38,16 +38,16 @@ export default function AdminShell({
   const pageTitle = (() => {
     if (pathname === '/admin') return 'Dashboard';
     if (pathname === '/admin/agendamentos') return 'Agendamentos';
-    if (pathname === '/admin/midia') return 'Galeria de Midia';
-    if (pathname === '/admin/configuracoes') return 'Configuracoes';
+    if (pathname === '/admin/midia') return 'Galeria de Mídia';
+    if (pathname === '/admin/configuracoes') return 'Configurações';
     return 'Admin';
   })();
 
   const pageSubtitle = (() => {
-    if (pathname === '/admin') return 'Visao geral do Quatro Ventos';
+    if (pathname === '/admin') return 'Visão geral do Quatro Ventos';
     if (pathname === '/admin/agendamentos') return 'Gerencie os agendamentos de visita';
-    if (pathname === '/admin/midia') return 'Gerencie fotos e videos do espaco';
-    if (pathname === '/admin/configuracoes') return 'Conteudo, contato e textos do site';
+    if (pathname === '/admin/midia') return 'Gerencie fotos e vídeos do espaço';
+    if (pathname === '/admin/configuracoes') return 'Conteúdo, contato e textos do site';
     return '';
   })();
 
@@ -86,7 +86,7 @@ export default function AdminShell({
             </Link>
           ))}
 
-          <span className={styles.sidebarSection}>Acesso Rapido</span>
+          <span className={styles.sidebarSection}>Acesso Rápido</span>
 
           <a
             href={publicUrl}
@@ -95,7 +95,7 @@ export default function AdminShell({
             rel="noopener noreferrer"
           >
             <span className={styles.sidebarIcon}>🌐</span>
-            Ver Site Publico
+            Ver Site Público
           </a>
         </nav>
 

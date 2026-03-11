@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
     });
 
     if (result?.error) {
-      setError('Email ou senha invalidos');
+      setError('E-mail ou senha inválidos.');
       setLoading(false);
       return;
     }
