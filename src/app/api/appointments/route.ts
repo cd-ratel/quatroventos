@@ -146,6 +146,88 @@ async function notifyAdminAboutAppointment(appointment: Appointment) {
   });
 }
 
+async function notifyClientAboutStatusChange(appointment: Appointment, status: string) {
+  if (status !== 'confirmed' && status !== 'cancelled') {
+    return;
+  }
+
+  const settings = await prisma.settings.findUnique({
+    where: { id: 'main' },
+    select: { venueTitle: true, phone: true, email: true, address: true },
+  });
+
+  const venueName = settings?.venueTitle || 'Quatro Ventos';
+  const safeName = escapeHtml(appointment.name);
+  const formattedDate = appointment.date.toLocaleDateString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+  });
+
+  const isConfirmed = status === 'confirmed';
+  const statusLabel = isConfirmed ? 'Confirmada' : 'Cancelada';
+  const statusColor = isConfirmed ? '#4ade80' : '#f87171';
+  const emoji = isConfirmed ? '✅' : '❌';
+
+  const subject = isConfirmed
+    ? `${emoji} Sua visita ao ${venueName} foi confirmada!`
+    : `${emoji} Sua visita ao ${venueName} foi cancelada`;
+
+  const message = isConfirmed
+    ? `Temos o prazer de informar que sua visita ao ${venueName} foi confirmada! Estamos ansiosos para recebê-lo(a).`
+    : `Infelizmente, sua visita ao ${venueName} foi cancelada. Se desejar reagendar, entre em contato conosco.`;
+
+  const contactInfo = [
+    settings?.phone ? `📞 ${settings.phone}` : null,
+    settings?.email ? `✉️ ${settings.email}` : null,
+    settings?.address ? `📍 ${settings.address}` : null,
+  ].filter(Boolean).join(' | ');
+
+  await sendEmail({
+    to: appointment.email,
+    subject,
+    text: [
+      `Olá, ${appointment.name}!`,
+      '',
+      message,
+      '',
+      `Detalhes da visita:`,
+      `Status: ${statusLabel}`,
+      `Data: ${formattedDate}`,
+      `Horário: ${appointment.timeSlot}`,
+      `Tipo de evento: ${appointment.eventType}`,
+      '',
+      contactInfo,
+      '',
+      `Atenciosamente,`,
+      `Equipe ${venueName}`,
+    ].join('\n'),
+    html: `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a1628; color: #faf8f5; border-radius: 16px; overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #0c1425, #162340); padding: 32px; text-align: center; border-bottom: 2px solid rgba(201, 169, 110, 0.2);">
+          <h1 style="font-size: 24px; margin: 0; color: #c9a96e;">${venueName}</h1>
+          <p style="margin: 8px 0 0; color: rgba(250, 248, 245, 0.5); font-size: 14px;">Espaço para Eventos</p>
+        </div>
+        <div style="padding: 32px;">
+          <p style="font-size: 16px; margin: 0 0 16px;">Olá, <strong>${safeName}</strong>!</p>
+          <p style="font-size: 15px; color: rgba(250, 248, 245, 0.8); margin: 0 0 24px;">${message}</p>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(201, 169, 110, 0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+              <span style="background: ${statusColor}22; color: ${statusColor}; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em;">${statusLabel}</span>
+            </div>
+            <p style="margin: 8px 0; font-size: 14px;"><strong style="color: #c9a96e;">Data:</strong> ${formattedDate}</p>
+            <p style="margin: 8px 0; font-size: 14px;"><strong style="color: #c9a96e;">Horário:</strong> ${appointment.timeSlot}</p>
+            <p style="margin: 8px 0; font-size: 14px;"><strong style="color: #c9a96e;">Evento:</strong> ${escapeHtml(appointment.eventType)}</p>
+            ${appointment.guests ? `<p style="margin: 8px 0; font-size: 14px;"><strong style="color: #c9a96e;">Convidados:</strong> ${appointment.guests}</p>` : ''}
+          </div>
+          ${contactInfo ? `<p style="font-size: 13px; color: rgba(250, 248, 245, 0.4); text-align: center;">${contactInfo}</p>` : ''}
+        </div>
+        <div style="background: rgba(201, 169, 110, 0.05); padding: 16px 32px; text-align: center; border-top: 1px solid rgba(201, 169, 110, 0.1);">
+          <p style="margin: 0; font-size: 12px; color: rgba(250, 248, 245, 0.3);">Equipe ${venueName}</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -285,6 +367,9 @@ export async function PATCH(req: NextRequest) {
         ),
       },
     });
+
+    // Notify the client about their appointment status change
+    await notifyClientAboutStatusChange(updatedAppointment, status);
 
     return NextResponse.json(updatedAppointment);
   } catch (error) {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
 import { resolveContentIcon } from '@/lib/content-icons';
 import styles from './page.module.css';
@@ -114,12 +113,11 @@ export default function GaleriaPage() {
                 >
                   {item.filename ? (
                     item.mimeType.startsWith('image/') ? (
-                      <Image
+                      <img
                         src={item.url || `/media/${item.id}`}
                         alt={item.caption || item.originalName}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
+                        loading="lazy"
                       />
                     ) : (
                       <div className={styles.galleryPlaceholder}>🎬</div>
@@ -170,13 +168,11 @@ export default function GaleriaPage() {
               }
 
               return (
-                <Image
+                <img
                   src={item.url || `/media/${item.id}`}
                   alt={item.caption || ''}
-                  width={1200}
-                  height={800}
                   className={styles.lightboxImage}
-                  style={{ objectFit: 'contain' }}
+                  style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain' }}
                 />
               );
             }

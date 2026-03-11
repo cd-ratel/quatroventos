@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
 import styles from '@/app/admin/midia/midia.module.css';
 
 interface MediaItem {
@@ -173,12 +172,11 @@ export default function MidiaPage() {
             <div key={item.id} className={styles.mediaCard}>
               <div className={styles.mediaPreview}>
                 {item.mimeType.startsWith('image/') ? (
-                  <Image
+                  <img
                     src={item.url || `/media/${item.id}`}
                     alt={item.caption || item.originalName}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="200px"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
+                    loading="lazy"
                   />
                 ) : (
                   <div className={styles.videoPlaceholder}>🎬</div>
