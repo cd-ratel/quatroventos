@@ -1,0 +1,151 @@
+.bookingPage {
+  padding-top: calc(var(--nav-height) + var(--space-3xl));
+  padding-bottom: var(--space-4xl);
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--color-midnight), var(--color-navy) 30%, var(--color-navy));
+}
+
+.bookingGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: start;
+}
+
+.bookingInfo {
+  padding-top: var(--space-2xl);
+}
+
+.bookingTitle {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-lg);
+  color: var(--color-ivory);
+}
+
+.bookingSubtitle {
+  font-size: 1.05rem;
+  color: rgba(250, 248, 245, 0.6);
+  line-height: 1.8;
+  margin-bottom: var(--space-2xl);
+}
+
+.infoCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.infoCard {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.infoCard:hover {
+  border-color: rgba(201, 169, 110, 0.2);
+}
+
+.infoCardIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.infoCardTitle {
+  font-weight: 600;
+  color: var(--color-ivory);
+  margin-bottom: var(--space-xs);
+  font-size: 0.95rem;
+}
+
+.infoCardDesc {
+  font-size: 0.85rem;
+  color: rgba(250, 248, 245, 0.5);
+}
+
+/* Form Card */
+.formCard {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.formCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-gold-shimmer);
+}
+
+.formTitle {
+  font-size: 1.5rem;
+  color: var(--color-ivory);
+  margin-bottom: var(--space-xs);
+}
+
+.formSubtitle {
+  font-size: 0.9rem;
+  color: rgba(250, 248, 245, 0.5);
+  margin-bottom: var(--space-2xl);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: var(--space-md);
+}
+
+/* Success State */
+.successState {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+.successIcon {
+  font-size: 4rem;
+  margin-bottom: var(--space-xl);
+  display: block;
+  animation: scaleIn 0.5s ease;
+}
+
+.successTitle {
+  font-size: 1.5rem;
+  color: var(--color-ivory);
+  margin-bottom: var(--space-md);
+}
+
+.successMsg {
+  color: rgba(250, 248, 245, 0.6);
+  margin-bottom: var(--space-2xl);
+}
+
+.fieldError {
+  font-size: 0.8rem;
+  color: var(--color-error);
+  margin-top: var(--space-xs);
+}
+
+@media (max-width: 768px) {
+  .bookingGrid {
+    grid-template-columns: 1fr;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
