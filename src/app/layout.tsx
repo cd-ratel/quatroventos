@@ -3,7 +3,7 @@ import './globals.css';
 import ConditionalLayout from '@/components/ConditionalLayout';
 import { getServerSiteSettings } from '@/lib/server-site-settings';
 
-const iconVersion = '20260311';
+const iconVersion = '20260312';
 
 export const metadata: Metadata = {
   title: {
