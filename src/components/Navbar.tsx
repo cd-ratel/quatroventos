@@ -14,6 +14,8 @@ import {
 } from '@/lib/public-site';
 import styles from './Navbar.module.css';
 
+type HeaderMode = 'overlay' | 'blend' | 'solid';
+
 function splitVenueTitle(value: string) {
   const parts = value.trim().split(/\s+/);
 
@@ -30,7 +32,8 @@ function splitVenueTitle(value: string) {
 export default function Navbar() {
   const pathname = usePathname();
   const isHome = pathname === '/';
-  const [lightHeader, setLightHeader] = useState(!isHome);
+  const [headerMode, setHeaderMode] = useState<HeaderMode>(isHome ? 'overlay' : 'solid');
+  const [compactHeader, setCompactHeader] = useState(!isHome);
   const [mobileOpen, setMobileOpen] = useState(false);
   const settings = useSiteSettings();
   const { lead, accent } = splitVenueTitle(settings.venueTitle);
@@ -45,28 +48,46 @@ export default function Navbar() {
     [settings.phone, settings.venueTitle, settings.whatsapp]
   );
   const hasExternalWhatsApp = whatsappHref.startsWith('http');
-  const isTransparent = isHome && !lightHeader && !mobileOpen;
+  const showUtilityBar = !mobileOpen && (!compactHeader || headerMode === 'overlay');
 
   useEffect(() => {
     const syncHeaderMode = () => {
+      const scrollY = window.scrollY;
+
       if (!isHome) {
-        setLightHeader(true);
+        setHeaderMode('solid');
+        setCompactHeader(scrollY > 24);
         return;
       }
 
       const hero = document.querySelector('[data-home-hero]') as HTMLElement | null;
 
       if (!hero) {
-        setLightHeader(window.scrollY > 48);
+        if (scrollY < 56) {
+          setHeaderMode('overlay');
+        } else if (scrollY < 220) {
+          setHeaderMode('blend');
+        } else {
+          setHeaderMode('solid');
+        }
+
+        setCompactHeader(scrollY > 84);
         return;
       }
 
-      const triggerPoint = Math.max(
-        120,
-        hero.offsetHeight - window.innerHeight * 0.35
-      );
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      const overlayThreshold = window.innerHeight * 0.62;
+      const solidThreshold = window.innerHeight * 0.18;
 
-      setLightHeader(window.scrollY >= triggerPoint);
+      if (heroBottom > overlayThreshold && scrollY < 120) {
+        setHeaderMode('overlay');
+      } else if (heroBottom > solidThreshold) {
+        setHeaderMode('blend');
+      } else {
+        setHeaderMode('solid');
+      }
+
+      setCompactHeader(scrollY > 88 || heroBottom <= overlayThreshold);
     };
 
     syncHeaderMode();
@@ -85,6 +106,7 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -93,7 +115,7 @@ export default function Navbar() {
   return (
     <>
       <div
-        className={`${styles.utilityBar} ${isTransparent ? styles.utilityBarTransparent : ''}`}
+        className={`${styles.utilityBar} ${headerMode === 'overlay' ? styles.utilityBarTransparent : ''} ${!showUtilityBar ? styles.utilityBarHidden : ''}`}
       >
         <div className={styles.utilityInner}>
           <div className={styles.utilityMeta}>
@@ -122,7 +144,7 @@ export default function Navbar() {
       </div>
 
       <header
-        className={`${styles.header} ${isTransparent ? styles.headerTransparent : styles.headerSolid}`}
+        className={`${styles.header} ${headerMode === 'overlay' ? styles.headerOverlay : ''} ${headerMode === 'blend' ? styles.headerBlend : ''} ${headerMode === 'solid' ? styles.headerSolid : ''} ${compactHeader ? styles.headerCompact : ''}`}
       >
         <div className={styles.headerInner}>
           <Link href="/" className={styles.brand} aria-label={settings.venueTitle}>
