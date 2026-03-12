@@ -166,7 +166,7 @@ export default function HomePage() {
 
   return (
     <>
-      <section className={styles.hero}>
+      <section className={styles.hero} data-home-hero>
         <div className={styles.heroSlides}>
           {heroSlides.map((slide, index) => (
             <article

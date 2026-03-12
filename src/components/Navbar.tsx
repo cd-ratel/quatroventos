@@ -29,7 +29,8 @@ function splitVenueTitle(value: string) {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
+  const isHome = pathname === '/';
+  const [lightHeader, setLightHeader] = useState(!isHome);
   const [mobileOpen, setMobileOpen] = useState(false);
   const settings = useSiteSettings();
   const { lead, accent } = splitVenueTitle(settings.venueTitle);
@@ -44,14 +45,39 @@ export default function Navbar() {
     [settings.phone, settings.venueTitle, settings.whatsapp]
   );
   const hasExternalWhatsApp = whatsappHref.startsWith('http');
-  const isTransparent = pathname === '/' && !scrolled && !mobileOpen;
+  const isTransparent = isHome && !lightHeader && !mobileOpen;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    const syncHeaderMode = () => {
+      if (!isHome) {
+        setLightHeader(true);
+        return;
+      }
+
+      const hero = document.querySelector('[data-home-hero]') as HTMLElement | null;
+
+      if (!hero) {
+        setLightHeader(window.scrollY > 48);
+        return;
+      }
+
+      const triggerPoint = Math.max(
+        120,
+        hero.offsetHeight - window.innerHeight * 0.35
+      );
+
+      setLightHeader(window.scrollY >= triggerPoint);
+    };
+
+    syncHeaderMode();
+    window.addEventListener('scroll', syncHeaderMode, { passive: true });
+    window.addEventListener('resize', syncHeaderMode);
+
+    return () => {
+      window.removeEventListener('scroll', syncHeaderMode);
+      window.removeEventListener('resize', syncHeaderMode);
+    };
+  }, [isHome]);
 
   useEffect(() => {
     setMobileOpen(false);
