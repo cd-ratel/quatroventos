@@ -17,11 +17,13 @@ const SiteSettingsContext = createContext<SiteSettings>(createDefaultSiteSetting
 
 export function SiteSettingsProvider({
   children,
+  initialSettings,
 }: {
   children: ReactNode;
+  initialSettings?: SiteSettings;
 }) {
   const [settings, setSettings] = useState<SiteSettings>(() =>
-    createDefaultSiteSettings()
+    initialSettings ?? createDefaultSiteSettings()
   );
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export function SiteSettingsProvider({
         }
       })
       .catch(() => {
-        if (!cancelled) {
+        if (!cancelled && !initialSettings) {
           setSettings(createDefaultSiteSettings());
         }
       });
@@ -43,7 +45,7 @@ export function SiteSettingsProvider({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialSettings]);
 
   return (
     <SiteSettingsContext.Provider value={settings}>

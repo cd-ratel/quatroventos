@@ -145,8 +145,8 @@ export default function Footer() {
           <div className={styles.contactPanel}>
             <strong>Atendimento consultivo</strong>
             <p>
-              Organizamos visitas, dúvidas e orçamento com retorno rápido, sempre em um
-              atendimento mais humano e alinhado ao tipo do seu evento.
+              Organizamos visitas, d\u00FAvidas e or\u00E7amento com retorno r\u00E1pido, sempre em
+              um atendimento mais humano e alinhado ao tipo do seu evento.
             </p>
 
             {hasExternalWhatsApp ? (
@@ -185,7 +185,7 @@ export default function Footer() {
       </div>
 
       <div className={styles.bottomBar}>
-        <p>© {year} {settings.venueTitle}. Todos os direitos reservados.</p>
+        <p>{'\u00A9'} {year} {settings.venueTitle}. Todos os direitos reservados.</p>
         <p>{settings.footerContent.creditsText}</p>
       </div>
     </footer>

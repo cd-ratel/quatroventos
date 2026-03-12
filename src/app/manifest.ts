@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Quatro Ventos',
     short_name: 'Quatro Ventos',
     description:
-      'Espaço para eventos com foco em casamentos, festas infantis, reuniões e celebrações especiais.',
+      'Espa\u00E7o para eventos com foco em casamentos, festas infantis, reuni\u00F5es e celebra\u00E7\u00F5es especiais.',
     start_url: '/',
     display: 'standalone',
     background_color: '#0a1628',

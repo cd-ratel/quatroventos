@@ -155,7 +155,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <nav className={styles.desktopNav} aria-label="Navegação principal">
+          <nav className={styles.desktopNav} aria-label="Navegacao principal">
             {navLinks.map((link) => (
               <Link
                 key={`${link.href}-${link.label}`}
@@ -223,7 +223,7 @@ export default function Navbar() {
             onClick={() => setMobileOpen(false)}
             aria-label="Fechar menu"
           >
-            ×
+            {'\u00D7'}
           </button>
         </div>
 
@@ -232,7 +232,7 @@ export default function Navbar() {
           {hasPhone ? <a href={phoneHref}>{phoneLabel}</a> : null}
         </div>
 
-        <nav className={styles.mobileNav} aria-label="Navegação mobile">
+        <nav className={styles.mobileNav} aria-label="Navegacao mobile">
           {navLinks.map((link) => (
             <Link
               key={`${link.href}-${link.label}-mobile`}

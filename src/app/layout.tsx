@@ -1,22 +1,23 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import ConditionalLayout from '@/components/ConditionalLayout';
+import { getServerSiteSettings } from '@/lib/server-site-settings';
 
 const iconVersion = '20260311';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Quatro Ventos | Espaço para Eventos',
+    default: 'Quatro Ventos | Espa\u00E7o para Eventos',
     template: '%s | Quatro Ventos',
   },
   description:
-    'Quatro Ventos - O espaço perfeito para casamentos, festas infantis, reuniões corporativas e confraternizações. Agende sua visita.',
+    'Quatro Ventos - O espa\u00E7o perfeito para casamentos, festas infantis, reuni\u00F5es corporativas e confraterniza\u00E7\u00F5es. Agende sua visita.',
   keywords: [
-    'salão de festas',
-    'espaço para eventos',
+    'sal\u00E3o de festas',
+    'espa\u00E7o para eventos',
     'casamento',
     'festa infantil',
-    'reunião corporativa',
+    'reuni\u00E3o corporativa',
     'buffet',
     'quatroventos',
   ],
@@ -30,8 +31,8 @@ export const metadata: Metadata = {
     shortcut: `/favicon.ico?v=${iconVersion}`,
   },
   openGraph: {
-    title: 'Quatro Ventos | Espaço para Eventos',
-    description: 'O espaço perfeito para celebrar os momentos mais especiais da sua vida.',
+    title: 'Quatro Ventos | Espa\u00E7o para Eventos',
+    description: 'O espa\u00E7o perfeito para celebrar os momentos mais especiais da sua vida.',
     url: 'https://quatroventos.redecm.com.br',
     siteName: 'Quatro Ventos',
     locale: 'pt_BR',
@@ -39,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Quatro Ventos | Espaço para Eventos',
-    description: 'O espaço perfeito para celebrar os momentos mais especiais da sua vida.',
+    title: 'Quatro Ventos | Espa\u00E7o para Eventos',
+    description: 'O espa\u00E7o perfeito para celebrar os momentos mais especiais da sua vida.',
   },
 };
 
@@ -48,15 +49,17 @@ export const viewport: Viewport = {
   themeColor: '#121618',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const initialSettings = await getServerSiteSettings();
+
   return (
     <html lang="pt-BR">
       <body>
-        <ConditionalLayout>{children}</ConditionalLayout>
+        <ConditionalLayout initialSettings={initialSettings}>{children}</ConditionalLayout>
       </body>
     </html>
   );

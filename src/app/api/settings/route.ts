@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
-import {
-  createDefaultSiteSettings,
-  normalizeSiteSettings,
-  siteSettingsSchema,
-} from '@/lib/site-settings';
+import { normalizeSiteSettings, siteSettingsSchema } from '@/lib/site-settings';
+import { getServerSiteSettings } from '@/lib/server-site-settings';
 import { assertRateLimit } from '@/lib/rate-limit';
 import {
   assertTrustedMutationRequest,
@@ -16,36 +13,15 @@ import { prisma } from '@/lib/prisma';
 
 const SETTINGS_BODY_LIMIT_BYTES = 256 * 1024;
 
-async function getOrCreateSettings() {
-  const existingSettings = await prisma.settings.findUnique({
-    where: { id: 'main' },
-  });
-
-  if (existingSettings) {
-    return normalizeSiteSettings(existingSettings as unknown as Record<string, unknown>);
-  }
-
-  const defaults = createDefaultSiteSettings();
-
-  await prisma.settings.create({
-    data: {
-      id: 'main',
-      ...defaults,
-    },
-  });
-
-  return defaults;
-}
-
 export async function GET() {
-  const settings = await getOrCreateSettings();
+  const settings = await getServerSiteSettings();
   return NextResponse.json(settings);
 }
 
 export async function PUT(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+    return NextResponse.json({ error: 'N\u00E3o autorizado.' }, { status: 401 });
   }
 
   const trustedRequestError = assertTrustedMutationRequest(req, 'admin');
@@ -57,7 +33,7 @@ export async function PUT(req: NextRequest) {
     keyPrefix: 'admin-settings-write',
     maxRequests: 30,
     windowMs: 10 * 60 * 1000,
-    message: 'Muitas alterações de configuração em pouco tempo. Aguarde alguns instantes.',
+    message: 'Muitas altera\u00E7\u00F5es de configura\u00E7\u00E3o em pouco tempo. Aguarde alguns instantes.',
   });
   if (rateLimitError) {
     return rateLimitError;
@@ -67,7 +43,7 @@ export async function PUT(req: NextRequest) {
     const body = z
       .record(z.unknown())
       .parse(await readJsonBodyWithLimit<unknown>(req, SETTINGS_BODY_LIMIT_BYTES));
-    const currentSettings = await getOrCreateSettings();
+    const currentSettings = await getServerSiteSettings();
     const payload = siteSettingsSchema.parse({
       ...currentSettings,
       ...body,
@@ -92,14 +68,14 @@ export async function PUT(req: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0]?.message || 'Dados inválidos.' },
+        { error: error.errors[0]?.message || 'Dados inv\u00E1lidos.' },
         { status: 400 }
       );
     }
 
     console.error('Settings update error:', error instanceof Error ? error.message : 'unknown');
     return NextResponse.json(
-      { error: 'Erro ao atualizar as configurações.' },
+      { error: 'Erro ao atualizar as configura\u00E7\u00F5es.' },
       { status: 500 }
     );
   }

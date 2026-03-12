@@ -10,11 +10,11 @@ const DEFAULT_WHATSAPP_URL = `https://wa.me/${DEFAULT_WHATSAPP}`;
 
 const categoryLabelMap: Record<string, string> = {
   all: 'Todos',
-  venue: 'Espaço',
+  venue: 'Espa\u00E7o',
   wedding: 'Casamentos',
   children: 'Festas infantis',
   corporate: 'Corporativo',
-  decoration: 'Decoração',
+  decoration: 'Decora\u00E7\u00E3o',
   gallery: 'Galeria geral',
 };
 
@@ -53,9 +53,7 @@ export function createWhatsAppHref(phone: string, venueTitle: string) {
     return '/agendar';
   }
 
-  const message = encodeURIComponent(
-    `Olá! Gostaria de saber mais sobre o ${venueTitle}.`
-  );
+  const message = encodeURIComponent(`Ol\u00E1! Gostaria de saber mais sobre o ${venueTitle}.`);
 
   return `https://wa.me/${normalizePhone(phone)}?text=${message}`;
 }
