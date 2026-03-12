@@ -111,6 +111,7 @@ export function ObjectListEditor<T extends Record<string, unknown>>({
           <div className={styles.fieldGrid}>
             {fields.map((field) => {
               const inputValue = item[field.key];
+
               if (field.type === 'textarea') {
                 return (
                   <div key={`${title}-${index}-${field.key}`} className="form-group">
@@ -194,9 +195,7 @@ export function BusinessHoursEditor({
                     type="time"
                     className="form-input"
                     value={value.open}
-                    onChange={(event) =>
-                      updateBusinessHour(day, 'open', event.target.value)
-                    }
+                    onChange={(event) => updateBusinessHour(day, 'open', event.target.value)}
                   />
                 </div>
                 <div className="form-group">
@@ -205,9 +204,7 @@ export function BusinessHoursEditor({
                     type="time"
                     className="form-input"
                     value={value.close}
-                    onChange={(event) =>
-                      updateBusinessHour(day, 'close', event.target.value)
-                    }
+                    onChange={(event) => updateBusinessHour(day, 'close', event.target.value)}
                   />
                 </div>
               </div>

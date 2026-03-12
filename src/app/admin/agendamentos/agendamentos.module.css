@@ -1,131 +1,200 @@
-/* Agendamentos — Elegant Warm Admin */
-.title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  margin-bottom: var(--space-xs);
+.page {
+  display: grid;
+  gap: 1rem;
 }
 
-.subtitle {
-  font-size: 0.88rem;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-xl);
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pageHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.pageHeader p {
+  margin: 0.35rem 0 0;
+  color: #6f594b;
 }
 
 .filters {
   display: flex;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
   flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
-.filterBtn {
-  padding: var(--space-sm) var(--space-lg);
-  border: 1.5px solid #ddd;
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--color-text-light);
-  font-family: var(--font-accent);
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+.filterButton {
+  min-height: 2.6rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(59, 40, 27, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #6f594b;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.filterBtn:hover,
-.filterBtn.active {
-  border-color: var(--color-accent);
-  color: var(--color-accent-dark);
-  background: var(--color-accent-glow);
+.filterButtonActive,
+.filterButton:hover {
+  border-color: rgba(180, 124, 77, 0.24);
+  background: rgba(180, 124, 77, 0.12);
+  color: #8d5b31;
 }
 
-.tableWrapper {
-  background: var(--color-bg);
-  border: 1px solid #eee;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-}
-
-.tableHead {
+.cardList {
   display: grid;
-  grid-template-columns: 2fr 1.2fr 1fr 0.8fr 1.5fr 1fr 1fr;
-  gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
+  gap: 0.9rem;
+}
+
+.appointmentCard,
+.emptyState {
+  border: 1px solid rgba(59, 40, 27, 0.1);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 20px 42px rgba(41, 26, 16, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.appointmentCard {
+  padding: 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.cardMain,
+.cardDetails {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cardIdentity {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.cardIdentity strong {
+  color: #433128;
+}
+
+.cardIdentity span,
+.cardMeta,
+.cardDetails p {
+  color: #6f594b;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.cardDetails {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(59, 40, 27, 0.08);
+}
+
+.cardDetails small,
+.messageBox small {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #958171;
+  font-family: var(--font-ui);
   font-size: 0.68rem;
   font-weight: 700;
-  color: var(--color-text-muted);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  border-bottom: 1px solid #eee;
-  font-family: var(--font-accent);
-  background: var(--color-bg-alt);
 }
 
-.tableRow {
+.cardDetails p,
+.messageBox p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.primaryAction,
+.secondaryAction,
+.dangerAction {
+  min-height: 2.5rem;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.primaryAction {
+  border: 0;
+  background: linear-gradient(135deg, #b47c4d 0%, #8d5b31 100%);
+  color: #fff7f0;
+}
+
+.secondaryAction {
+  border: 1px solid rgba(59, 40, 27, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  color: #433128;
+}
+
+.dangerAction {
+  border: 1px solid rgba(177, 79, 73, 0.22);
+  background: rgba(177, 79, 73, 0.06);
+  color: #a14742;
+}
+
+.messageBox {
+  padding: 1rem;
+  border-radius: 1.2rem;
+  background: rgba(180, 124, 77, 0.08);
+}
+
+.loading,
+.emptyState {
   display: grid;
-  grid-template-columns: 2fr 1.2fr 1fr 0.8fr 1.5fr 1fr 1fr;
-  gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
-  font-size: 0.88rem;
-  color: var(--color-text);
-  border-bottom: 1px solid #f5f5f5;
-  align-items: center;
-  transition: background var(--transition-fast);
+  place-items: center;
+  min-height: 12rem;
 }
-
-.tableRow:last-child { border-bottom: none; }
-.tableRow:hover { background: var(--color-bg-warm); }
-
-.cellName { font-weight: 600; color: var(--color-heading); }
-.cellSub { font-size: 0.78rem; color: var(--color-text-muted); }
-
-.actions { display: flex; gap: var(--space-sm); }
-
-.actionConfirm,
-.actionCancel,
-.actionDelete {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 4px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-}
-
-.actionConfirm:hover { background: rgba(92, 184, 92, 0.1); }
-.actionCancel:hover { background: rgba(240, 173, 78, 0.1); }
-.actionDelete:hover { background: rgba(217, 83, 79, 0.1); }
-
-.loading { display: flex; justify-content: center; padding: var(--space-3xl); }
 
 .emptyState {
+  padding: 1.5rem;
   text-align: center;
-  padding: var(--space-3xl);
-  color: var(--color-text-muted);
 }
 
-.emptyState span {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: var(--space-md);
-  color: var(--color-accent-pale);
+.emptyState strong {
+  color: #433128;
 }
 
-@media (max-width: 1024px) {
-  .tableHead, .tableRow {
-    grid-template-columns: 1.5fr 1fr 1fr 0.8fr 1fr;
+.emptyState p {
+  max-width: 28rem;
+  margin: 0.4rem 0 0;
+  color: #6f594b;
+}
+
+@media (max-width: 900px) {
+  .pageHeader,
+  .cardMain,
+  .cardDetails {
+    flex-direction: column;
   }
-  .tableHead span:nth-child(5),
-  .tableRow div:nth-child(5) { display: none; }
-}
 
-@media (max-width: 768px) {
-  .tableHead, .tableRow {
-    grid-template-columns: 1fr;
-    gap: var(--space-xs);
+  .cardMeta,
+  .cardActions {
+    justify-content: flex-start;
   }
-  .tableWrapper { overflow-x: auto; }
 }

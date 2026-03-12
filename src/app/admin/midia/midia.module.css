@@ -1,164 +1,206 @@
-/* Mídia — Elegant Warm Admin */
-.title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  margin-bottom: var(--space-xs);
+.page {
+  display: grid;
+  gap: 1rem;
 }
 
-.subtitle {
-  font-size: 0.88rem;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-xl);
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pageHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.pageHeader p {
+  margin: 0.35rem 0 0;
+  color: #6f594b;
+}
+
+.errorMessage {
+  max-width: 28rem;
+  margin: 0;
+  color: #a14742;
+  line-height: 1.6;
+}
+
+.uploadZone,
+.emptyState {
+  border: 1px dashed rgba(180, 124, 77, 0.28);
+  border-radius: 1.6rem;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 20px 42px rgba(41, 26, 16, 0.08);
+  backdrop-filter: blur(14px);
 }
 
 .uploadZone {
-  border: 2px dashed rgba(196, 149, 106, 0.3);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3xl);
+  padding: 2rem;
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
   text-align: center;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  background: var(--color-accent-glow);
-  margin-bottom: var(--space-xl);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.uploadZone:hover, .uploadZone.dragOver {
-  border-color: var(--color-accent);
-  background: rgba(196, 149, 106, 0.08);
-  box-shadow: var(--shadow-accent);
+.uploadZone:hover,
+.uploadZoneActive {
+  transform: translateY(-2px);
+  border-color: rgba(180, 124, 77, 0.42);
+  background: rgba(255, 251, 247, 0.9);
 }
 
-.uploadIcon { font-size: 3rem; display: block; margin-bottom: var(--space-md); }
-.uploadText { color: var(--color-text); margin-bottom: var(--space-sm); }
-.uploadText strong { color: var(--color-accent-dark); }
-.uploadHint { font-size: 0.78rem; color: var(--color-text-muted); }
-
-.categoryRow {
-  display: flex;
+.uploadIcon {
+  width: 3.25rem;
+  height: 3.25rem;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-2xl);
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(180, 124, 77, 0.1);
+  color: #8d5b31;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.uploadZone strong {
+  color: #433128;
+}
+
+.uploadZone p {
+  max-width: 34rem;
+  margin: 0;
+  color: #6f594b;
+  line-height: 1.7;
+}
+
+.categoryBar {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.categoryBar span {
+  color: #958171;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.categoryButtons {
+  display: flex;
   flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
-.categoryLabel {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--color-text-light);
-  font-family: var(--font-accent);
+.categoryButton {
+  min-height: 2.6rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(59, 40, 27, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #6f594b;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.categoryBtns { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
-
-.categoryBtn {
-  padding: var(--space-xs) var(--space-md);
-  border: 1.5px solid #ddd;
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--color-text-light);
-  font-family: var(--font-accent);
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.categoryBtn:hover, .categoryBtn.active {
-  border-color: var(--color-accent);
-  color: var(--color-accent-dark);
-  background: var(--color-accent-glow);
+.categoryButtonActive,
+.categoryButton:hover {
+  border-color: rgba(180, 124, 77, 0.24);
+  background: rgba(180, 124, 77, 0.12);
+  color: #8d5b31;
 }
 
 .mediaGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1rem;
 }
 
 .mediaCard {
-  background: var(--color-bg);
-  border: 1px solid #eee;
-  border-radius: var(--radius-md);
+  border: 1px solid rgba(59, 40, 27, 0.1);
+  border-radius: 1.45rem;
   overflow: hidden;
-  transition: all var(--transition-base);
-  position: relative;
-  box-shadow: var(--shadow-sm);
-}
-
-.mediaCard:hover {
-  border-color: var(--color-accent-pale);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 20px 42px rgba(41, 26, 16, 0.08);
+  backdrop-filter: blur(14px);
 }
 
 .mediaPreview {
   position: relative;
   aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--color-bg-warm);
+  background: rgba(180, 124, 77, 0.08);
+}
+
+.mediaImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .videoPlaceholder {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
+  display: grid;
+  place-items: center;
+  color: #8d5b31;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.mediaInfo { padding: var(--space-md); }
-
-.mediaName {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.mediaInfo {
+  padding: 1rem 1rem 0.75rem;
+  display: grid;
+  gap: 0.2rem;
 }
 
-.mediaMeta {
-  font-size: 0.72rem;
-  color: var(--color-text-muted);
-  margin-top: 2px;
+.mediaInfo strong {
+  color: #433128;
+  font-size: 0.95rem;
 }
 
-.mediaDelete {
-  position: absolute;
-  top: var(--space-sm);
-  right: var(--space-sm);
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
+.mediaInfo span {
+  color: #6f594b;
+  font-size: 0.82rem;
 }
 
-.mediaCard:hover .mediaDelete { opacity: 1; }
-.mediaDelete:hover { background: var(--color-error); }
+.deleteButton {
+  width: calc(100% - 2rem);
+  min-height: 2.4rem;
+  margin: 0 1rem 1rem;
+  border: 1px solid rgba(177, 79, 73, 0.22);
+  border-radius: 999px;
+  background: rgba(177, 79, 73, 0.06);
+  color: #a14742;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
 
 .emptyState {
+  padding: 2rem;
   text-align: center;
-  padding: var(--space-4xl);
-  color: var(--color-text-muted);
 }
 
-.emptyState span {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: var(--space-md);
-  color: var(--color-accent-pale);
+.emptyState strong {
+  color: #433128;
 }
 
-.emptyHint {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-  margin-top: var(--space-sm);
+.emptyState p {
+  margin: 0.4rem 0 0;
+  color: #6f594b;
 }

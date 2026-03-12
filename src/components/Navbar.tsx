@@ -35,7 +35,6 @@ export default function Navbar() {
   const { lead, accent } = splitVenueTitle(settings.venueTitle);
   const navLinks = settings.footerContent.navigationLinks;
   const socialLinks = useMemo(() => getVisibleSocialLinks(settings), [settings]);
-  const isHome = pathname === '/';
   const addressLabel = useMemo(() => getDisplayAddress(settings), [settings]);
   const phoneLabel = useMemo(() => getDisplayPhone(settings), [settings]);
   const hasPhone = useMemo(() => !isPlaceholderPhone(phoneLabel), [phoneLabel]);
@@ -45,10 +44,10 @@ export default function Navbar() {
     [settings.phone, settings.venueTitle, settings.whatsapp]
   );
   const hasExternalWhatsApp = whatsappHref.startsWith('http');
-  const isTransparent = isHome && !scrolled && !mobileOpen;
+  const isTransparent = pathname === '/' && !scrolled && !mobileOpen;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    const onScroll = () => setScrolled(window.scrollY > 18);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -67,25 +66,31 @@ export default function Navbar() {
 
   return (
     <>
-      <div className={`${styles.topBar} ${isTransparent ? styles.topBarTransparent : ''}`}>
-        <div className={styles.topInner}>
-          <div className={styles.topMeta}>
+      <div
+        className={`${styles.utilityBar} ${isTransparent ? styles.utilityBarTransparent : ''}`}
+      >
+        <div className={styles.utilityInner}>
+          <div className={styles.utilityMeta}>
             <span>{addressLabel}</span>
             {hasPhone ? <a href={phoneHref}>{phoneLabel}</a> : null}
           </div>
-          <div className={styles.topActions}>
-            {socialLinks.map((link) => (
-              <a
-                key={`${link.href}-${link.label}`}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.ariaLabel}
-                className={styles.topSocial}
-              >
-                {link.label}
-              </a>
-            ))}
+
+          <div className={styles.utilityActions}>
+            <span className={styles.utilityNote}>Atendimento para visitas e eventos</span>
+            <div className={styles.utilitySocials}>
+              {socialLinks.map((link) => (
+                <a
+                  key={`${link.href}-${link.label}`}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.ariaLabel}
+                  className={styles.utilitySocial}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -97,13 +102,8 @@ export default function Navbar() {
           <Link href="/" className={styles.brand} aria-label={settings.venueTitle}>
             <span className={styles.brandMark}>QV</span>
             <span className={styles.brandText}>
-              {lead}
-              {accent ? (
-                <>
-                  {' '}
-                  <span className={styles.brandAccent}>{accent}</span>
-                </>
-              ) : null}
+              <strong>{lead}</strong>
+              {accent ? <em>{accent}</em> : null}
             </span>
           </Link>
 
@@ -121,15 +121,21 @@ export default function Navbar() {
 
           <div className={styles.desktopActions}>
             {hasExternalWhatsApp ? (
-              <a href={whatsappHref} className={styles.whatsLink} target="_blank" rel="noopener noreferrer">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.secondaryAction}
+              >
                 WhatsApp
               </a>
             ) : (
-              <Link href={whatsappHref} className={styles.whatsLink}>
-                Agendar visita
+              <Link href={whatsappHref} className={styles.secondaryAction}>
+                Atendimento
               </Link>
             )}
-            <Link href="/agendar" className={styles.headerCta}>
+
+            <Link href="/agendar" className={styles.primaryAction}>
               {settings.footerContent.navigationCtaLabel}
             </Link>
           </div>
@@ -155,7 +161,14 @@ export default function Navbar() {
 
       <aside className={`${styles.mobilePanel} ${mobileOpen ? styles.mobilePanelOpen : ''}`}>
         <div className={styles.mobilePanelHeader}>
-          <span className={styles.mobilePanelTitle}>Quatro Ventos</span>
+          <div className={styles.mobileBrand}>
+            <span className={styles.mobileBrandMark}>QV</span>
+            <div>
+              <strong>{settings.venueTitle}</strong>
+              <span>{settings.venueSubtitle}</span>
+            </div>
+          </div>
+
           <button
             type="button"
             className={styles.mobileClose}
@@ -166,7 +179,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        <div className={styles.mobilePanelMeta}>
+        <div className={styles.mobileMeta}>
           <span>{addressLabel}</span>
           {hasPhone ? <a href={phoneHref}>{phoneLabel}</a> : null}
         </div>
@@ -187,8 +200,14 @@ export default function Navbar() {
           <Link href="/agendar" className={styles.mobilePrimary}>
             {settings.footerContent.navigationCtaLabel}
           </Link>
+
           {hasExternalWhatsApp ? (
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={styles.mobileSecondary}>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.mobileSecondary}
+            >
               Falar no WhatsApp
             </a>
           ) : (

@@ -1,6 +1,6 @@
-import { Prisma, type Appointment } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { auth } from '@/lib/auth';
 import {
   ACTIVE_APPOINTMENT_STATUSES,
@@ -43,6 +43,17 @@ const updateSchema = z.object({
   id: z.string().min(1, 'ID obrigatório.'),
   status: appointmentStatusSchema,
 });
+
+type AppointmentNotification = {
+  name: string;
+  email: string;
+  phone: string;
+  date: Date;
+  timeSlot: string;
+  eventType: string;
+  guests: number | null;
+  message: string | null;
+};
 
 function escapeHtml(value: string) {
   return value
@@ -92,7 +103,7 @@ async function findSlotConflict({
   });
 }
 
-async function notifyAdminAboutAppointment(appointment: Appointment) {
+async function notifyAdminAboutAppointment(appointment: AppointmentNotification) {
   const settings = await prisma.settings.findUnique({
     where: { id: 'main' },
     select: {
@@ -146,7 +157,10 @@ async function notifyAdminAboutAppointment(appointment: Appointment) {
   });
 }
 
-async function notifyClientAboutStatusChange(appointment: Appointment, status: string) {
+async function notifyClientAboutStatusChange(
+  appointment: AppointmentNotification,
+  status: string
+) {
   if (status !== 'confirmed' && status !== 'cancelled') {
     return;
   }
@@ -165,20 +179,20 @@ async function notifyClientAboutStatusChange(appointment: Appointment, status: s
   const isConfirmed = status === 'confirmed';
   const statusLabel = isConfirmed ? 'Confirmada' : 'Cancelada';
   const statusColor = isConfirmed ? '#4ade80' : '#f87171';
-  const emoji = isConfirmed ? '✅' : '❌';
+  const statusPrefix = isConfirmed ? 'Confirmação' : 'Cancelamento';
 
   const subject = isConfirmed
-    ? `${emoji} Sua visita ao ${venueName} foi confirmada!`
-    : `${emoji} Sua visita ao ${venueName} foi cancelada`;
+    ? `[${statusPrefix}] Sua visita ao ${venueName} foi confirmada!`
+    : `[${statusPrefix}] Sua visita ao ${venueName} foi cancelada`;
 
   const message = isConfirmed
     ? `Temos o prazer de informar que sua visita ao ${venueName} foi confirmada! Estamos ansiosos para recebê-lo(a).`
     : `Infelizmente, sua visita ao ${venueName} foi cancelada. Se desejar reagendar, entre em contato conosco.`;
 
   const contactInfo = [
-    settings?.phone ? `📞 ${settings.phone}` : null,
-    settings?.email ? `✉️ ${settings.email}` : null,
-    settings?.address ? `📍 ${settings.address}` : null,
+    settings?.phone ? `Telefone: ${settings.phone}` : null,
+    settings?.email ? `E-mail: ${settings.email}` : null,
+    settings?.address ? `Endereço: ${settings.address}` : null,
   ].filter(Boolean).join(' | ');
 
   await sendEmail({
@@ -271,7 +285,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
       return NextResponse.json(
@@ -381,7 +395,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
       return NextResponse.json(

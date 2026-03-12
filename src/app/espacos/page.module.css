@@ -1,18 +1,18 @@
 .heroMetrics {
-  margin-top: 1.6rem;
+  margin-top: 1.7rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
 }
 
 .spacesSection {
-  padding: 5.2rem 0;
+  padding: 5.6rem 0;
 }
 
 .spaceRow {
   display: grid;
   grid-template-columns: 0.95fr 1.05fr;
-  gap: 2.2rem;
+  gap: 2.3rem;
   align-items: center;
   margin-bottom: 2.4rem;
 }
@@ -30,19 +30,15 @@
 }
 
 .spaceVisual {
+  min-height: 31rem;
   overflow: hidden;
-  min-height: 29rem;
 }
 
 .spaceImage,
 .spaceFallback {
-  min-height: 29rem;
+  min-height: 31rem;
   background-size: cover;
   background-position: center;
-}
-
-.spaceFallback {
-  padding: 0;
 }
 
 .spaceContent {
@@ -52,55 +48,57 @@
 
 .spaceContent h2 {
   margin: 0;
-  font-size: clamp(2.3rem, 4vw, 3.8rem);
+  font-size: clamp(2.4rem, 4vw, 4rem);
 }
 
 .spaceContent p {
   margin: 0;
-  color: var(--color-text-soft);
+  color: var(--color-body-soft);
   line-height: 1.9;
 }
 
 .spaceStats {
   display: flex;
-  gap: 1rem;
   flex-wrap: wrap;
-  margin: 0.5rem 0;
+  gap: 1rem;
+  margin: 0.55rem 0;
 }
 
 .spaceStat {
   min-width: 10rem;
   padding: 1rem 1.1rem;
-  border-radius: 1.2rem;
-  background: rgba(181, 128, 82, 0.08);
-  border: 1px solid rgba(181, 128, 82, 0.16);
+  border-radius: 1.3rem;
+  border: 1px solid rgba(193, 141, 95, 0.18);
+  background: rgba(193, 141, 95, 0.08);
 }
 
 .spaceStat strong {
   display: block;
-  color: var(--color-charcoal);
+  color: var(--color-coal);
   font-size: 1.35rem;
 }
 
 .spaceStat span {
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
+  color: var(--color-body-muted);
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .amenitiesSection {
-  padding: 0 0 5.2rem;
+  padding: 0 0 5.6rem;
 }
 
 .amenitiesHeader {
-  max-width: 38rem;
-  margin-bottom: 1.8rem;
+  max-width: 40rem;
+  margin-bottom: 1.9rem;
 }
 
 .amenitiesHeader h2 {
   margin: 0;
-  font-size: clamp(2.1rem, 4vw, 3.5rem);
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
 }
 
 .amenitiesGrid {
@@ -110,25 +108,26 @@
 }
 
 .amenityCard {
-  padding: 1.35rem;
+  padding: 1.45rem;
   display: grid;
-  gap: 0.75rem;
+  gap: 0.8rem;
   justify-items: start;
 }
 
 .amenityIcon {
-  width: 2.85rem;
-  height: 2.85rem;
+  width: 2.9rem;
+  height: 2.9rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  background: rgba(181, 128, 82, 0.12);
-  font-size: 1.35rem;
+  background: rgba(193, 141, 95, 0.12);
+  color: var(--color-bronze-strong);
+  font-size: 1.3rem;
 }
 
 .amenityCard strong {
-  color: var(--color-charcoal);
+  color: var(--color-coal);
   font-size: 1rem;
 }
 
@@ -137,12 +136,12 @@
 }
 
 .bottomBandInner {
-  padding: 2rem;
+  padding: 2.25rem;
   border-radius: var(--radius-card);
+  border: 1px solid rgba(43, 29, 20, 0.08);
   background:
-    radial-gradient(circle at top left, rgba(181, 128, 82, 0.16), transparent 35%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 241, 0.95) 100%);
-  border: 1px solid rgba(40, 28, 20, 0.08);
+    radial-gradient(circle at top left, rgba(193, 141, 95, 0.16), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 248, 241, 0.98) 100%);
   box-shadow: var(--shadow-soft);
   display: flex;
   align-items: center;
@@ -152,13 +151,14 @@
 
 .bottomBandInner h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.3rem);
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
 }
 
 .bottomBandInner p {
   max-width: 38rem;
   margin: 0.9rem 0 0;
-  color: var(--color-text-soft);
+  color: var(--color-body-soft);
+  line-height: 1.8;
 }
 
 @media (max-width: 1024px) {
@@ -185,7 +185,7 @@
   .spaceVisual,
   .spaceImage,
   .spaceFallback {
-    min-height: 21rem;
+    min-height: 22rem;
   }
 
   .amenitiesGrid {

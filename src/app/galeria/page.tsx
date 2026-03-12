@@ -43,9 +43,7 @@ export default function GaleriaPage() {
   const { media } = usePublicMedia(fallbackMedia);
 
   const filteredMedia =
-    filter === 'all'
-      ? media
-      : media.filter((item) => item.category === filter);
+    filter === 'all' ? media : media.filter((item) => item.category === filter);
 
   const currentItem =
     filteredMedia.find((item) => item.id === lightboxId) ||
@@ -59,6 +57,7 @@ export default function GaleriaPage() {
           <span className="section-label">{galleryContent.heroLabel}</span>
           <h1 className="section-title">{galleryContent.heroTitle}</h1>
           <p className="section-subtitle">{galleryContent.heroSubtitle}</p>
+
           <div className={styles.filterBar}>
             {galleryContent.categories.map((category) => (
               <button
@@ -110,6 +109,7 @@ export default function GaleriaPage() {
                       />
                     </div>
                   )}
+
                   <div className={styles.galleryCaption}>
                     <strong>{item.caption || item.originalName}</strong>
                     <span>{getCategoryLabel(item.category, galleryContent.categories)}</span>
@@ -137,6 +137,7 @@ export default function GaleriaPage() {
           >
             ×
           </button>
+
           <div className={styles.lightboxPanel} onClick={(event) => event.stopPropagation()}>
             {currentItem.filename ? (
               currentItem.mimeType.startsWith('video/') ? (
@@ -156,6 +157,7 @@ export default function GaleriaPage() {
                 />
               </div>
             )}
+
             <div className={styles.lightboxMeta}>
               <strong>{currentItem.caption || currentItem.originalName}</strong>
               <span>{getCategoryLabel(currentItem.category, galleryContent.categories)}</span>

@@ -335,6 +335,7 @@ export default function ContatoPage() {
                 ))}
               </div>
             </div>
+
             <div className={`${styles.mapCard} surfaceCard`}>
               <span className="eyebrow">Localização</span>
               <h2>{hasAddress ? contactContent.mapPlaceholderTitle : 'Localização compartilhada no atendimento'}</h2>

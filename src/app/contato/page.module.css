@@ -1,5 +1,5 @@
 .contactSection {
-  padding: 5rem 0 3rem;
+  padding: 5.1rem 0 3.2rem;
 }
 
 .contactGrid {
@@ -25,10 +25,10 @@
   display: grid;
   gap: 1rem;
   border-radius: var(--radius-card);
+  border: 1px solid rgba(43, 29, 20, 0.08);
   background:
-    radial-gradient(circle at top left, rgba(181, 128, 82, 0.16), transparent 35%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 241, 0.95) 100%);
-  border: 1px solid rgba(40, 28, 20, 0.08);
+    radial-gradient(circle at top left, rgba(193, 141, 95, 0.18), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 248, 241, 0.98) 100%);
   box-shadow: var(--shadow-soft);
 }
 
@@ -38,15 +38,15 @@
 .mapCard h2,
 .successState h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-size: clamp(2.1rem, 4vw, 3.3rem);
 }
 
 .infoCard p,
 .mapCard p,
 .successState p {
   margin: 0;
-  color: var(--color-text-soft);
-  line-height: 1.8;
+  color: var(--color-body-soft);
+  line-height: 1.85;
 }
 
 .cardsGrid {
@@ -56,9 +56,9 @@
 }
 
 .contactCard {
-  padding: 1.35rem;
+  padding: 1.4rem;
   display: grid;
-  gap: 0.7rem;
+  gap: 0.75rem;
 }
 
 .cardIcon {
@@ -68,26 +68,28 @@
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  background: rgba(181, 128, 82, 0.12);
-  font-size: 1.35rem;
+  background: rgba(193, 141, 95, 0.12);
+  color: var(--color-bronze-strong);
+  font-size: 1.3rem;
 }
 
 .contactCard h3 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.28rem;
 }
 
 .cardLines {
   display: grid;
-  gap: 0.25rem;
-  color: var(--color-text-soft);
+  gap: 0.3rem;
+  color: var(--color-body-soft);
 }
 
 .cardLink {
-  color: var(--color-bronze-dark);
-  font-size: 0.84rem;
+  color: var(--color-bronze-strong);
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -115,7 +117,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(45, 125, 85, 0.12);
+  background: rgba(47, 125, 93, 0.12);
   color: var(--color-success);
   font-weight: 800;
 }
@@ -139,11 +141,11 @@
 .scheduleList {
   display: grid;
   gap: 0.5rem;
-  color: var(--color-text-soft);
+  color: var(--color-body-soft);
 }
 
 .mapCard small {
-  color: var(--color-text-muted);
+  color: var(--color-body-muted);
 }
 
 @media (max-width: 1024px) {

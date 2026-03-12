@@ -19,7 +19,7 @@ interface Appointment {
 
 const eventLabels: Record<string, string> = {
   wedding: 'Casamento',
-  children: 'Festa Infantil',
+  children: 'Festa infantil',
   corporate: 'Corporativo',
   debutante: 'Debutante',
   party: 'Confraternização',
@@ -45,12 +45,13 @@ export default function AgendamentosPage() {
       if (filter) params.set('status', filter);
       params.set('limit', '50');
 
-      const res = await fetch(`/api/appointments?${params}`);
-      const data = await res.json();
+      const response = await fetch(`/api/appointments?${params}`);
+      const data = await response.json();
       setAppointments(data.appointments || []);
       setTotal(data.total || 0);
     } catch {
-      // silent
+      setAppointments([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
@@ -69,112 +70,130 @@ export default function AgendamentosPage() {
       });
       fetchAppointments();
     } catch {
-      // silent
+      // ignore
     }
   };
 
   const deleteAppointment = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este agendamento?')) return;
+    if (!confirm('Tem certeza que deseja excluir este agendamento?')) {
+      return;
+    }
+
     try {
       await fetch(`/api/appointments?id=${id}`, { method: 'DELETE' });
       fetchAppointments();
     } catch {
-      // silent
+      // ignore
     }
   };
 
   return (
-    <>
-      <h1 className={styles.title}>Agendamentos</h1>
-      <p className={styles.subtitle}>
-        {total} agendamento{total !== 1 ? 's' : ''} no total
-      </p>
+    <section className={styles.page}>
+      <div className={styles.pageHeader}>
+        <div>
+          <h2>Agendamentos</h2>
+          <p>{total} registro{total !== 1 ? 's' : ''} no total</p>
+        </div>
 
-      {/* Filters */}
-      <div className={styles.filters}>
-        {['', 'pending', 'confirmed', 'cancelled'].map((f) => (
-          <button
-            key={f}
-            className={`${styles.filterBtn} ${filter === f ? styles.active : ''}`}
-            onClick={() => setFilter(f)}
-          >
-            {f === '' ? 'Todos' : statusLabels[f]}
-          </button>
-        ))}
+        <div className={styles.filters}>
+          {['', 'pending', 'confirmed', 'cancelled'].map((value) => (
+            <button
+              key={value}
+              type="button"
+              className={`${styles.filterButton} ${filter === value ? styles.filterButtonActive : ''}`}
+              onClick={() => setFilter(value)}
+            >
+              {value === '' ? 'Todos' : statusLabels[value]}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Table */}
       {loading ? (
         <div className={styles.loading}>
           <span className="spinner" />
         </div>
       ) : appointments.length > 0 ? (
-        <div className={styles.tableWrapper}>
-          <div className={styles.tableHead}>
-            <span>Nome</span>
-            <span>Evento</span>
-            <span>Data</span>
-            <span>Horário</span>
-            <span>Contato</span>
-            <span>Status</span>
-            <span>Ações</span>
-          </div>
-          {appointments.map((appt) => (
-            <div key={appt.id} className={styles.tableRow}>
-              <div>
-                <div className={styles.cellName}>{appt.name}</div>
-                {appt.guests && (
-                  <div className={styles.cellSub}>{appt.guests} convidados</div>
-                )}
+        <div className={styles.cardList}>
+          {appointments.map((appointment) => (
+            <article key={appointment.id} className={styles.appointmentCard}>
+              <div className={styles.cardMain}>
+                <div className={styles.cardIdentity}>
+                  <strong>{appointment.name}</strong>
+                  <span>{eventLabels[appointment.eventType] || appointment.eventType}</span>
+                </div>
+
+                <div className={styles.cardMeta}>
+                  <span>{new Date(appointment.date).toLocaleDateString('pt-BR')}</span>
+                  <span>{appointment.timeSlot}</span>
+                  {appointment.guests ? <span>{appointment.guests} convidados</span> : null}
+                </div>
               </div>
-              <span>{eventLabels[appt.eventType] || appt.eventType}</span>
-              <span>{new Date(appt.date).toLocaleDateString('pt-BR')}</span>
-              <span>{appt.timeSlot}</span>
-              <div>
-                <div className={styles.cellSub}>{appt.email}</div>
-                <div className={styles.cellSub}>{appt.phone}</div>
-              </div>
-              <span>
-                <span className={`badge badge-${appt.status}`}>
-                  {statusLabels[appt.status]}
-                </span>
-              </span>
-              <div className={styles.actions}>
-                {appt.status === 'pending' && (
+
+              <div className={styles.cardDetails}>
+                <div>
+                  <small>Contato</small>
+                  <p>{appointment.email}</p>
+                  <p>{appointment.phone}</p>
+                </div>
+
+                <div>
+                  <small>Status</small>
+                  <span className={`badge badge-${appointment.status}`}>
+                    {statusLabels[appointment.status]}
+                  </span>
+                </div>
+
+                <div className={styles.cardActions}>
+                  {appointment.status === 'pending' ? (
+                    <button
+                      type="button"
+                      className={styles.primaryAction}
+                      onClick={() => updateStatus(appointment.id, 'confirmed')}
+                    >
+                      Confirmar
+                    </button>
+                  ) : null}
+
+                  {appointment.status !== 'cancelled' ? (
+                    <button
+                      type="button"
+                      className={styles.secondaryAction}
+                      onClick={() => updateStatus(appointment.id, 'cancelled')}
+                    >
+                      Cancelar
+                    </button>
+                  ) : null}
+
                   <button
-                    className={styles.actionConfirm}
-                    onClick={() => updateStatus(appt.id, 'confirmed')}
-                    title="Confirmar"
+                    type="button"
+                    className={styles.dangerAction}
+                    onClick={() => deleteAppointment(appointment.id)}
                   >
-                    ✅
+                    Excluir
                   </button>
-                )}
-                {appt.status !== 'cancelled' && (
-                  <button
-                    className={styles.actionCancel}
-                    onClick={() => updateStatus(appt.id, 'cancelled')}
-                    title="Cancelar"
-                  >
-                    ❌
-                  </button>
-                )}
-                <button
-                  className={styles.actionDelete}
-                  onClick={() => deleteAppointment(appt.id)}
-                  title="Excluir"
-                >
-                  🗑️
-                </button>
+                </div>
               </div>
-            </div>
+
+              {appointment.message ? (
+                <div className={styles.messageBox}>
+                  <small>Mensagem do cliente</small>
+                  <p>{appointment.message}</p>
+                </div>
+              ) : null}
+            </article>
           ))}
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <span>📭</span>
-          <p>Nenhum agendamento {filter ? 'com este status' : 'encontrado'}</p>
+          <strong>Nenhum agendamento encontrado</strong>
+          <p>
+            {filter
+              ? 'Tente outro filtro para ver mais solicitações.'
+              : 'As novas visitas solicitadas no site aparecerão aqui.'}
+          </p>
         </div>
       )}
-    </>
+    </section>
   );
 }

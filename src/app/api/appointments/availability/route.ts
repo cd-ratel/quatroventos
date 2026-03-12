@@ -7,6 +7,10 @@ import {
 } from '@/lib/appointments';
 import { prisma } from '@/lib/prisma';
 
+type AvailabilityAppointment = {
+  timeSlot: string;
+};
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -40,7 +44,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       date,
       unavailableSlots: Array.from(
-        new Set(appointments.map((appointment) => appointment.timeSlot))
+        new Set(
+          appointments.map(
+            (appointment: AvailabilityAppointment) => appointment.timeSlot
+          )
+        )
       ),
     });
   } catch (error) {

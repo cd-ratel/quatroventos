@@ -19,9 +19,9 @@ export function GeneralHomeSection({
         <div className={styles.fieldGrid}>
           {[
             ['venueTitle', 'Nome do espaço'],
-            ['venueSubtitle', 'Subtítulo'],
+            ['venueSubtitle', 'Subtítulo institucional'],
             ['phone', 'Telefone'],
-            ['email', 'Email principal'],
+            ['email', 'E-mail principal'],
             ['address', 'Endereço'],
             ['whatsapp', 'WhatsApp'],
             ['instagram', 'Instagram'],
@@ -43,6 +43,7 @@ export function GeneralHomeSection({
             </div>
           ))}
         </div>
+
         <div className="form-group">
           <label className="form-label">Descrição institucional</label>
           <textarea
@@ -67,20 +68,20 @@ export function GeneralHomeSection({
         <h2 className={styles.sectionTitle}>Home</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero título'],
-            ['heroTitleAccent', 'Hero destaque'],
-            ['primaryCtaLabel', 'CTA primário'],
-            ['secondaryCtaLabel', 'CTA secundario'],
+            ['heroLabel', 'Eyebrow do hero'],
+            ['heroTitle', 'Título principal'],
+            ['heroTitleAccent', 'Destaque do título'],
+            ['primaryCtaLabel', 'CTA principal'],
+            ['secondaryCtaLabel', 'CTA secundário'],
             ['eventsSectionLabel', 'Label da seção de eventos'],
             ['eventsSectionTitle', 'Título da seção de eventos'],
-            ['aboutSectionLabel', 'Label da seção sobre'],
-            ['aboutSectionTitle', 'Título da seção sobre'],
-            ['aboutCtaLabel', 'Botão da seção sobre'],
+            ['aboutSectionLabel', 'Label da seção institucional'],
+            ['aboutSectionTitle', 'Título da seção institucional'],
+            ['aboutCtaLabel', 'Botão da seção institucional'],
             ['ctaLabel', 'Label do CTA final'],
             ['ctaTitle', 'Título do CTA final'],
-            ['ctaPrimaryLabel', 'CTA final primário'],
-            ['ctaSecondaryLabel', 'CTA final secundario'],
+            ['ctaPrimaryLabel', 'Botão principal do CTA final'],
+            ['ctaSecondaryLabel', 'Botão secundário do CTA final'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -100,7 +101,7 @@ export function GeneralHomeSection({
         </div>
 
         {[
-          ['heroSubtitle', 'Hero subtítulo'],
+          ['heroSubtitle', 'Texto de apoio do hero'],
           ['eventsSectionSubtitle', 'Descrição da seção de eventos'],
           ['ctaSubtitle', 'Descrição do CTA final'],
         ].map(([key, label]) => (
@@ -156,7 +157,7 @@ export function GeneralHomeSection({
         />
 
         <TextListEditor
-          title="Parágrafo da seção sobre"
+          title="Parágrafo institucional"
           items={settings.homeContent.aboutParagraphs}
           addLabel="Adicionar parágrafo"
           onChange={(index, value) =>

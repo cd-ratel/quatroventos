@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from '@/app/admin/midia/midia.module.css';
 
 interface MediaItem {
@@ -18,7 +18,7 @@ const categories = [
   { value: 'gallery', label: 'Galeria' },
   { value: 'venue', label: 'Espaço' },
   { value: 'wedding', label: 'Casamento' },
-  { value: 'children', label: 'Festa Infantil' },
+  { value: 'children', label: 'Festa infantil' },
   { value: 'corporate', label: 'Corporativo' },
   { value: 'decoration', label: 'Decoração' },
 ];
@@ -33,11 +33,11 @@ export default function MidiaPage() {
 
   const fetchMedia = async () => {
     try {
-      const res = await fetch('/api/media');
-      if (!res.ok) {
+      const response = await fetch('/api/media');
+      if (!response.ok) {
         throw new Error('Não foi possível carregar a mídia.');
       }
-      const data = await res.json();
+      const data = await response.json();
       setMedia(data);
       setError('');
     } catch {
@@ -53,7 +53,7 @@ export default function MidiaPage() {
     setUploading(true);
     setError('');
     const formData = new FormData();
-    Array.from(files).forEach((f) => formData.append('files', f));
+    Array.from(files).forEach((file) => formData.append('files', file));
     formData.append('category', category);
 
     try {
@@ -77,16 +77,19 @@ export default function MidiaPage() {
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
     setDragOver(false);
-    if (e.dataTransfer.files.length > 0) {
-      uploadFiles(e.dataTransfer.files);
+    if (event.dataTransfer.files.length > 0) {
+      uploadFiles(event.dataTransfer.files);
     }
   };
 
   const deleteMedia = async (id: string) => {
-    if (!confirm('Excluir esta mídia?')) return;
+    if (!confirm('Excluir esta mídia?')) {
+      return;
+    }
+
     try {
       const response = await fetch(`/api/media?id=${id}`, { method: 'DELETE' });
       const data = await response.json();
@@ -110,15 +113,21 @@ export default function MidiaPage() {
   };
 
   return (
-    <>
-      <h1 className={styles.title}>Gerenciador de Mídia</h1>
-      <p className={styles.subtitle}>{media.length} arquivo{media.length !== 1 ? 's' : ''}</p>
-      {error ? <p className={styles.emptyHint}>{error}</p> : null}
+    <section className={styles.page}>
+      <div className={styles.pageHeader}>
+        <div>
+          <h2>Biblioteca de mídia</h2>
+          <p>{media.length} arquivo{media.length !== 1 ? 's' : ''} cadastrados</p>
+        </div>
+        {error ? <p className={styles.errorMessage}>{error}</p> : null}
+      </div>
 
-      {/* Upload Zone */}
       <div
-        className={`${styles.uploadZone} ${dragOver ? styles.dragOver : ''}`}
-        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        className={`${styles.uploadZone} ${dragOver ? styles.uploadZoneActive : ''}`}
+        onDragOver={(event) => {
+          event.preventDefault();
+          setDragOver(true);
+        }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => fileRef.current?.click()}
@@ -129,82 +138,78 @@ export default function MidiaPage() {
           multiple
           accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm"
           style={{ display: 'none' }}
-          onChange={(e) => e.target.files && uploadFiles(e.target.files)}
+          onChange={(event) => event.target.files && uploadFiles(event.target.files)}
         />
+
         {uploading ? (
           <>
             <span className="spinner" />
-            <p>Enviando...</p>
+            <strong>Enviando arquivos</strong>
+            <p>Aguarde a conclusão do upload.</p>
           </>
         ) : (
           <>
-            <span className={styles.uploadIcon}>📸</span>
-            <p className={styles.uploadText}>
-              Arraste imagens/vídeos aqui ou <strong>clique para selecionar</strong>
-            </p>
-            <p className={styles.uploadHint}>
-              Máx. 50MB por arquivo • JPG, PNG, WebP, AVIF, MP4 e WebM
-            </p>
+            <span className={styles.uploadIcon}>▣</span>
+            <strong>Arraste imagens e vídeos ou clique para selecionar</strong>
+            <p>Arquivos até 50 MB. Formatos aceitos: JPG, PNG, WebP, AVIF, MP4 e WebM.</p>
           </>
         )}
       </div>
 
-      {/* Category selector */}
-      <div className={styles.categoryRow}>
-        <span className={styles.categoryLabel}>Categoria para upload:</span>
-        <div className={styles.categoryBtns}>
-          {categories.map((c) => (
+      <div className={styles.categoryBar}>
+        <span>Categoria do próximo upload</span>
+        <div className={styles.categoryButtons}>
+          {categories.map((item) => (
             <button
-              key={c.value}
-              className={`${styles.categoryBtn} ${category === c.value ? styles.active : ''}`}
-              onClick={() => setCategory(c.value)}
+              key={item.value}
+              type="button"
+              className={`${styles.categoryButton} ${category === item.value ? styles.categoryButtonActive : ''}`}
+              onClick={() => setCategory(item.value)}
             >
-              {c.label}
+              {item.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Media Grid */}
       {media.length > 0 ? (
         <div className={styles.mediaGrid}>
           {media.map((item) => (
-            <div key={item.id} className={styles.mediaCard}>
+            <article key={item.id} className={styles.mediaCard}>
               <div className={styles.mediaPreview}>
                 {item.mimeType.startsWith('image/') ? (
                   <img
                     src={item.url || `/media/${item.id}`}
                     alt={item.caption || item.originalName}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
+                    className={styles.mediaImage}
                     loading="lazy"
                   />
                 ) : (
-                  <div className={styles.videoPlaceholder}>🎬</div>
+                  <div className={styles.videoPlaceholder}>Vídeo</div>
                 )}
               </div>
+
               <div className={styles.mediaInfo}>
-                <div className={styles.mediaName}>{item.originalName}</div>
-                <div className={styles.mediaMeta}>
-                  {formatSize(item.size)} • {item.category}
-                </div>
+                <strong>{item.originalName}</strong>
+                <span>{formatSize(item.size)} • {item.category}</span>
               </div>
+
               <button
-                className={styles.mediaDelete}
+                type="button"
+                className={styles.deleteButton}
                 onClick={() => deleteMedia(item.id)}
-                title="Excluir"
               >
-                🗑️
+                Excluir
               </button>
-            </div>
+            </article>
           ))}
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <span>📂</span>
-          <p>Nenhuma mídia cadastrada</p>
-          <p className={styles.emptyHint}>Use a área acima para fazer upload de imagens e vídeos do salão</p>
+          <strong>Nenhuma mídia cadastrada</strong>
+          <p>Use a área acima para enviar fotos e vídeos do salão.</p>
         </div>
       )}
-    </>
+    </section>
   );
 }

@@ -12,8 +12,17 @@ function cloneSettings(settings: SiteSettings) {
   return structuredClone(settings);
 }
 
+const tabs = [
+  { id: 'general', label: 'Geral e Home' },
+  { id: 'spaces', label: 'Espaços e Galeria' },
+  { id: 'booking', label: 'Agendamento, Contato e Rodapé' },
+] as const;
+
+type TabId = (typeof tabs)[number]['id'];
+
 export default function SiteSettingsForm() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>('general');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -53,10 +62,7 @@ export default function SiteSettingsForm() {
         updateSettings((draft) => {
           const sectionRecord = draft[section] as unknown as Record<string, unknown[]>;
           sectionRecord[arrayKey][index] = {
-            ...(sectionRecord[arrayKey][index] as Record<
-              string,
-              unknown
-            >),
+            ...(sectionRecord[arrayKey][index] as Record<string, unknown>),
             [key]: value,
           };
         });
@@ -170,28 +176,56 @@ export default function SiteSettingsForm() {
   }
 
   return (
-    <>
-      <h1 className={styles.title}>Configurações</h1>
-      <p className={styles.subtitle}>Edite o conteúdo completo do site público.</p>
-      {error ? <p className={styles.errorMessage}>{error}</p> : null}
+    <form onSubmit={handleSubmit} className={styles.page}>
+      <header className={styles.pageHero}>
+        <div>
+          <span className={styles.pageKicker}>Conteúdo do site</span>
+          <h2>Gerencie textos, contatos, navegação e blocos públicos.</h2>
+          <p>
+            Use as abas abaixo para editar a experiência do visitante sem mexer no código.
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <GeneralHomeSection settings={settings} helpers={helpers} />
-        <SpacesGallerySection settings={settings} helpers={helpers} />
-        <BookingContactFooterSection settings={settings} helpers={helpers} />
-
-        <div className={styles.formActions}>
-          <button type="submit" className="btn btn-primary btn-lg" disabled={saving}>
+        <div className={styles.pageStatus}>
+          {error ? <p className={styles.errorMessage}>{error}</p> : null}
+          <button type="submit" className="btn-primary" disabled={saving}>
             {saving ? (
               <span className="spinner" />
             ) : saved ? (
-              'Configurações salvas'
+              'Alterações salvas'
             ) : (
-              'Salvar configurações'
+              'Salvar alterações'
             )}
           </button>
         </div>
-      </form>
-    </>
+      </header>
+
+      <div className={styles.tabBar}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            className={`${styles.tabButton} ${activeTab === tab.id ? styles.tabButtonActive : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div className={styles.tabPanel}>
+        {activeTab === 'general' ? (
+          <GeneralHomeSection settings={settings} helpers={helpers} />
+        ) : null}
+
+        {activeTab === 'spaces' ? (
+          <SpacesGallerySection settings={settings} helpers={helpers} />
+        ) : null}
+
+        {activeTab === 'booking' ? (
+          <BookingContactFooterSection settings={settings} helpers={helpers} />
+        ) : null}
+      </div>
+    </form>
   );
 }

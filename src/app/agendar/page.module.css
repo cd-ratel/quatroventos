@@ -1,11 +1,11 @@
 .bookingSection {
-  padding: 5rem 0 6rem;
+  padding: 5.2rem 0 6rem;
 }
 
 .bookingGrid {
   display: grid;
-  grid-template-columns: 0.95fr 1.05fr;
-  gap: 1.3rem;
+  grid-template-columns: 0.96fr 1.04fr;
+  gap: 1.4rem;
   align-items: start;
 }
 
@@ -17,17 +17,17 @@
 .infoCard,
 .featureCard,
 .formPanel {
-  padding: 1.7rem;
+  padding: 1.8rem;
 }
 
 .infoCard {
   display: grid;
   gap: 1rem;
   border-radius: var(--radius-card);
+  border: 1px solid rgba(43, 29, 20, 0.08);
   background:
-    radial-gradient(circle at top left, rgba(181, 128, 82, 0.16), transparent 35%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 241, 0.95) 100%);
-  border: 1px solid rgba(40, 28, 20, 0.08);
+    radial-gradient(circle at top left, rgba(193, 141, 95, 0.18), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 248, 241, 0.98) 100%);
   box-shadow: var(--shadow-soft);
 }
 
@@ -35,7 +35,7 @@
 .formPanel h2,
 .successState h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
 }
 
 .infoCard p,
@@ -43,8 +43,8 @@
 .successState p,
 .formSubtitle {
   margin: 0;
-  color: var(--color-text-soft);
-  line-height: 1.8;
+  color: var(--color-body-soft);
+  line-height: 1.85;
 }
 
 .infoCards {
@@ -54,7 +54,7 @@
 
 .featureCard {
   display: grid;
-  gap: 0.6rem;
+  gap: 0.65rem;
 }
 
 .featureIcon {
@@ -64,12 +64,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  background: rgba(181, 128, 82, 0.12);
-  font-size: 1.35rem;
+  background: rgba(193, 141, 95, 0.12);
+  color: var(--color-bronze-strong);
+  font-size: 1.3rem;
 }
 
 .featureCard strong {
-  color: var(--color-charcoal);
+  color: var(--color-coal);
   font-size: 1rem;
 }
 
@@ -101,7 +102,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(45, 125, 85, 0.12);
+  background: rgba(47, 125, 93, 0.12);
   color: var(--color-success);
   font-weight: 800;
 }

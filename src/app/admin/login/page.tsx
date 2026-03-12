@@ -34,12 +34,12 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
     setError('');
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(event.currentTarget);
     const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
 
     const result = await signIn('credentials', {
@@ -61,49 +61,63 @@ export default function AdminLoginPage() {
 
   return (
     <div className={styles.loginPage}>
-      <div className={styles.loginBg} />
-      <div className={styles.loginCard}>
-        <div className={styles.loginHeader}>
-          <div className={styles.loginLogo}>QV</div>
-          <h1 className={styles.loginTitle}>Quatro Ventos</h1>
-          <p className={styles.loginSubtitle}>Painel Administrativo</p>
-        </div>
+      <div className={styles.loginBackdrop} />
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-input"
-              placeholder="admin@quatroventos.com.br"
-              required
-              autoFocus
-            />
+      <div className={styles.loginLayout}>
+        <section className={styles.loginIntro}>
+          <span className={styles.kicker}>Admin Quatro Ventos</span>
+          <h1>Painel sóbrio para gerir visitas, mídia e conteúdo.</h1>
+          <p>
+            Entre com as credenciais do painel para acompanhar agendamentos,
+            atualizar o material do salão e ajustar os textos do site público.
+          </p>
+        </section>
+
+        <section className={styles.loginCard}>
+          <div className={styles.loginHeader}>
+            <div className={styles.loginLogo}>QV</div>
+            <div>
+              <h2>Entrar no painel</h2>
+              <p>Use o e-mail administrativo cadastrado no ambiente.</p>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Senha</label>
-            <input
-              type="password"
-              name="password"
-              className="form-input"
-              placeholder="********"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">E-mail</label>
+              <input
+                type="email"
+                name="email"
+                className="form-input"
+                placeholder="admin@quatroventos.com.br"
+                required
+                autoFocus
+              />
+            </div>
 
-          {error && <p className={styles.loginError}>{error}</p>}
+            <div className="form-group">
+              <label className="form-label">Senha</label>
+              <input
+                type="password"
+                name="password"
+                className="form-input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary btn-lg"
-            style={{ width: '100%', marginTop: 'var(--space-md)' }}
-            disabled={loading}
-          >
-            {loading ? <span className="spinner" /> : 'Entrar'}
-          </button>
-        </form>
+            {error ? <p className={styles.loginError}>{error}</p> : null}
+
+            <button
+              type="submit"
+              className="btn-primary btn-lg"
+              style={{ width: '100%', marginTop: '0.25rem' }}
+              disabled={loading}
+            >
+              {loading ? <span className="spinner" /> : 'Entrar'}
+            </button>
+          </form>
+        </section>
       </div>
     </div>
   );

@@ -18,8 +18,8 @@ export function SpacesGallerySection({
         <h2 className={styles.sectionTitle}>Página de espaços</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero título'],
+            ['heroLabel', 'Eyebrow do hero'],
+            ['heroTitle', 'Título principal'],
             ['amenitiesSectionLabel', 'Label de amenidades'],
             ['amenitiesSectionTitle', 'Título de amenidades'],
             ['ctaTitle', 'Título do CTA'],
@@ -41,8 +41,9 @@ export function SpacesGallerySection({
             </div>
           ))}
         </div>
+
         {[
-          ['heroSubtitle', 'Hero descrição'],
+          ['heroSubtitle', 'Descrição do hero'],
           ['ctaSubtitle', 'Descrição do CTA'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
@@ -110,9 +111,9 @@ export function SpacesGallerySection({
         <h2 className={styles.sectionTitle}>Galeria</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero título'],
-            ['emptyMessage', 'Mensagem vazia'],
+            ['heroLabel', 'Eyebrow do hero'],
+            ['heroTitle', 'Título principal'],
+            ['emptyMessage', 'Mensagem de vazio'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -130,8 +131,9 @@ export function SpacesGallerySection({
             </div>
           ))}
         </div>
+
         <div className="form-group">
-          <label className="form-label">Hero descrição</label>
+          <label className="form-label">Descrição do hero</label>
           <textarea
             className="form-textarea"
             rows={3}
@@ -146,7 +148,7 @@ export function SpacesGallerySection({
           title="Categoria"
           items={settings.galleryContent.categories}
           fields={[
-            { key: 'value', label: 'Valor' },
+            { key: 'value', label: 'Valor interno' },
             { key: 'label', label: 'Rótulo' },
           ]}
           addLabel="Adicionar categoria"

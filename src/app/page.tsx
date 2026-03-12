@@ -109,7 +109,11 @@ export default function HomePage() {
   const showcaseCards = useMemo(() => {
     return homeContent.events.map((event, index) => {
       const preferredCategory =
-        index === 0 ? ['wedding', 'venue'] : index === 1 ? ['children', 'venue'] : ['corporate', 'venue'];
+        index === 0
+          ? ['wedding', 'venue']
+          : index === 1
+            ? ['children', 'venue']
+            : ['corporate', 'venue'];
       const visual = findMediaForCategories(media, preferredCategory, index);
 
       return {
@@ -125,19 +129,19 @@ export default function HomePage() {
   const differenceCards = useMemo(
     () => [
       {
-        title: 'Atmosfera que marca presença',
-        eyebrow: 'Recepção e cenário',
+        title: 'Cenário com presença e personalidade',
+        eyebrow: 'Recepção e atmosfera',
         description: shortenText(homeContent.aboutParagraphs[0] || settings.aboutText),
         icon: 'END',
       },
       {
-        title: 'Ambientes versáteis para cada formato',
-        eyebrow: 'Estrutura flexível',
+        title: 'Ambientes flexíveis para formatos diferentes',
+        eyebrow: 'Estrutura adaptável',
         description: shortenText(spacesContent.heroSubtitle),
         icon: 'SV',
       },
       {
-        title: 'Atendimento atencioso do início ao fim',
+        title: 'Atendimento atento do primeiro contato ao evento',
         eyebrow: 'Operação e cuidado',
         description: shortenText(homeContent.aboutParagraphs[1] || settings.aboutText),
         icon: 'VIP',
@@ -196,6 +200,7 @@ export default function HomePage() {
               <span>{homeContent.heroTitleAccent}</span>
             </h1>
             <p className={styles.heroSubtitle}>{homeContent.heroSubtitle}</p>
+
             <div className={styles.heroActions}>
               <Link href="/agendar" className="btn-primary btn-lg">
                 {homeContent.primaryCtaLabel}
@@ -231,6 +236,7 @@ export default function HomePage() {
               />
             ))}
           </div>
+
           <div className={styles.heroFooterStats}>
             {homeContent.stats.slice(0, 3).map((stat) => (
               <div key={`${stat.label}-${stat.value}`} className={styles.heroStat}>
@@ -262,6 +268,7 @@ export default function HomePage() {
                 />
               </div>
             )}
+
             <div className={styles.storyBadge}>
               <span>{settings.venueSubtitle}</span>
             </div>
@@ -275,6 +282,7 @@ export default function HomePage() {
                 <p key={`${paragraph.slice(0, 24)}-${index}`}>{paragraph}</p>
               ))}
             </div>
+
             <div className={styles.storyHighlights}>
               {homeContent.features.slice(0, 4).map((feature) => (
                 <span key={feature} className={styles.storyHighlight}>
@@ -282,6 +290,7 @@ export default function HomePage() {
                 </span>
               ))}
             </div>
+
             <Link href="/espacos" className="btn-outline btn-lg">
               {homeContent.aboutCtaLabel}
             </Link>
@@ -345,7 +354,7 @@ export default function HomePage() {
         <div className="container">
           <div className={styles.differenceHeader}>
             <span className="eyebrow">Diferenciais</span>
-            <h2>Uma presença forte, elegante e pronta para receber</h2>
+            <h2>O espaço une atmosfera, operação e flexibilidade para eventos que pedem mais.</h2>
           </div>
 
           <div className={styles.differenceGrid}>

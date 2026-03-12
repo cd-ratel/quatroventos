@@ -18,8 +18,8 @@ export function BookingContactFooterSection({
         <h2 className={styles.sectionTitle}>Página de agendamento</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['heroLabel', 'Hero label'],
-            ['title', 'Título'],
+            ['heroLabel', 'Eyebrow do hero'],
+            ['title', 'Título principal'],
             ['formTitle', 'Título do formulário'],
             ['formSubtitle', 'Subtítulo do formulário'],
             ['successTitle', 'Título de sucesso'],
@@ -42,10 +42,11 @@ export function BookingContactFooterSection({
             </div>
           ))}
         </div>
+
         {[
           ['subtitle', 'Descrição principal'],
           ['successMessage', 'Mensagem de sucesso'],
-          ['conflictMessage', 'Mensagem de conflito de horário'],
+          ['conflictMessage', 'Mensagem de conflito'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
             <label className="form-label">{label}</label>
@@ -85,7 +86,7 @@ export function BookingContactFooterSection({
           title="Tipo de evento"
           items={settings.bookingContent.eventTypes}
           fields={[
-            { key: 'value', label: 'Valor' },
+            { key: 'value', label: 'Valor interno' },
             { key: 'label', label: 'Rótulo' },
           ]}
           addLabel="Adicionar tipo de evento"
@@ -113,15 +114,15 @@ export function BookingContactFooterSection({
         <h2 className={styles.sectionTitle}>Página de contato</h2>
         <div className={styles.fieldGrid}>
           {[
-            ['heroLabel', 'Hero label'],
-            ['heroTitle', 'Hero título'],
+            ['heroLabel', 'Eyebrow do hero'],
+            ['heroTitle', 'Título principal'],
             ['formTitle', 'Título do formulário'],
             ['formSuccessTitle', 'Título de sucesso'],
             ['formResetLabel', 'Botão de reset'],
-            ['namePlaceholder', 'Placeholder nome'],
-            ['emailPlaceholder', 'Placeholder email'],
-            ['subjectPlaceholder', 'Placeholder assunto'],
-            ['mapPlaceholderTitle', 'Título do placeholder do mapa'],
+            ['namePlaceholder', 'Placeholder do nome'],
+            ['emailPlaceholder', 'Placeholder do e-mail'],
+            ['subjectPlaceholder', 'Placeholder do assunto'],
+            ['mapPlaceholderTitle', 'Título do bloco de localização'],
           ].map(([key, label]) => (
             <div key={key} className="form-group">
               <label className="form-label">{label}</label>
@@ -139,11 +140,12 @@ export function BookingContactFooterSection({
             </div>
           ))}
         </div>
+
         {[
-          ['heroSubtitle', 'Hero descrição'],
+          ['heroSubtitle', 'Descrição do hero'],
           ['formSuccessMessage', 'Mensagem de sucesso'],
-          ['messagePlaceholder', 'Placeholder mensagem'],
-          ['mapPlaceholderSubtitle', 'Descrição do placeholder do mapa'],
+          ['messagePlaceholder', 'Placeholder da mensagem'],
+          ['mapPlaceholderSubtitle', 'Descrição do bloco de localização'],
         ].map(([key, label]) => (
           <div key={key} className="form-group">
             <label className="form-label">{label}</label>
@@ -198,7 +200,7 @@ export function BookingContactFooterSection({
       </div>
 
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Footer e navegação</h2>
+        <h2 className={styles.sectionTitle}>Rodapé e navegação</h2>
         <div className={styles.fieldGrid}>
           {[
             ['navigationTitle', 'Título da navegação'],
@@ -223,8 +225,9 @@ export function BookingContactFooterSection({
             </div>
           ))}
         </div>
+
         <div className="form-group">
-          <label className="form-label">Descrição do footer</label>
+          <label className="form-label">Descrição do rodapé</label>
           <textarea
             className="form-textarea"
             rows={3}

@@ -86,6 +86,7 @@ export default function EspacosPage() {
                   <span className="eyebrow">{space.tag}</span>
                   <h2>{space.name}</h2>
                   <p>{space.desc}</p>
+
                   <div className={styles.spaceStats}>
                     <div className={styles.spaceStat}>
                       <strong>{space.capacity}</strong>
@@ -96,6 +97,7 @@ export default function EspacosPage() {
                       <span>área</span>
                     </div>
                   </div>
+
                   <Link href="/agendar" className="btn-primary">
                     {spacesContent.ctaLabel}
                   </Link>
@@ -112,6 +114,7 @@ export default function EspacosPage() {
             <span className="eyebrow">{spacesContent.amenitiesSectionLabel}</span>
             <h2>{spacesContent.amenitiesSectionTitle}</h2>
           </div>
+
           <div className={styles.amenitiesGrid}>
             {spacesContent.amenities.map((amenity) => (
               <div key={`${amenity.name}-${amenity.icon}`} className={`${styles.amenityCard} surfaceCard`}>

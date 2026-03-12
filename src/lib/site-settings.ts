@@ -345,7 +345,7 @@ const legacyDefaultSiteSettings = {
   },
 } as const;
 
-export const defaultSiteSettings = {
+const encodedDefaultSiteSettings = {
   venueTitle: 'Quatro Ventos',
   venueSubtitle: 'Espaço para Eventos',
   phone: '(00) 00000-0000',
@@ -739,11 +739,6 @@ function collectStringReplacements(
   return replacements;
 }
 
-const legacyTextReplacements = collectStringReplacements(
-  legacyDefaultSiteSettings,
-  defaultSiteSettings
-);
-
 function decodeLatin1AsUtf8(value: string) {
   const bytes = Uint8Array.from(
     Array.from(value, (char) => char.charCodeAt(0) & 0xff)
@@ -751,6 +746,55 @@ function decodeLatin1AsUtf8(value: string) {
 
   return new TextDecoder('utf-8').decode(bytes);
 }
+
+function shouldDecodeLegacyText(value: string) {
+  return /[ÃÂâ]|ï¿½/.test(value);
+}
+
+function decodeSuspiciousText(value: string) {
+  if (!shouldDecodeLegacyText(value)) {
+    return value;
+  }
+
+  try {
+    const decoded = decodeLatin1AsUtf8(value);
+    return decoded || value;
+  } catch {
+    return value;
+  }
+}
+
+function decodeSuspiciousValue<T>(value: T): T {
+  if (typeof value === 'string') {
+    return decodeSuspiciousText(value) as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => decodeSuspiciousValue(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [
+        key,
+        decodeSuspiciousValue(nestedValue),
+      ])
+    ) as T;
+  }
+
+  return value;
+}
+
+export const defaultSiteSettings = siteSettingsSchema.parse(
+  decodeSuspiciousValue(
+    encodedDefaultSiteSettings as unknown as Record<string, unknown>
+  )
+);
+
+const legacyTextReplacements = collectStringReplacements(
+  legacyDefaultSiteSettings,
+  defaultSiteSettings
+);
 
 function scoreTextRepair(value: string) {
   let score = 0;
@@ -776,17 +820,13 @@ function repairLegacyText(value: string) {
     return directReplacement;
   }
 
-  if (!/[ÃÂâ]/.test(value)) {
+  if (!shouldDecodeLegacyText(value)) {
     return value;
   }
 
-  try {
-    const decoded = decodeLatin1AsUtf8(value);
-    const repaired = legacyTextReplacements.get(decoded) || decoded;
-    return scoreTextRepair(repaired) >= scoreTextRepair(value) ? repaired : value;
-  } catch {
-    return value;
-  }
+  const decoded = decodeSuspiciousText(value);
+  const repaired = legacyTextReplacements.get(decoded) || decoded;
+  return scoreTextRepair(repaired) >= scoreTextRepair(value) ? repaired : value;
 }
 
 function repairLegacyValue<T>(value: T): T {

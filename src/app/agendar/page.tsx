@@ -38,7 +38,9 @@ export default function AgendarPage() {
       .then((response) => response.json())
       .then((data) => {
         if (!cancelled) {
-          setUnavailableSlots(Array.isArray(data.unavailableSlots) ? data.unavailableSlots : []);
+          setUnavailableSlots(
+            Array.isArray(data.unavailableSlots) ? data.unavailableSlots : []
+          );
         }
       })
       .catch(() => {
@@ -151,7 +153,7 @@ export default function AgendarPage() {
               <h2>Conheça o fluxo, os ambientes e o potencial do espaço</h2>
               <p>
                 Preencha os dados ao lado e selecione um horário disponível.
-                Assim que o pedido entrar, o time administrativo recebe a notificação.
+                Assim que a solicitação entrar, o time administrativo recebe a notificação.
               </p>
             </div>
 
