@@ -12,7 +12,9 @@
 }
 
 .utilityBarTransparent {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(20, 17, 14, 0.62);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(10, 8, 6, 0.14);
 }
 
 .utilityInner,
@@ -93,9 +95,11 @@
 }
 
 .headerTransparent {
-  background: rgba(18, 17, 15, 0.12);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
+  background:
+    linear-gradient(180deg, rgba(18, 15, 12, 0.78) 0%, rgba(18, 15, 12, 0.58) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 34px rgba(8, 6, 5, 0.18);
+  backdrop-filter: blur(18px);
 }
 
 .headerSolid {
@@ -158,6 +162,7 @@
 .headerTransparent .brandText strong,
 .headerTransparent .brandText em {
   color: var(--color-ivory);
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
 }
 
 .headerSolid .brandText strong {
@@ -191,7 +196,8 @@
 }
 
 .headerTransparent .navLink {
-  color: rgba(251, 245, 238, 0.84);
+  color: rgba(251, 245, 238, 0.94);
+  text-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
 }
 
 .headerSolid .navLink {
@@ -268,14 +274,15 @@
 }
 
 .headerTransparent .secondaryAction {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.26);
   color: var(--color-ivory);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 26px rgba(8, 6, 5, 0.12);
 }
 
 .headerTransparent .secondaryAction:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.16);
   color: var(--color-ivory);
 }
 
@@ -317,7 +324,8 @@
 }
 
 .headerTransparent .mobileToggle {
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .headerSolid .mobileToggle {
