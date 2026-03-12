@@ -44,15 +44,11 @@ export default function EspacosPage() {
 
   return (
     <>
-      <section className="pageHero">
+      <section className={`pageHero ${styles.pageHero}`}>
         <div className="container">
           <span className="section-label">{spacesContent.heroLabel}</span>
           <h1 className="section-title">{spacesContent.heroTitle}</h1>
           <p className="section-subtitle">{spacesContent.heroSubtitle}</p>
-          <div className={styles.heroMetrics}>
-            <span className="metricPill">{spacesContent.spaces.length} ambientes principais</span>
-            <span className="metricPill">{spacesContent.amenities.length} facilidades disponíveis</span>
-          </div>
         </div>
       </section>
 
@@ -76,7 +72,7 @@ export default function EspacosPage() {
                       <VisualPlaceholder
                         label={getCategoryLabel(visual?.category || 'venue', galleryContent.categories)}
                         title={space.name}
-                        description={`${space.capacity} convidados • ${space.area}`}
+                        description={`${space.capacity} convidados \u2022 ${space.area}`}
                       />
                     </div>
                   )}
@@ -94,7 +90,7 @@ export default function EspacosPage() {
                     </div>
                     <div className={styles.spaceStat}>
                       <strong>{space.area}</strong>
-                      <span>área</span>
+                      <span>{'\u00E1rea'}</span>
                     </div>
                   </div>
 
@@ -130,7 +126,7 @@ export default function EspacosPage() {
         <div className="container">
           <div className={styles.bottomBandInner}>
             <div>
-              <span className="eyebrow">Visita técnica</span>
+              <span className="eyebrow">{'Visita t\u00E9cnica'}</span>
               <h2>{spacesContent.ctaTitle}</h2>
               <p>{spacesContent.ctaSubtitle}</p>
             </div>

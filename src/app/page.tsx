@@ -217,8 +217,10 @@ export default function HomePage() {
               <p className={styles.heroAsideCategory}>{activeHero?.title}</p>
               <h2>{activeHero?.description}</h2>
               <div className={styles.heroAsideMeta}>
-                <span className="metricPill">{addressLabel}</span>
-                {phoneLabel ? <span className="metricPill">{phoneLabel}</span> : null}
+                <span className={`metricPill ${styles.heroAsidePill}`}>{addressLabel}</span>
+                {phoneLabel ? (
+                  <span className={`metricPill ${styles.heroAsidePill}`}>{phoneLabel}</span>
+                ) : null}
               </div>
             </div>
           </div>
@@ -234,18 +236,6 @@ export default function HomePage() {
                 onClick={() => setActiveSlide(index)}
                 aria-label={`Ir para o slide ${index + 1}`}
               />
-            ))}
-          </div>
-
-          <div className={styles.heroFooterStats}>
-            {homeContent.stats.slice(0, 3).map((stat) => (
-              <div key={`${stat.label}-${stat.value}`} className={styles.heroStat}>
-                <strong>
-                  {stat.value}
-                  {stat.suffix}
-                </strong>
-                <span>{stat.label}</span>
-              </div>
             ))}
           </div>
         </div>

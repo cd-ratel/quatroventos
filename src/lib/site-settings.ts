@@ -17,12 +17,6 @@ const homeEventSchema = z.object({
   desc: z.string().min(1),
 });
 
-const homeStatSchema = z.object({
-  value: z.number().int().nonnegative(),
-  label: z.string().min(1),
-  suffix: z.string().default(''),
-});
-
 const infoCardSchema = z.object({
   icon: z.string().min(1),
   title: z.string().min(1),
@@ -138,12 +132,6 @@ const legacyDefaultSiteSettings = {
         title: 'Reunioes e Eventos',
         desc: 'Ambiente profissional e versatil para workshops, confraternizacoes e eventos corporativos.',
       },
-    ],
-    stats: [
-      { value: 500, suffix: '+', label: 'Eventos Realizados' },
-      { value: 98, suffix: '%', label: 'Clientes Satisfeitos' },
-      { value: 15, suffix: '', label: 'Anos de Experiencia' },
-      { value: 3, suffix: '', label: 'Espacos Exclusivos' },
     ],
     aboutSectionLabel: 'Sobre Nos',
     aboutSectionTitle: 'Um Espaco Pensado em Cada Detalhe',
@@ -386,12 +374,6 @@ const encodedDefaultSiteSettings = {
         desc: 'Ambiente profissional e versátil para workshops, confraternizações e eventos corporativos.',
       },
     ],
-    stats: [
-      { value: 500, suffix: '+', label: 'Eventos Realizados' },
-      { value: 98, suffix: '%', label: 'Clientes Satisfeitos' },
-      { value: 15, suffix: '', label: 'Anos de Experiência' },
-      { value: 3, suffix: '', label: 'Espaços Exclusivos' },
-    ],
     aboutSectionLabel: 'Sobre Nós',
     aboutSectionTitle: 'Um Espaço Pensado em Cada Detalhe',
     aboutParagraphs: [
@@ -613,7 +595,6 @@ const homeContentSchema = z.object({
   eventsSectionTitle: z.string().min(1),
   eventsSectionSubtitle: z.string().min(1),
   events: z.array(homeEventSchema).min(1),
-  stats: z.array(homeStatSchema).min(1),
   aboutSectionLabel: z.string().min(1),
   aboutSectionTitle: z.string().min(1),
   aboutParagraphs: z.array(z.string().min(1)).min(1),

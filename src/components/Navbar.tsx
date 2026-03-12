@@ -48,7 +48,7 @@ export default function Navbar() {
     [settings.phone, settings.venueTitle, settings.whatsapp]
   );
   const hasExternalWhatsApp = whatsappHref.startsWith('http');
-  const showUtilityBar = !mobileOpen && (!compactHeader || headerMode === 'overlay');
+  const showUtilityBar = !mobileOpen && !compactHeader;
 
   useEffect(() => {
     const syncHeaderMode = () => {
@@ -63,7 +63,7 @@ export default function Navbar() {
       const hero = document.querySelector('[data-home-hero]') as HTMLElement | null;
 
       if (!hero) {
-        if (scrollY < 56) {
+        if (scrollY < 24) {
           setHeaderMode('overlay');
         } else if (scrollY < 220) {
           setHeaderMode('blend');
@@ -71,7 +71,7 @@ export default function Navbar() {
           setHeaderMode('solid');
         }
 
-        setCompactHeader(scrollY > 84);
+        setCompactHeader(scrollY > 24);
         return;
       }
 
@@ -79,7 +79,7 @@ export default function Navbar() {
       const overlayThreshold = window.innerHeight * 0.62;
       const solidThreshold = window.innerHeight * 0.18;
 
-      if (heroBottom > overlayThreshold && scrollY < 120) {
+      if (scrollY < 24 && heroBottom > overlayThreshold) {
         setHeaderMode('overlay');
       } else if (heroBottom > solidThreshold) {
         setHeaderMode('blend');
@@ -87,7 +87,7 @@ export default function Navbar() {
         setHeaderMode('solid');
       }
 
-      setCompactHeader(scrollY > 88 || heroBottom <= overlayThreshold);
+      setCompactHeader(scrollY > 24);
     };
 
     syncHeaderMode();

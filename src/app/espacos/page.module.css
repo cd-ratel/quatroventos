@@ -1,8 +1,5 @@
-.heroMetrics {
-  margin-top: 1.7rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+.pageHero {
+  padding-bottom: 3.75rem;
 }
 
 .spacesSection {
@@ -182,6 +179,10 @@
 }
 
 @media (max-width: 768px) {
+  .pageHero {
+    padding-bottom: 3.2rem;
+  }
+
   .spaceVisual,
   .spaceImage,
   .spaceFallback {

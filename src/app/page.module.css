@@ -149,6 +149,16 @@
   gap: 0.65rem;
 }
 
+.heroAsidePill {
+  min-width: 0;
+  max-width: 100%;
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(251, 245, 238, 0.92);
+  text-align: center;
+  line-height: 1.45;
+}
+
 .heroFooter {
   position: absolute;
   left: 0;
@@ -157,7 +167,7 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   padding-top: 1rem;
 }
@@ -188,33 +198,6 @@
   width: 2.5rem;
   background: var(--color-bronze);
   transform: translateY(-1px);
-}
-
-.heroFooterStats {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 1.6rem;
-}
-
-.heroStat {
-  display: grid;
-  gap: 0.2rem;
-  text-align: right;
-}
-
-.heroStat strong {
-  color: var(--color-ivory);
-  font-size: 1.6rem;
-  line-height: 1;
-}
-
-.heroStat span {
-  color: rgba(251, 245, 238, 0.62);
-  font-family: var(--font-ui);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 .storySection {
@@ -562,7 +545,6 @@
     align-items: flex-start;
   }
 
-  .heroFooterStats,
   .heroActions,
   .showcaseActions,
   .galleryHeader {

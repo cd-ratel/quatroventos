@@ -139,23 +139,6 @@ export function GeneralHomeSection({
           onRemove={(index) => helpers.removeArrayItem('homeContent', 'events', index)}
         />
 
-        <ObjectListEditor
-          title="Estatística"
-          items={settings.homeContent.stats}
-          fields={[
-            { key: 'value', label: 'Valor', type: 'number' },
-            { key: 'suffix', label: 'Sufixo' },
-            { key: 'label', label: 'Legenda' },
-          ]}
-          addLabel="Adicionar estatística"
-          createEmpty={() => ({ value: 0, suffix: '', label: '' })}
-          onChange={(index, key, value) =>
-            helpers.updateArrayItem('homeContent', 'stats', index, key, value)
-          }
-          onAdd={(item) => helpers.addArrayItem('homeContent', 'stats', item)}
-          onRemove={(index) => helpers.removeArrayItem('homeContent', 'stats', index)}
-        />
-
         <TextListEditor
           title="Parágrafo institucional"
           items={settings.homeContent.aboutParagraphs}
