@@ -732,6 +732,20 @@ function shouldDecodeLegacyText(value: string) {
   return /[ÃÂâ]|ï¿½/.test(value);
 }
 
+function hasEscapedUnicodeText(value: string) {
+  return /\\u[0-9a-fA-F]{4}/.test(value);
+}
+
+function decodeEscapedUnicodeText(value: string) {
+  if (!hasEscapedUnicodeText(value)) {
+    return value;
+  }
+
+  return value.replace(/\\u([0-9a-fA-F]{4})/g, (_, hex: string) =>
+    String.fromCharCode(Number.parseInt(hex, 16))
+  );
+}
+
 function decodeSuspiciousText(value: string) {
   if (!shouldDecodeLegacyText(value)) {
     return value;
@@ -792,22 +806,34 @@ function scoreTextRepair(value: string) {
     score += 2;
   }
 
+  if (!hasEscapedUnicodeText(value)) {
+    score += 3;
+  }
+
   return score;
 }
 
 function repairLegacyText(value: string) {
   const directReplacement = legacyTextReplacements.get(value);
   if (directReplacement) {
-    return directReplacement;
+    return decodeEscapedUnicodeText(directReplacement);
   }
 
-  if (!shouldDecodeLegacyText(value)) {
-    return value;
+  let repaired = value;
+
+  if (shouldDecodeLegacyText(value)) {
+    const decoded = decodeSuspiciousText(value);
+    const decodedReplacement = legacyTextReplacements.get(decoded) || decoded;
+    repaired =
+      scoreTextRepair(decodedReplacement) >= scoreTextRepair(value)
+        ? decodedReplacement
+        : value;
   }
 
-  const decoded = decodeSuspiciousText(value);
-  const repaired = legacyTextReplacements.get(decoded) || decoded;
-  return scoreTextRepair(repaired) >= scoreTextRepair(value) ? repaired : value;
+  const unicodeDecoded = decodeEscapedUnicodeText(repaired);
+  return scoreTextRepair(unicodeDecoded) >= scoreTextRepair(repaired)
+    ? unicodeDecoded
+    : repaired;
 }
 
 function repairLegacyValue<T>(value: T): T {

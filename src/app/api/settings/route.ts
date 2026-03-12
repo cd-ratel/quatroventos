@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
-import { normalizeSiteSettings, siteSettingsSchema } from '@/lib/site-settings';
+import { normalizeSiteSettings, type SiteSettings } from '@/lib/site-settings';
 import { getServerSiteSettings } from '@/lib/server-site-settings';
 import { assertRateLimit } from '@/lib/rate-limit';
 import {
@@ -12,6 +12,17 @@ import {
 import { prisma } from '@/lib/prisma';
 
 const SETTINGS_BODY_LIMIT_BYTES = 256 * 1024;
+
+function mergeObjectSection<T extends Record<string, unknown>>(current: T, incoming: unknown): T {
+  if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) {
+    return current;
+  }
+
+  return {
+    ...current,
+    ...(incoming as Partial<T>),
+  };
+}
 
 export async function GET() {
   const settings = await getServerSiteSettings();
@@ -44,9 +55,38 @@ export async function PUT(req: NextRequest) {
       .record(z.unknown())
       .parse(await readJsonBodyWithLimit<unknown>(req, SETTINGS_BODY_LIMIT_BYTES));
     const currentSettings = await getServerSiteSettings();
-    const payload = siteSettingsSchema.parse({
+    const incomingSettings = body as Partial<SiteSettings> & Record<string, unknown>;
+    const payload = normalizeSiteSettings({
       ...currentSettings,
-      ...body,
+      ...incomingSettings,
+      businessHours: mergeObjectSection(
+        currentSettings.businessHours,
+        incomingSettings.businessHours
+      ),
+      homeContent: mergeObjectSection(
+        currentSettings.homeContent,
+        incomingSettings.homeContent
+      ),
+      spacesContent: mergeObjectSection(
+        currentSettings.spacesContent,
+        incomingSettings.spacesContent
+      ),
+      galleryContent: mergeObjectSection(
+        currentSettings.galleryContent,
+        incomingSettings.galleryContent
+      ),
+      bookingContent: mergeObjectSection(
+        currentSettings.bookingContent,
+        incomingSettings.bookingContent
+      ),
+      contactContent: mergeObjectSection(
+        currentSettings.contactContent,
+        incomingSettings.contactContent
+      ),
+      footerContent: mergeObjectSection(
+        currentSettings.footerContent,
+        incomingSettings.footerContent
+      ),
     });
 
     const settings = await prisma.settings.upsert({

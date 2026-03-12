@@ -145,8 +145,8 @@ export default function Footer() {
           <div className={styles.contactPanel}>
             <strong>Atendimento consultivo</strong>
             <p>
-              Organizamos visitas, d\u00FAvidas e or\u00E7amento com retorno r\u00E1pido, sempre em
-              um atendimento mais humano e alinhado ao tipo do seu evento.
+              Organizamos visitas, dúvidas e orçamento com retorno rápido, sempre em um
+              atendimento mais humano e alinhado ao tipo do seu evento.
             </p>
 
             {hasExternalWhatsApp ? (
