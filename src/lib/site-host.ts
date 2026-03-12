@@ -16,11 +16,20 @@ export function normalizeHost(value?: string | null) {
 }
 
 export function getRequestHost(headers: HeaderBag) {
-  return normalizeHost(
-    headers.get('x-forwarded-host') ||
-      headers.get('host') ||
-      headers.get('x-original-host')
-  );
+  const host = normalizeHost(headers.get('host'));
+  const forwardedHost = normalizeHost(headers.get('x-forwarded-host'));
+  const originalHost = normalizeHost(headers.get('x-original-host'));
+  const knownHosts = [host, forwardedHost, originalHost].filter(Boolean);
+
+  if (!knownHosts.length) {
+    return '';
+  }
+
+  if (new Set(knownHosts).size > 1) {
+    return '';
+  }
+
+  return host || forwardedHost || originalHost;
 }
 
 export function isPublicHost(host: string) {

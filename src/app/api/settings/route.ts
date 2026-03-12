@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import {
   createDefaultSiteSettings,
   normalizeSiteSettings,
   siteSettingsSchema,
 } from '@/lib/site-settings';
-import { assertTrustedMutationRequest } from '@/lib/request-security';
-import { z } from 'zod';
+import { assertRateLimit } from '@/lib/rate-limit';
+import {
+  assertTrustedMutationRequest,
+  RequestBodyError,
+  readJsonBodyWithLimit,
+} from '@/lib/request-security';
+import { prisma } from '@/lib/prisma';
+
+const SETTINGS_BODY_LIMIT_BYTES = 256 * 1024;
 
 async function getOrCreateSettings() {
   const existingSettings = await prisma.settings.findUnique({
@@ -46,8 +53,20 @@ export async function PUT(req: NextRequest) {
     return trustedRequestError;
   }
 
+  const rateLimitError = assertRateLimit(req, {
+    keyPrefix: 'admin-settings-write',
+    maxRequests: 30,
+    windowMs: 10 * 60 * 1000,
+    message: 'Muitas alterações de configuração em pouco tempo. Aguarde alguns instantes.',
+  });
+  if (rateLimitError) {
+    return rateLimitError;
+  }
+
   try {
-    const body = await req.json();
+    const body = z
+      .record(z.unknown())
+      .parse(await readJsonBodyWithLimit<unknown>(req, SETTINGS_BODY_LIMIT_BYTES));
     const currentSettings = await getOrCreateSettings();
     const payload = siteSettingsSchema.parse({
       ...currentSettings,
@@ -67,6 +86,10 @@ export async function PUT(req: NextRequest) {
       normalizeSiteSettings(settings as unknown as Record<string, unknown>)
     );
   } catch (error) {
+    if (error instanceof RequestBodyError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: error.errors[0]?.message || 'Dados inválidos.' },
@@ -74,7 +97,10 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    console.error('Settings update error:', error);
-    return NextResponse.json({ error: 'Erro ao atualizar as configurações.' }, { status: 500 });
+    console.error('Settings update error:', error instanceof Error ? error.message : 'unknown');
+    return NextResponse.json(
+      { error: 'Erro ao atualizar as configurações.' },
+      { status: 500 }
+    );
   }
 }

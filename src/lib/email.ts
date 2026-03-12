@@ -63,7 +63,7 @@ export async function sendEmail({
 
     return true;
   } catch (error) {
-    console.error('Email send failed:', error);
+    console.error('Email send failed:', error instanceof Error ? error.message : 'unknown');
     return false;
   }
 }

@@ -16,15 +16,25 @@ import {
 } from '@/lib/appointments';
 import { sendEmail } from '@/lib/email';
 import { prisma } from '@/lib/prisma';
-import { assertTrustedMutationRequest } from '@/lib/request-security';
+import { assertRateLimit } from '@/lib/rate-limit';
+import {
+  assertTrustedMutationRequest,
+  RequestBodyError,
+  readJsonBodyWithLimit,
+} from '@/lib/request-security';
 
 const createSchema = z.object({
-  name: z.string().min(2, 'Nome muito curto'),
-  email: z.string().email('E-mail inválido.'),
-  phone: z.string().min(8, 'Telefone inválido.'),
+  name: z.string().trim().min(2, 'Nome muito curto.').max(80, 'Nome muito longo.'),
+  email: z.string().trim().email('E-mail inválido.').max(254, 'E-mail inválido.'),
+  phone: z
+    .string()
+    .trim()
+    .min(8, 'Telefone inválido.')
+    .max(32, 'Telefone inválido.')
+    .regex(/^[0-9+\-() ]+$/, 'Telefone inválido.'),
   date: appointmentDateSchema,
   timeSlot: appointmentTimeSlotSchema,
-  eventType: z.string().min(1, 'Tipo de evento obrigatório.'),
+  eventType: z.string().trim().min(1, 'Tipo de evento obrigatório.').max(80, 'Tipo de evento muito longo.'),
   guests: z
     .union([z.string(), z.number()])
     .optional()
@@ -35,14 +45,37 @@ const createSchema = z.object({
 
       const parsed = typeof value === 'number' ? value : Number.parseInt(value, 10);
       return Number.isNaN(parsed) ? null : parsed;
+    })
+    .refine((value) => value === null || (value >= 1 && value <= 5000), {
+      message: 'Quantidade de convidados inválida.',
     }),
-  message: z.string().optional(),
+  message: z
+    .string()
+    .trim()
+    .max(1000, 'Mensagem muito longa.')
+    .optional()
+    .transform((value) => value || undefined),
 });
 
 const updateSchema = z.object({
-  id: z.string().min(1, 'ID obrigatório.'),
+  id: z.string().trim().min(1, 'ID obrigatório.').max(64, 'ID inválido.'),
   status: appointmentStatusSchema,
 });
+
+const listSchema = z.object({
+  status: appointmentStatusSchema.optional(),
+  page: z.coerce.number().int().min(1).max(100).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+});
+
+const deleteSchema = z.object({
+  id: z.string().trim().min(1, 'ID obrigatório.').max(64, 'ID inválido.'),
+});
+
+const PUBLIC_APPOINTMENT_BODY_LIMIT_BYTES = 24 * 1024;
+const ADMIN_APPOINTMENT_BODY_LIMIT_BYTES = 8 * 1024;
+const APPOINTMENT_LIST_WINDOW_MS = 5 * 60 * 1000;
+const APPOINTMENT_MUTATION_WINDOW_MS = 10 * 60 * 1000;
 
 type AppointmentNotification = {
   name: string;
@@ -193,7 +226,9 @@ async function notifyClientAboutStatusChange(
     settings?.phone ? `Telefone: ${settings.phone}` : null,
     settings?.email ? `E-mail: ${settings.email}` : null,
     settings?.address ? `Endereço: ${settings.address}` : null,
-  ].filter(Boolean).join(' | ');
+  ]
+    .filter(Boolean)
+    .join(' | ');
 
   await sendEmail({
     to: appointment.email,
@@ -203,7 +238,7 @@ async function notifyClientAboutStatusChange(
       '',
       message,
       '',
-      `Detalhes da visita:`,
+      'Detalhes da visita:',
       `Status: ${statusLabel}`,
       `Data: ${formattedDate}`,
       `Horário: ${appointment.timeSlot}`,
@@ -211,7 +246,7 @@ async function notifyClientAboutStatusChange(
       '',
       contactInfo,
       '',
-      `Atenciosamente,`,
+      'Atenciosamente,',
       `Equipe ${venueName}`,
     ].join('\n'),
     html: `
@@ -243,8 +278,23 @@ async function notifyClientAboutStatusChange(
 }
 
 export async function POST(req: NextRequest) {
+  const trustedRequestError = assertTrustedMutationRequest(req, 'public');
+  if (trustedRequestError) {
+    return trustedRequestError;
+  }
+
+  const rateLimitError = assertRateLimit(req, {
+    keyPrefix: 'public-appointment',
+    maxRequests: 6,
+    windowMs: 15 * 60 * 1000,
+    message: 'Muitas solicitações de visita em pouco tempo. Aguarde alguns minutos e tente novamente.',
+  });
+  if (rateLimitError) {
+    return rateLimitError;
+  }
+
   try {
-    const body = await req.json();
+    const body = await readJsonBodyWithLimit<unknown>(req, PUBLIC_APPOINTMENT_BODY_LIMIT_BYTES);
     const data = createSchema.parse(body);
 
     const conflict = await findSlotConflict({
@@ -277,6 +327,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(appointment, { status: 201 });
   } catch (error) {
+    if (error instanceof RequestBodyError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: error.errors[0]?.message || 'Dados inválidos.' },
@@ -294,9 +348,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.error('Appointment creation error:', error);
+    console.error('Appointment creation error:', error instanceof Error ? error.message : 'unknown');
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { error: 'Erro interno do servidor.' },
       { status: 500 }
     );
   }
@@ -308,24 +362,56 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
   }
 
-  const { searchParams } = new URL(req.url);
-  const status = searchParams.get('status');
-  const page = Number.parseInt(searchParams.get('page') || '1', 10);
-  const limit = Number.parseInt(searchParams.get('limit') || '20', 10);
+  const rateLimitError = assertRateLimit(req, {
+    keyPrefix: 'admin-appointment-list',
+    maxRequests: 120,
+    windowMs: APPOINTMENT_LIST_WINDOW_MS,
+    message: 'Muitas consultas de agendamentos em pouco tempo. Aguarde alguns instantes.',
+  });
+  if (rateLimitError) {
+    return rateLimitError;
+  }
 
-  const where = status ? { status } : {};
+  try {
+    const { searchParams } = new URL(req.url);
+    const query = listSchema.parse({
+      status: searchParams.get('status') || undefined,
+      page: searchParams.get('page') || undefined,
+      limit: searchParams.get('limit') || undefined,
+    });
 
-  const [appointments, total] = await Promise.all([
-    prisma.appointment.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.appointment.count({ where }),
-  ]);
+    const where = query.status ? { status: query.status } : {};
 
-  return NextResponse.json({ appointments, total, page, limit });
+    const [appointments, total] = await Promise.all([
+      prisma.appointment.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (query.page - 1) * query.limit,
+        take: query.limit,
+      }),
+      prisma.appointment.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      appointments,
+      total,
+      page: query.page,
+      limit: query.limit,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0]?.message || 'Parâmetros inválidos.' },
+        { status: 400 }
+      );
+    }
+
+    console.error('Appointment list error:', error instanceof Error ? error.message : 'unknown');
+    return NextResponse.json(
+      { error: 'Erro ao listar os agendamentos.' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PATCH(req: NextRequest) {
@@ -339,8 +425,19 @@ export async function PATCH(req: NextRequest) {
     return trustedRequestError;
   }
 
+  const rateLimitError = assertRateLimit(req, {
+    keyPrefix: 'admin-appointment-update',
+    maxRequests: 60,
+    windowMs: APPOINTMENT_MUTATION_WINDOW_MS,
+    message: 'Muitas alterações de agendamento em pouco tempo. Aguarde alguns instantes.',
+  });
+  if (rateLimitError) {
+    return rateLimitError;
+  }
+
   try {
-    const { id, status } = updateSchema.parse(await req.json());
+    const body = await readJsonBodyWithLimit<unknown>(req, ADMIN_APPOINTMENT_BODY_LIMIT_BYTES);
+    const { id, status } = updateSchema.parse(body);
 
     const appointment = await prisma.appointment.findUnique({
       where: { id },
@@ -382,11 +479,14 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
-    // Notify the client about their appointment status change
     await notifyClientAboutStatusChange(updatedAppointment, status);
 
     return NextResponse.json(updatedAppointment);
   } catch (error) {
+    if (error instanceof RequestBodyError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: error.errors[0]?.message || 'Dados inválidos.' },
@@ -404,7 +504,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    console.error('Appointment update error:', error);
+    console.error('Appointment update error:', error instanceof Error ? error.message : 'unknown');
     return NextResponse.json(
       { error: 'Erro ao atualizar o agendamento.' },
       { status: 500 }
@@ -423,13 +523,36 @@ export async function DELETE(req: NextRequest) {
     return trustedRequestError;
   }
 
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
-
-  if (!id) {
-    return NextResponse.json({ error: 'ID obrigatório.' }, { status: 400 });
+  const rateLimitError = assertRateLimit(req, {
+    keyPrefix: 'admin-appointment-delete',
+    maxRequests: 40,
+    windowMs: APPOINTMENT_MUTATION_WINDOW_MS,
+    message: 'Muitas exclusões de agendamento em pouco tempo. Aguarde alguns instantes.',
+  });
+  if (rateLimitError) {
+    return rateLimitError;
   }
 
-  await prisma.appointment.delete({ where: { id } });
-  return NextResponse.json({ success: true });
+  const { searchParams } = new URL(req.url);
+
+  try {
+    const { id } = deleteSchema.parse({
+      id: searchParams.get('id'),
+    });
+
+    await prisma.appointment.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0]?.message || 'ID inválido.' },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Erro ao excluir o agendamento.' },
+      { status: 500 }
+    );
+  }
 }

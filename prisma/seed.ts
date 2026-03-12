@@ -12,10 +12,45 @@ import {
 
 const prisma = new PrismaClient();
 
+const PLACEHOLDER_PATTERNS = [
+  'CHANGE_ME',
+  'GENERATE_WITH_OPENSSL',
+  'EXAMPLE',
+  'PLACEHOLDER',
+];
+
+function requireEnv(name: string) {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    throw new Error(`Environment variable ${name} is required for seed execution.`);
+  }
+
+  if (PLACEHOLDER_PATTERNS.some((pattern) => value.toUpperCase().includes(pattern))) {
+    throw new Error(`Environment variable ${name} still contains a placeholder value.`);
+  }
+
+  return value;
+}
+
+function assertStrongAdminPassword(password: string) {
+  if (password.length < 12) {
+    throw new Error('ADMIN_PASSWORD must contain at least 12 characters.');
+  }
+
+  const requirements = [/[a-z]/, /[A-Z]/, /[0-9]/, /[^A-Za-z0-9]/];
+  if (!requirements.every((pattern) => pattern.test(password))) {
+    throw new Error(
+      'ADMIN_PASSWORD must include uppercase, lowercase, numeric, and symbol characters.'
+    );
+  }
+}
+
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@quatroventos.com.br';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@2026!';
-  const adminName = process.env.ADMIN_NAME || 'Administrador';
+  const adminEmail = requireEnv('ADMIN_EMAIL').toLowerCase();
+  const adminPassword = requireEnv('ADMIN_PASSWORD');
+  const adminName = process.env.ADMIN_NAME?.trim() || 'Administrador';
+
+  assertStrongAdminPassword(adminPassword);
 
   const hashedPassword = await hash(adminPassword, 12);
 

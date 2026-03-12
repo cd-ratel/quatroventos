@@ -19,6 +19,72 @@ if [ ! -f ".env" ]; then
   exit 1
 fi
 
+trim_carriage_return() {
+  printf '%s' "$1" | tr -d '\r'
+}
+
+read_env_value() {
+  local key="$1"
+  local line
+  line="$(grep -E "^${key}=" .env | tail -n 1 || true)"
+  trim_carriage_return "${line#*=}"
+}
+
+require_env_value() {
+  local key="$1"
+  local value
+  value="$(read_env_value "$key")"
+
+  if [ -z "$value" ]; then
+    echo "Missing required environment variable: ${key}"
+    exit 1
+  fi
+
+  local upper_value
+  upper_value="$(printf '%s' "$value" | tr '[:lower:]' '[:upper:]')"
+  if [[ "$upper_value" == *"CHANGE_ME"* ]] || [[ "$upper_value" == *"GENERATE_WITH_OPENSSL"* ]] || [[ "$upper_value" == *"PLACEHOLDER"* ]]; then
+    echo "Environment variable ${key} still contains a placeholder value."
+    exit 1
+  fi
+}
+
+assert_strong_password() {
+  local label="$1"
+  local value="$2"
+
+  if [ "${#value}" -lt 12 ]; then
+    echo "${label} must contain at least 12 characters."
+    exit 1
+  fi
+
+  if ! [[ "$value" =~ [a-z] && "$value" =~ [A-Z] && "$value" =~ [0-9] && "$value" =~ [^A-Za-z0-9] ]]; then
+    echo "${label} must include uppercase, lowercase, numeric, and symbol characters."
+    exit 1
+  fi
+}
+
+echo "Validating environment..."
+for required_var in DATABASE_URL POSTGRES_PASSWORD NEXTAUTH_SECRET NEXTAUTH_URL ADMIN_EMAIL ADMIN_PASSWORD APP_URL ADMIN_URL SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS SMTP_FROM; do
+  require_env_value "$required_var"
+done
+
+app_url="$(read_env_value APP_URL)"
+admin_url="$(read_env_value ADMIN_URL)"
+nextauth_url="$(read_env_value NEXTAUTH_URL)"
+admin_password="$(read_env_value ADMIN_PASSWORD)"
+
+if [ "$app_url" = "$admin_url" ]; then
+  echo "APP_URL and ADMIN_URL must be different."
+  exit 1
+fi
+
+if [ "$nextauth_url" != "$admin_url" ]; then
+  echo "NEXTAUTH_URL must match ADMIN_URL."
+  exit 1
+fi
+
+assert_strong_password "ADMIN_PASSWORD" "$admin_password"
+
 wait_for_status() {
   local container_name="$1"
   local expected_status="$2"

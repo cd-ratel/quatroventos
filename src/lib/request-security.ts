@@ -15,6 +15,15 @@ function jsonError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status });
 }
 
+export class RequestBodyError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 function isTrustedHostForPolicy(host: string, policy: TrustedMutationPolicy) {
   if (policy === 'admin') {
     return isAdminHost(host);
@@ -68,4 +77,25 @@ export function assertTrustedMutationRequest(
   }
 
   return null;
+}
+
+export async function readJsonBodyWithLimit<T>(
+  request: NextRequest,
+  maxBytes: number
+) {
+  const rawBody = await request.text();
+
+  if (!rawBody.trim()) {
+    throw new RequestBodyError('Corpo da requisição ausente.', 400);
+  }
+
+  if (Buffer.byteLength(rawBody, 'utf8') > maxBytes) {
+    throw new RequestBodyError('Payload muito grande.', 413);
+  }
+
+  try {
+    return JSON.parse(rawBody) as T;
+  } catch {
+    throw new RequestBodyError('JSON inválido.', 400);
+  }
 }

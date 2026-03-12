@@ -28,7 +28,7 @@ export default function proxy(request: NextRequest) {
     pathname.startsWith('/icon');
 
   if (!host) {
-    return NextResponse.next();
+    return notFoundResponse();
   }
 
   if (!isAllowedHost(host)) {

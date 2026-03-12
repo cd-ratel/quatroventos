@@ -19,16 +19,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const admin = await prisma.admin.findUnique({
-          where: { email: credentials.email as string },
+        const email = String(credentials.email).trim().toLowerCase();
+        const password = String(credentials.password);
+
+        if (!email || email.length > 254 || !password || password.length > 256) {
+          return null;
+        }
+
+        const admin = await prisma.admin.findFirst({
+          where: {
+            email: {
+              equals: email,
+              mode: 'insensitive',
+            },
+          },
         });
 
         if (!admin) return null;
 
-        const valid = await compare(
-          credentials.password as string,
-          admin.password
-        );
+        const valid = await compare(password, admin.password);
 
         if (!valid) return null;
 
