@@ -9,6 +9,7 @@ Data: 2026-03-12
 - Revisão do fluxo de upload de mídia
 - Revisão do seed/bootstrap e do deploy versionado
 - Revisão das configurações Nginx versionadas
+- Validação ofensiva prática com enumeração de superfície, upload malicioso, testes de auth bypass e revisão de cookies/sessão
 
 ## Achados corrigidos
 
@@ -45,6 +46,30 @@ Data: 2026-03-12
 8. **Autenticação mais robusta**
    - Normalização de email no login e comparação case-insensitive.
    - Rejeição de credenciais com tamanhos fora do razoável.
+
+9. **App não fica mais exposto diretamente na internet**
+   - O serviço `app` agora publica `127.0.0.1:3100:3000` em vez de `0.0.0.0:3100:3000`.
+   - Isso mantém o acesso somente pelo proxy local da VPS e remove uma superfície desnecessária na internet.
+
+## Validações ofensivas executadas
+
+- `GET https://adminquatroventos.redecm.com.br/api/auth/csrf`
+  - cookies `__Host-authjs.csrf-token` e `__Secure-authjs.callback-url` vieram com `HttpOnly`, `Secure` e `SameSite=Lax`.
+- Login real via `POST /api/auth/callback/credentials`
+  - cookie `__Secure-authjs.session-token` emitido com `HttpOnly`, `Secure` e `SameSite=Lax`.
+- Tentativa de open redirect com `callbackUrl=https://evil.example/steal`
+  - neutralizada com redirecionamento seguro para o host canônico.
+- Tentativa de bypass do host público com `X-Forwarded-Host: adminquatroventos.redecm.com.br`
+  - continuou retornando `404`.
+- Tentativa de CSRF em `POST /api/contact` com `Origin` externa
+  - bloqueada com `403`.
+- Upload malicioso de `evil.svg`
+  - bloqueado com `400` e erro `Formato de arquivo não permitido.`
+- Upload malicioso de `fake.png` com conteúdo HTML
+  - bloqueado com `400` e erro `Formato de arquivo não permitido.`
+- Teste direto no app por `http://147.93.179.11:3100`
+  - antes do fechamento da porta, o app rejeitava hosts inválidos e spoofing com `404`;
+  - após esta rodada, a publicação fica restrita a `127.0.0.1` para eliminar a exposição externa da porta.
 
 ## Verificações executadas
 
